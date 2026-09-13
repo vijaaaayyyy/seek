@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Seek",
+      "hasCanvas": false,
+      "bodyTextLen": 1325,
+      "bodyTextHash": "4f8779a5804b4699740d4300d76bda9578e2ea46b43d35029d10609142ccc826",
+      "bodyTextPrefix": "Seek King James Seek Books Saved THE WHOLE BIBLE Find the verse ",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Seek",
+      "hasCanvas": false,
+      "bodyTextLen": 1314,
+      "bodyTextHash": "9bab6a6b1706cd848f37a3ddba4029a6050cbe7ff6a77565be28fe6918cd11b9",
+      "bodyTextPrefix": "Seek THE WHOLE BIBLE Find the verse you only half remember Type ",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}

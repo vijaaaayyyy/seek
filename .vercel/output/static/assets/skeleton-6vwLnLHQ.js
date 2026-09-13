@@ -1,0 +1,1 @@
+import{t as e,u as t}from"./utils-pGcgPIF2.js";var n=t();function r({className:t,...r}){return(0,n.jsx)(`div`,{className:e(`animate-pulse rounded-md bg-wash`,t),...r})}export{r as t};

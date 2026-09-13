@@ -1,0 +1,1 @@
+import{H as e,W as t}from"./utils-pGcgPIF2.js";var n=t(e(),1);function r(){let[e,t]=(0,n.useState)(!1);return(0,n.useEffect)(()=>t(!0),[]),e}export{r as t};
