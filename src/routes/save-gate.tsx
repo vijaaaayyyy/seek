@@ -16,49 +16,34 @@ function SaveGatePage() {
   const { redirect } = Route.useSearch();
 
   return (
-    <div className="flex min-h-[calc(100dvh-11rem)] flex-col items-center justify-center px-2 py-6">
+    <div className="flex min-h-[calc(100dvh-11rem)] flex-col items-center justify-center px-3 py-6">
       <div className="w-full max-w-[360px] text-center">
-        <h1 className="font-serif text-[2.5rem] leading-none font-medium tracking-tight text-ink">
-          Oh noo!
-        </h1>
-        <p className="mx-auto mt-3 max-w-[280px] font-sans text-[14px] leading-relaxed text-muted">
-          You&apos;ve caught us at a bad time. Sign in so we can hold on to the
-          verse you want to save.
-        </p>
-
-        <div className="mt-5">
-          <Link
-            to="/login"
-            search={{ redirect }}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-ink px-6 font-sans text-[14px] font-medium text-paper transition-transform duration-150 active:scale-[0.97] dark:bg-paper dark:text-ink"
-          >
-            Go to Sign in or create acc
-          </Link>
-        </div>
-
-        {/*
-          morgan-merrick.jpg is the full mockup. We crop to the lower
-          portion so only the giraffe + runner illustration shows.
-        */}
-        <div className="mt-8 mx-auto w-full max-w-[340px] overflow-hidden rounded-2xl">
+        {/* Your uploaded image */}
+        <div className="overflow-hidden rounded-[24px] bg-paper shadow-sm ring-1 ring-line">
           <img
             src="/morgan-merrick.jpg"
-            alt="Giraffe on a scooter racing ahead while someone runs after it"
-            className="block w-full h-auto"
-            style={{
-              // Show only the bottom ~40% of the mockup (the illustration)
-              clipPath: "inset(58% 6% 8% 6%)",
-              marginTop: "-58%",
-              marginBottom: "-8%",
-              transform: "scale(1.08)",
-              transformOrigin: "center bottom",
-            }}
+            alt="Oh noo — giraffe on a scooter"
+            className="block h-auto w-full"
             width={736}
             height={552}
             loading="eager"
             decoding="async"
           />
         </div>
+
+        <div className="mt-5">
+          <Link
+            to="/login"
+            search={{ redirect }}
+            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-ink px-6 font-sans text-[15px] font-medium text-paper transition-transform duration-150 active:scale-[0.98] dark:bg-paper dark:text-ink"
+          >
+            Go to Sign in or create acc
+          </Link>
+        </div>
+
+        <p className="mt-3 font-sans text-[13px] text-muted">
+          Free · takes about 10 seconds
+        </p>
       </div>
     </div>
   );
