@@ -26,8 +26,8 @@ const SavedContext = createContext<SavedContextValue | null>(null);
 
 /**
  * Single saved-verses store per app region (the root), synced to the
- * signed-in user's rows in the database. Signed out, a save tap shows a
- * Pinterest-style sign-in card with the verse preview.
+ * signed-in user's rows in the database. Signed out, a save tap opens
+ * the Oh noo! gate page that leads to sign-in.
  */
 export function SavedProvider({ children }: { children: React.ReactNode }) {
   const { user, isPending } = useCurrentUserState();
@@ -81,7 +81,17 @@ export function SavedProvider({ children }: { children: React.ReactNode }) {
   const toggleSaved = useCallback(
     async (verse: SaveVerseInput) => {
       if (!userId) {
+        // Remember the verse, then send them to the full-page gate
         setPendingSave(verse);
+        void navigate({
+          to: "/save-gate",
+          search: {
+            redirect:
+              typeof window !== "undefined"
+                ? window.location.pathname + window.location.search + window.location.hash
+                : "/",
+          },
+        });
         return;
       }
       const existed = isSaved(verse.slug, verse.chapter, verse.verse);
@@ -102,7 +112,7 @@ export function SavedProvider({ children }: { children: React.ReactNode }) {
         toast("Could not update saved verses. Try again.");
       }
     },
-    [isSaved, userId],
+    [isSaved, userId, navigate],
   );
 
   const value = useMemo(
