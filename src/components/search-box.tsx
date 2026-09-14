@@ -17,12 +17,15 @@ export function SearchBox({
   autoFocus = false,
   onSubmitQuery,
   onValueChange,
+  onClear,
 }: {
   initial?: string;
   size?: "lg" | "md";
   autoFocus?: boolean;
   onSubmitQuery?: (q: string) => void;
   onValueChange?: (q: string) => void;
+  /** Called when the user taps the clear (X) control. */
+  onClear?: () => void;
 }) {
   const navigate = useNavigate();
   const id = useId();
@@ -37,6 +40,12 @@ export function SearchBox({
     const t = window.setInterval(() => setHint((h) => (h + 1) % HINTS.length), 4200);
     return () => window.clearInterval(t);
   }, []);
+
+  function clear() {
+    setValue("");
+    onValueChange?.("");
+    onClear?.();
+  }
 
   function submit(e: FormEvent) {
     e.preventDefault();
@@ -84,19 +93,13 @@ export function SearchBox({
           <button
             type="button"
             aria-label="Clear search"
-            className="absolute top-1/2 right-2 inline-flex size-9 -translate-y-1/2 items-center justify-center rounded-full text-muted hover:bg-ink/8 hover:text-ink"
-            onClick={() => {
-              setValue("");
-              onValueChange?.("");
-            }}
+            className="absolute top-1/2 right-2 inline-flex size-9 -translate-y-1/2 items-center justify-center rounded-full text-muted transition-colors hover:bg-ink/8 hover:text-ink"
+            onClick={clear}
           >
             <X className="size-4" strokeWidth={1.8} />
           </button>
         ) : (
-          <button
-            type="submit"
-            className="sr-only"
-          >
+          <button type="submit" className="sr-only">
             Search
           </button>
         )}
