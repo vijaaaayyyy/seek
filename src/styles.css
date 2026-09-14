@@ -1,0 +1,400 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light;
+
+  --paper: #e9e0d0;
+  --surface: #f7f1e6;
+  --ink: #1c1915;
+  --muted: #6d655c;
+  --faint: #9a9288;
+  --line: color-mix(in oklab, var(--ink) 10%, transparent);
+  --forest: #3f4a42;
+  --forest-fg: #f4efe4;
+  --mark: #e8d7a8;
+  --wash: color-mix(in oklab, var(--ink) 6%, transparent);
+  --tint: #3f4a42;
+
+  --glass-fill: color-mix(in oklab, #fffaf4 46%, transparent);
+  --glass-fill-strong: color-mix(in oklab, #fffaf4 68%, transparent);
+  --glass-stroke: color-mix(in oklab, #ffffff 70%, transparent);
+  --glass-sheen: color-mix(in oklab, #ffffff 86%, transparent);
+  --glass-inset: color-mix(in oklab, var(--ink) 7%, transparent);
+  --glass-drop: color-mix(in oklab, var(--ink) 12%, transparent);
+  --glass-blur: 32px;
+
+  --orb-a: #f0c49a;
+  --orb-b: #b7cbb8;
+  --orb-c: #e8c8bc;
+
+  --header-h: 3.5rem;
+  --tabbar-h: 5.25rem;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --paper: #0b0c11;
+  --surface: #16171f;
+  --ink: #f2ebe0;
+  --muted: #a39b90;
+  --faint: #7a746b;
+  --line: color-mix(in oklab, var(--ink) 14%, transparent);
+  --forest: #c5d1c8;
+  --forest-fg: #121410;
+  --mark: #5a4c2e;
+  --wash: color-mix(in oklab, var(--ink) 8%, transparent);
+  --tint: #c5d1c8;
+
+  --glass-fill: color-mix(in oklab, #1c1f2c 48%, transparent);
+  --glass-fill-strong: color-mix(in oklab, #1c1f2c 70%, transparent);
+  --glass-stroke: color-mix(in oklab, #ffffff 16%, transparent);
+  --glass-sheen: color-mix(in oklab, #ffffff 22%, transparent);
+  --glass-inset: color-mix(in oklab, #000000 40%, transparent);
+  --glass-drop: color-mix(in oklab, #000000 55%, transparent);
+  --glass-blur: 36px;
+
+  --orb-a: #2a3558;
+  --orb-b: #3a2e1c;
+  --orb-c: #1a2238;
+}
+
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
+    serif;
+
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-forest: var(--forest);
+  --color-forest-fg: var(--forest-fg);
+  --color-mark: var(--mark);
+  --color-wash: var(--wash);
+  --color-tint: var(--tint);
+
+  --color-background: var(--paper);
+  --color-foreground: var(--ink);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--ink);
+  --color-primary: var(--ink);
+  --color-primary-foreground: var(--paper);
+  --color-secondary: var(--wash);
+  --color-secondary-foreground: var(--ink);
+  --color-muted-foreground: var(--muted);
+  --color-accent: var(--wash);
+  --color-accent-foreground: var(--ink);
+  --color-border: var(--line);
+  --color-input: var(--line);
+  --color-ring: var(--ink);
+  --color-destructive: #c45c4a;
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--ink);
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius: 14px;
+
+  --shadow-soft: 0 8px 28px var(--glass-drop);
+  --ease-out-apple: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: var(--paper);
+    color: var(--ink);
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    min-height: 100svh;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    overscroll-behavior: none;
+    transition:
+      background-color 280ms var(--ease-out-apple),
+      color 280ms var(--ease-out-apple);
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--mark);
+    color: var(--ink);
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font-family: inherit;
+  }
+}
+
+@layer components {
+  .app-atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 70% 55% at 88% -8%, var(--orb-a) 0%, transparent 58%),
+      radial-gradient(ellipse 80% 60% at -10% 108%, var(--orb-b) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 40% at 92% 62%, var(--orb-c) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 20% 20%, var(--orb-c) 0%, transparent 70%),
+      var(--paper);
+  }
+
+  .app-device {
+    background: color-mix(in oklab, var(--paper) 28%, transparent);
+  }
+
+  @media (min-width: 640px) {
+    .app-device {
+      box-shadow:
+        inset 0 1px 0 var(--glass-sheen),
+        0 0 0 1px var(--glass-stroke),
+        0 24px 80px var(--glass-drop);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    }
+  }
+
+  .glass {
+    position: relative;
+    background: var(--glass-fill);
+    background-clip: padding-box;
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.85);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.85);
+    border: 1px solid var(--glass-stroke);
+    box-shadow:
+      inset 0 1px 0 var(--glass-sheen),
+      inset 0 -0.5px 0 var(--glass-inset),
+      0 10px 32px var(--glass-drop);
+  }
+
+  .glass-strong {
+    background: var(--glass-fill-strong);
+    backdrop-filter: blur(44px) saturate(2);
+    -webkit-backdrop-filter: blur(44px) saturate(2);
+  }
+
+  .glass-thin {
+    background: color-mix(in oklab, var(--glass-fill) 72%, transparent);
+    box-shadow:
+      inset 0 1px 0 var(--glass-sheen),
+      0 4px 16px var(--glass-drop);
+  }
+
+  .glass-group {
+    background: var(--glass-fill);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.85);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.85);
+    border: 1px solid var(--glass-stroke);
+    box-shadow:
+      inset 0 1px 0 var(--glass-sheen),
+      0 10px 32px var(--glass-drop);
+    overflow: hidden;
+  }
+
+  .glass-row + .glass-row {
+    box-shadow: inset 0 1px 0 var(--line);
+  }
+
+  .glass-segmented {
+    background: color-mix(in oklab, var(--ink) 6%, transparent);
+    border: 1px solid var(--glass-stroke);
+    backdrop-filter: blur(20px) saturate(1.6);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  }
+
+  .hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ── Book reader page-flip ───────────────────────────────────────────
+     A leaf that swings over and disappears edge-on, revealing the page
+     beneath. `next` swings the CURRENT page off to the LEFT (advance);
+     `prev` swings it off to the RIGHT (go back). The static target page
+     sits in the `under` layer. */
+  .book-stage {
+    perspective: 1600px;
+  }
+
+  /* Camera looks down at the book from a pronounced angle, like
+     glancing at a book lying open on a desk. */
+  .book-tilt {
+    transform-style: preserve-3d;
+    transform: rotateX(38deg) rotateZ(-3deg);
+    transform-origin: 50% 58%;
+  }
+
+  .book-leaf {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+
+  @keyframes seek-flip-next {
+    from {
+      transform: rotateY(0deg);
+    }
+    to {
+      transform: rotateY(-180deg);
+    }
+  }
+
+  @keyframes seek-flip-prev {
+    from {
+      transform: rotateY(0deg);
+    }
+    to {
+      transform: rotateY(180deg);
+    }
+  }
+
+  .book-flip-next {
+    animation: seek-flip-next 0.55s var(--ease-out-apple) forwards;
+    transform-origin: left center;
+  }
+
+  .book-flip-prev {
+    animation: seek-flip-prev 0.55s var(--ease-out-apple) forwards;
+    transform-origin: right center;
+  }
+
+  /* ── Hands + page turn (login scene) ────────────────────────────────
+     A single leaf sitting exactly on the top-right page of the SVG book;
+     it swings over to the left every turn and fades edge-on, revealing the
+     next page beneath. Mirrors the reference snippet's geometry/timing:
+     overlay at 52%/41.5%/23%/14.5%, 2.8s flip, restart loop. */
+  .bible-hands-page {
+    position: absolute;
+    left: 52%;
+    top: 41.5%;
+    width: 23%;
+    height: 14.5%;
+    z-index: 10;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg, #f5f0e6 0%, #f0e8d8 82%, #e7dcc8 100%);
+    border: 1px solid #5a5045;
+    border-radius: 0 2px 2px 0;
+    transform-origin: left center;
+    box-shadow: -3px 0 12px rgba(0, 0, 0, 0.15);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    will-change: transform, opacity;
+  }
+
+  .bible-hands-page::before {
+    content: "";
+    position: absolute;
+    inset: 7px 5px;
+    background: repeating-linear-gradient(
+      transparent 0 11px,
+      rgba(80, 70, 60, 0.12) 11px 12px
+    );
+  }
+
+  @keyframes seek-hands-flip {
+    0% {
+      transform: perspective(900px) rotateY(0deg);
+      opacity: 1;
+    }
+    60% {
+      transform: perspective(900px) rotateY(-155deg);
+      opacity: 1;
+    }
+    100% {
+      transform: perspective(900px) rotateY(-180deg);
+      opacity: 0;
+    }
+  }
+
+  .bible-hands-page.active {
+    animation: seek-hands-flip 2.8s cubic-bezier(0.4, 0.05, 0.2, 1) forwards;
+  }
+
+  /* Gentle "held-in-hands" sway, synced to the 3.8s page-turn loop so the
+     hands settle as each leaf flips. Mirrored hand shares the keyframes —
+     its parent group is already scale-flipped, so the rotation renders on the
+     opposite side automatically. Reduced-motion users get static hands. */
+  .hand-anim {
+    animation: seek-hand-press 3.8s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: 50% 92%;
+    will-change: transform;
+  }
+
+  .hand-anim-mirrored {
+    transform-origin: 50% 92%;
+  }
+
+  @keyframes seek-hand-press {
+    0%,
+    100% {
+      transform: rotate(0deg) translateY(0px);
+    }
+    22% {
+      transform: rotate(-1.6deg) translateY(1.5px);
+    }
+    46% {
+      transform: rotate(0.6deg) translateY(-1px);
+    }
+    72% {
+      transform: rotate(-1deg) translateY(1px);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

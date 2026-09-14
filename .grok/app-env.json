@@ -1,0 +1,8 @@
+{
+  "VITE_AUTH_ENABLED": "true",
+  "VITE_SUPABASE_URL": "https://xqrckzkkfqwmkkexnxkh.supabase.co",
+  "VITE_SUPABASE_ANON_KEY": "sb_publishable_rJBOF_0mEFvsGDBSREdLhg_8fCquS8R",
+  "deploy": {
+    "database": true
+  }
+}

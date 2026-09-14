@@ -1,0 +1,9 @@
+.vercel
+.env*
+node_modules
+screenshots/
+preview*.log
+preview-dev.log
+preview-prod-build.log
+preview.log
+*.log
