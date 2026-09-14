@@ -67,7 +67,7 @@ function BookPin({ book }: { book: BookMeta }) {
           {book.name}
         </h2>
       ) : tier === 2 ? (
-        <h2 className="mt-3 font-serif text-[2.4rem] leading-[1.02] font-medium tracking-tight text-ink">
+        <h2 className="mt-3 font-serif text-[2rem] leading-[1.05] font-medium tracking-tight text-ink text-balance">
           {book.name}
         </h2>
       ) : (
