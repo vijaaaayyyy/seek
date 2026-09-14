@@ -1,5 +1,4 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useCurrentUserState } from "@/lib/supa/use-current-user";
 import {
@@ -31,7 +30,6 @@ const SavedContext = createContext<SavedContextValue | null>(null);
  */
 export function SavedProvider({ children }: { children: React.ReactNode }) {
   const { user, isPending } = useCurrentUserState();
-  const navigate = useNavigate();
   const [saved, setSaved] = useState<SavedVerse[]>([]);
   const [status, setStatus] = useState<Status>(isPending ? "loading" : user ? "idle" : "ready");
   const loadedFor = useRef<string | null>(null);
@@ -81,17 +79,8 @@ export function SavedProvider({ children }: { children: React.ReactNode }) {
   const toggleSaved = useCallback(
     async (verse: SaveVerseInput) => {
       if (!userId) {
-        // Remember the verse, then send them to the full-page gate
+        // Remember the verse, then open the sign-in sheet directly
         setPendingSave(verse);
-        void navigate({
-          to: "/save-gate",
-          search: {
-            redirect:
-              typeof window !== "undefined"
-                ? window.location.pathname + window.location.search + window.location.hash
-                : "/",
-          },
-        });
         return;
       }
       const existed = isSaved(verse.slug, verse.chapter, verse.verse);
@@ -112,7 +101,7 @@ export function SavedProvider({ children }: { children: React.ReactNode }) {
         toast("Could not update saved verses. Try again.");
       }
     },
-    [isSaved, userId, navigate],
+    [isSaved, userId],
   );
 
   const value = useMemo(

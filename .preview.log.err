@@ -1,0 +1,11 @@
+(node:30968) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Warning: Route file "C:/Users/vijay/Downloads/qwd9HNzcrClxgHTe-grok-workspace/src/routes/index.tsx" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "C:\Users\vijay\Downloads\qwd9HNzcrClxgHTe-grok-workspace\src\routes\-index.tsx" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined

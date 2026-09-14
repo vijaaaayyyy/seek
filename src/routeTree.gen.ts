@@ -14,7 +14,6 @@ import { Route as BooksRouteImport } from './routes/books'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SearchRouteImport } from './routes/search'
-import { Route as SaveGateRouteImport } from './routes/save-gate'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ReadBookChapterRouteImport } from './routes/read.$book.$chapter'
@@ -44,11 +43,6 @@ const SearchRoute = SearchRouteImport.update({
   path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SaveGateRoute = SaveGateRouteImport.update({
-  id: '/save-gate',
-  path: '/save-gate',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth/callback',
   path: '/auth/callback',
@@ -71,7 +65,6 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
-  '/save-gate': typeof SaveGateRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/read/$book/$chapter': typeof ReadBookChapterRoute
@@ -82,7 +75,6 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
-  '/save-gate': typeof SaveGateRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/read/$book/$chapter': typeof ReadBookChapterRoute
@@ -94,7 +86,6 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
-  '/save-gate': typeof SaveGateRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/read/$book/$chapter': typeof ReadBookChapterRoute
@@ -107,7 +98,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/saved'
     | '/search'
-    | '/save-gate'
     | '/auth/callback'
     | '/api/auth/$'
     | '/read/$book/$chapter'
@@ -118,7 +108,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/saved'
     | '/search'
-    | '/save-gate'
     | '/auth/callback'
     | '/api/auth/$'
     | '/read/$book/$chapter'
@@ -129,7 +118,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/saved'
     | '/search'
-    | '/save-gate'
     | '/auth/callback'
     | '/api/auth/$'
     | '/read/$book/$chapter'
@@ -141,7 +129,6 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SavedRoute: typeof SavedRoute
   SearchRoute: typeof SearchRoute
-  SaveGateRoute: typeof SaveGateRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ReadBookChapterRoute: typeof ReadBookChapterRoute
@@ -184,13 +171,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/save-gate': {
-      id: '/save-gate'
-      path: '/save-gate'
-      fullPath: '/save-gate'
-      preLoaderRoute: typeof SaveGateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth/callback': {
       id: '/auth/callback'
       path: '/auth/callback'
@@ -221,7 +201,6 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SavedRoute: SavedRoute,
   SearchRoute: SearchRoute,
-  SaveGateRoute: SaveGateRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ReadBookChapterRoute: ReadBookChapterRoute,
