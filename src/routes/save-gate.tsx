@@ -38,21 +38,18 @@ function SaveGatePage() {
             </Link>
           </div>
 
-          {/*
-            Full mockup image is cropped with CSS so only the giraffe +
-            runner illustration shows (no baked-in copy).
-          */}
+          {/* Illustration only — crop hides the old mockup text/button */}
           <div
             className="relative mx-auto mt-6 w-full max-w-[300px] overflow-hidden"
-            style={{ height: 140 }}
+            style={{ height: 130 }}
           >
             <img
               src="/morgan-merrick.jpg"
               alt="Giraffe on a scooter racing ahead while someone runs after it"
               className="absolute left-1/2 block max-w-none -translate-x-1/2 select-none"
               style={{
-                width: "115%",
-                top: "-58%",
+                width: "118%",
+                top: "-64%",
               }}
               width={736}
               height={552}
