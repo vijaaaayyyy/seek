@@ -40,7 +40,7 @@ function BookPin({ book }: { book: BookMeta }) {
       params={{ book: book.slug, chapter: "1" }}
       search={{ q: undefined }}
       className={cn(
-        "glass group relative mb-3 block w-full break-inside-avoid rounded-[26px] transition-transform duration-200 hover:-translate-y-0.5 active:scale-[0.98] max-w-[192px]",
+        "glass group relative mb-3 block w-full break-inside-avoid rounded-[26px] transition-transform duration-200 hover:-translate-y-0.5 active:scale-[0.98] max-w-[240px]",
         tier === 0 && "px-3.5 py-5",
         tier === 1 && "px-4 py-8",
         tier === 2 && "px-5 pt-12 pb-7",
@@ -154,14 +154,14 @@ export function BookWall({ title, books }: { title: string; books: BookMeta[] })
   const columns = books.length ? packColumns(books, 2) : [];
 
   return (
-    <section>
-      <h2 className="mb-2.5 px-1 font-sans text-[11px] font-medium tracking-[0.16em] text-muted uppercase">
+    <section className="w-full min-w-0 -mx-4">
+      <h2 className="mb-2.5 px-4 font-sans text-[11px] font-medium tracking-[0.16em] text-muted uppercase">
         {title}
       </h2>
       {columns.length === 0 ? (
         <p className="px-1 font-sans text-sm text-muted">No books match.</p>
       ) : (
-        <div className="flex items-start gap-3">
+        <div className="flex w-full min-w-0 items-start gap-2.5">
           {columns.map((col, i) => (
             <div key={i} className="flex min-w-0 flex-1 flex-col items-center">
               {col.map((book) => (

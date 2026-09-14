@@ -31,7 +31,7 @@ function BooksPage() {
           className="h-full w-full bg-transparent font-sans text-base text-ink placeholder:text-faint focus:outline-none"
         />
       </div>
-      <div className="mt-6 grid gap-8">
+      <div className="mt-6 grid min-w-0 gap-8">
         <BookWall title="Old Testament" books={filtered.ot} />
         <BookWall title="New Testament" books={filtered.nt} />
       </div>
