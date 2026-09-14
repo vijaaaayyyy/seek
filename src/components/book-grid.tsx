@@ -20,7 +20,7 @@ function bookStats(book: BookMeta) {
 /** Size tier driven by how big the book is: big books = tall pins. */
 function sizeTier(book: BookMeta): 0 | 1 | 2 {
   const { verseCount } = bookStats(book);
-  if (verseCount >= 800) return 2; // tall
+  if (verseCount >= 870) return 2; // tall
   if (verseCount >= 120) return 1; // medium
   return 0; // small
 }
@@ -41,9 +41,9 @@ function BookPin({ book }: { book: BookMeta }) {
       search={{ q: undefined }}
       className={cn(
         "glass group relative mb-3 block w-full break-inside-avoid rounded-[26px] transition-transform duration-200 hover:-translate-y-0.5 active:scale-[0.98]",
-        tier === 0 && "px-5 py-5",
-        tier === 1 && "px-6 py-8",
-        tier === 2 && "px-7 pt-12 pb-7",
+        tier === 0 && "px-3.5 py-5",
+        tier === 1 && "px-4 py-8",
+        tier === 2 && "px-5 pt-12 pb-7",
       )}
     >
       <span
@@ -118,7 +118,7 @@ function BookPin({ book }: { book: BookMeta }) {
         </div>
       )}
 
-      <span className="mt-5 inline-flex items-center gap-1 font-sans text-[12px] font-medium text-forest underline-offset-4 dark:text-forest group-hover:underline">
+      <span className="mt-4 inline-flex items-center gap-1 font-sans text-[12px] font-medium text-forest underline-offset-4 dark:text-forest group-hover:underline">
         {book.testament === "OT" ? "Old Testament" : "New Testament"}
         <ChevronRight className="size-4" strokeWidth={2} />
       </span>
@@ -161,7 +161,7 @@ export function BookWall({ title, books }: { title: string; books: BookMeta[] })
       {columns.length === 0 ? (
         <p className="px-1 font-sans text-sm text-muted">No books match.</p>
       ) : (
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-2">
           {columns.map((col, i) => (
             <div key={i} className="min-w-0 flex-1">
               {col.map((book) => (
