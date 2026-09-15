@@ -7,3 +7,10 @@ preview-dev.log
 preview-prod-build.log
 preview.log
 *.log
+
+# IDE
+android/.idea/
+.tanstack/
+.tmp-*
+preview-local.err
+.dev-server.log.err
