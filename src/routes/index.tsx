@@ -285,7 +285,7 @@ function Home() {
           the word of LORD
         </p>
 
-        <div className="relative mt-5 overflow-hidden rounded-[32px] shadow-soft">
+        <div className="relative mt-5 overflow-hidden rounded-[32px] bg-paper shadow-soft">
           <img
             src="/file_000000001e4c82118c3f10f74861d609.png"
             alt=""
