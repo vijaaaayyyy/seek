@@ -289,9 +289,8 @@ function Home() {
           <img
             src="/file_000000001e4c82118c3f10f74861d609.png"
             alt=""
-            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 grayscale"
+            className="absolute inset-0 h-full w-full scale-110 object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-paper/40 via-paper/30 to-paper/60" aria-hidden />
 <div className="relative z-10 flex flex-col items-center px-7 py-10 text-center">
               <span aria-hidden className="flex items-center gap-2.5 text-faint">
                 <span className="h-px w-6 bg-line" />
