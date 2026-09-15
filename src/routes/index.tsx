@@ -284,17 +284,20 @@ function Home() {
         <p className="mt-1 text-center font-sans text-[14px] tracking-[0.14em] text-faint uppercase">
           the word of LORD
         </p>
-        
-        <div className="glass mx-auto mt-5 w-fit rounded-[28px] p-1.5">
+
+        <div className="relative mt-5 overflow-hidden rounded-[32px] shadow-soft">
           <img
             src="/file_000000001e4c82118c3f10f74861d609.png"
             alt="Morgan Merrick"
-            className="mx-auto block size-40 rounded-[22px] object-cover"
+            className="block h-64 w-full scale-[1.02] object-cover"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-paper via-paper/20 to-paper/25 mix-blend-multiply dark:from-paper dark:mix-blend-screen" aria-hidden />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#3f4a42]/25 to-transparent" aria-hidden />
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-paper to-transparent" aria-hidden />
+          <p className="absolute inset-x-0 bottom-4 text-center font-serif text-lg font-medium italic text-ink">
+            Morgan
+          </p>
         </div>
-        <p className="mt-4 text-center font-sans text-[12px] text-muted">
-          Made with love by{" "}
-        </p>
       </footer>
     </div>
   );
