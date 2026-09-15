@@ -1,3 +1,4 @@
+import { Capacitor } from "@capacitor/core";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
@@ -26,18 +27,27 @@ export const DEV_USER: AppUser = {
   isDevFallback: true,
 };
 
+/** True when running inside the Capacitor native wrapper (Android/iOS). */
+function isNative(): boolean {
+  try {
+    return Capacitor.isNativePlatform();
+  } catch {
+    return false;
+  }
+}
+
 /** Start an OAuth sign-in (Google / GitHub). Leads to `/auth/callback`. */
 export async function signIn(
   provider: "google" | "github",
   opts: { callbackURL?: string } = {},
 ): Promise<void> {
   const callbackURL = opts.callbackURL ?? "/";
+  const redirectTo = isNative()
+    ? "com.seek.bible://auth/callback"
+    : window.location.origin + "/auth/callback?next=" + encodeURIComponent(callbackURL);
   const { error } = await supabase.auth.signInWithOAuth({
     provider,
-    options: {
-      redirectTo:
-        window.location.origin + "/auth/callback?next=" + encodeURIComponent(callbackURL),
-    },
+    options: { redirectTo },
   });
   if (error) throw error;
 }

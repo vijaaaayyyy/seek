@@ -35,7 +35,7 @@ export function ChapterReader({
 
   return (
     <div className="pb-6">
-      <div className="sticky top-[calc(env(safe-area-inset-top)+4.25rem)] z-20 px-0.5 pb-2">
+      <div className="sticky top-0 z-20 px-0.5 pb-2">
         <div className="glass glass-strong flex items-center justify-between gap-2 rounded-[22px] py-1.5 pr-1.5 pl-1">
           <div className="min-w-0">
             <BookPicker book={book} chapter={chapter} />

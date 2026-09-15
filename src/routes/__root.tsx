@@ -1,4 +1,7 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { App } from "@capacitor/app";
+import { supabase } from "@/lib/supa/client";
 import { AuthProvider } from "@/lib/supa/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { BibleProvider } from "@/components/bible-provider";
@@ -49,14 +52,65 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
+  useEffect(() => {
+    let cancelled = false;
+
+    const handleAuthCallback = async (url: string) => {
+      try {
+        if (!url.startsWith("com.seek.bible://auth/callback")) {
+          return;
+        }
+
+        const callbackUrl = new URL(url);
+        const code = callbackUrl.searchParams.get("code");
+
+        if (!code) {
+          console.error("Android auth callback: missing code");
+          return;
+        }
+
+        const { error } =
+          await supabase.auth.exchangeCodeForSession(code);
+
+        if (cancelled) return;
+
+        if (error) {
+          console.error("Android auth callback failed:", error);
+          return;
+        }
+
+        window.location.replace("/");
+      } catch (error) {
+        console.error("Android auth callback error:", error);
+      }
+    };
+
+    const listener = App.addListener("appUrlOpen", ({ url }) => {
+      void handleAuthCallback(url);
+    });
+
+    void App.getLaunchUrl().then((result) => {
+      if (result?.url) {
+        void handleAuthCallback(result.url);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      void listener.then((handle) => handle.remove());
+    };
+  }, []);
+
   return (
     <html lang="en" className="antialiased" suppressHydrationWarning>
       <head>
         <HeadContent />
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
       </head>
+
       <body className="antialiased">
         <PreviewHostBridge />
+
         <AuthProvider>
           <ThemeProvider>
             <BibleProvider>
@@ -64,12 +118,14 @@ function RootComponent() {
                 <AppShell>
                   <Outlet />
                 </AppShell>
+
                 <Toaster />
                 <SavePrompt />
               </SavedProvider>
             </BibleProvider>
           </ThemeProvider>
         </AuthProvider>
+
         <Scripts />
       </body>
     </html>

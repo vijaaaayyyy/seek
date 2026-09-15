@@ -278,39 +278,44 @@ function Home() {
             <Mail className="size-5 text-ink" />
           </a>
         </div>
-        <p className="mt-5 text-center font-sans text-[15px] text-faint">
+        <p className="mt-6 text-center font-sans text-[12px] tracking-[0.22em] text-faint uppercase">
           Made for the love for
         </p>
-        <p className="mt-1 text-center font-sans text-[14px] tracking-[0.14em] text-faint uppercase">
+        <p className="mt-1.5 text-center font-sans text-[13px] tracking-[0.24em] text-muted uppercase">
           the word of LORD
         </p>
 
-        <div className="relative mt-5 overflow-hidden rounded-[32px] bg-banner shadow-soft">
+        <div className="mt-6 -mx-4">
           <img
             src="/banner-day.webp"
             alt=""
-            width={1008}
-            height={627}
+            width={1536}
+            height={528}
             decoding="async"
             className="block w-full dark:hidden"
           />
           <img
             src="/banner-night.webp"
             alt=""
-            width={1008}
-            height={627}
+            width={1536}
+            height={496}
             decoding="async"
             className="hidden w-full dark:block"
           />
-          <div className="absolute inset-x-3 top-3 z-10">
-            <div className="glass glass-strong mx-auto max-w-72 rounded-[22px] px-4 py-3 text-center">
-              <p className="font-serif text-[15px] leading-snug font-medium text-ink">
-                &ldquo;Thy word is a lamp unto my feet.&rdquo;
-              </p>
-              <p className="mt-1.5 font-sans text-[10px] tracking-[0.16em] text-muted uppercase">
-                Psalm 119 · 105
-              </p>
-            </div>
+        </div>
+        <div className="mx-auto -mt-4 max-w-sm px-4">
+          <div className="glass glass-strong rounded-[24px] px-5 py-4 text-center">
+            <span aria-hidden className="flex items-center justify-center gap-2.5 text-faint">
+              <span className="h-px w-7 bg-line" />
+              <span className="size-1.5 rotate-45 bg-forest/60" />
+              <span className="h-px w-7 bg-line" />
+            </span>
+            <p className="mt-2.5 font-serif text-[16px] leading-snug font-medium text-ink">
+              &ldquo;Thy word is a lamp unto my feet.&rdquo;
+            </p>
+            <p className="mt-1.5 font-sans text-[10px] tracking-[0.18em] text-muted uppercase">
+              Psalm 119 · 105
+            </p>
           </div>
         </div>
         <Link

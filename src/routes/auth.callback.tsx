@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supa/client";
+import { App } from "@capacitor/app";
 
 export const Route = createFileRoute("/auth/callback")({
   component: AuthCallbackPage,
@@ -20,33 +21,81 @@ function AuthCallbackPage() {
   useEffect(() => {
     let cancelled = false;
 
+    const handleCallback = async (callbackUrl: string) => {
+        try {
+            const url = new URL(callbackUrl);
+            const code = url.searchParams.get("code");
+
+            if (!code) {
+                setError("Sign-in did not finish. Please try again.");
+                return;
+            }
+
+            const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+            if (cancelled) return;
+
+            if (error) {
+                setError("Sign-in could not be completed. Please try again.");
+                return;
+            }
+
+            redirect(next);
+        } catch {
+            if (!cancelled) {
+                setError("Sign-in could not be completed. Please try again.");
+            }
+        }
+    };
+
+    /**
+     * Route the user back after a successful exchange. Custom schemes only via
+     * a top-level navigation (the router cannot navigate to them); web paths
+     * use the router; same-origin https is honored. Never open redirects.
+     */
+    const redirect = (dest: string) => {
+        if (dest.startsWith("com.seek.bible://")) {
+            window.location.href = dest;
+            return;
+        }
+        if (/^https?:\/\//i.test(dest)) {
+            try {
+                if (new URL(dest).origin === window.location.origin) {
+                    window.location.href = dest;
+                }
+            } catch {
+                /* malformed URL — fall through to home */
+            }
+            return;
+        }
+        if (dest.startsWith("/") && !dest.startsWith("//")) {
+            void navigate({ to: dest, replace: true });
+            return;
+        }
+        void navigate({ to: "/", replace: true });
+    };
+
+    // Android / Capacitor deep-link callback
+    const listener = App.addListener("appUrlOpen", ({ url }) => {
+        if (url.startsWith("com.seek.bible://auth/callback")) {
+            void handleCallback(url);
+        }
+    });
+
+    // Normal web callback
     const code = new URLSearchParams(window.location.search).get("code");
 
-    if (!code) {
-      setError("Sign-in did not finish. Please try again.");
-      return;
+    if (code) {
+        void handleCallback(window.location.href);
+    } else {
+        setError("Sign-in did not finish. Please try again.");
     }
 
-    supabase.auth
-      .exchangeCodeForSession(code)
-      .then(({ error }) => {
-        if (cancelled) return;
-        if (error) {
-          setError("Sign-in could not be completed. Please try again.");
-          return;
-        }
-        void navigate({ to: next, replace: true });
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setError("Sign-in could not be completed. Please try again.");
-      });
-
     return () => {
-      cancelled = true;
+        cancelled = true;
+        void listener.then((handle) => handle.remove());
     };
-  }, [navigate, next]);
-
+}, [navigate, next]);
   return (
     <div className="pt-3">
       <div className="glass flex flex-col items-center gap-3 rounded-[28px] p-8 text-center">

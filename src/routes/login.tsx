@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { BibleReadingAnimation } from "@/components/bible-reading-animation";
 import { signIn, signInEmail, signUpEmail } from "@/lib/supa/client";
 import { cn } from "@/lib/utils";
+import { Capacitor } from "@capacitor/core";
 
 export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -87,7 +88,10 @@ function LoginPage() {
   async function handleProvider(provider: "google" | "github") {
     setError(null);
     try {
-      await signIn(provider, { callbackURL: redirect });
+      const callbackURL = Capacitor.isNativePlatform()
+        ? "com.seek.bible://auth/callback"
+        : redirect;
+        await signIn(provider, { callbackURL });
       // OAuth navigates away to the provider — no further work here.
     } catch (err) {
       setError(err instanceof Error ? err.message : "Sign-in could not start.");
