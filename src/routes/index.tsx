@@ -292,25 +292,28 @@ function Home() {
             className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 grayscale"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-paper/40 via-paper/30 to-paper/60" aria-hidden />
-          <div className="relative z-10 flex flex-col items-center px-7 py-10 text-center">
-            <span aria-hidden className="flex items-center gap-2.5 text-faint">
-              <span className="h-px w-6 bg-line" />
-              <span className="size-1.5 rotate-45 bg-forest/60" />
-              <span className="h-px w-6 bg-line" />
-            </span>
-            <p className="mt-5 font-serif text-[1.35rem] leading-[1.35] font-medium text-ink">
-              &ldquo;Thy word is a lamp unto my feet.&rdquo;
-            </p>
-            <p className="mt-3 font-sans text-[13px] tracking-[0.18em] text-muted uppercase">
-              Psalm 119 · 105
-            </p>
-            <div className="glass glass-strong mt-6 flex items-center gap-2 rounded-full px-4 py-2.5">
+<div className="relative z-10 flex flex-col items-center px-7 py-10 text-center">
+              <span aria-hidden className="flex items-center gap-2.5 text-faint">
+                <span className="h-px w-6 bg-line" />
+                <span className="size-1.5 rotate-45 bg-forest/60" />
+                <span className="h-px w-6 bg-line" />
+              </span>
+              <p className="mt-5 font-serif text-[1.35rem] leading-[1.35] font-medium text-ink">
+                &ldquo;Thy word is a lamp unto my feet.&rdquo;
+              </p>
+              <p className="mt-3 font-sans text-[13px] tracking-[0.18em] text-muted uppercase">
+                Psalm 119 · 105
+              </p>
+            </div>
+            <Link
+              to="/books"
+              className="glass glass-strong relative z-10 mx-auto -mb-6 flex w-fit items-center gap-2 rounded-full px-4 py-2.5 transition-transform duration-150 active:scale-[0.96]"
+            >
               <BookOpenCheck className="size-4 text-forest" strokeWidth={1.8} />
               <span className="font-sans text-[12px] font-medium tracking-wide text-ink">
                 Seek the Word
               </span>
-            </div>
-          </div>
+</Link>
         </div>
       </footer>
     </div>
