@@ -279,19 +279,19 @@ function Home() {
           </a>
         </div>
         <p className="mt-5 text-center font-sans text-[15px] text-faint">
-          Made for the love for
+          Made with the love for
         </p>
         <p className="mt-1 text-center font-sans text-[14px] tracking-[0.14em] text-faint uppercase">
           the word of LORD
         </p>
 
-        <div className="relative mt-5 overflow-hidden rounded-[32px] shadow-soft">
+        <div className="relative mt-5 overflow-hidden rounded-[32px] bg-paper shadow-soft">
           <img
             src="/file_000000001e4c82118c3f10f74861d609.png"
             alt=""
-            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 grayscale"
+            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-90 grayscale contrast-[1.15] brightness-[0.92] mix-blend-multiply dark:brightness-[0.85] dark:mix-blend-screen"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-paper/40 via-paper/30 to-paper/60" aria-hidden />
+          <div className="absolute inset-0 bg-gradient-to-b from-forest/25 via-transparent to-paper/70 dark:from-paper/10 dark:to-paper/70" aria-hidden />
 <div className="relative z-10 flex flex-col items-center px-7 py-10 text-center">
               <span aria-hidden className="flex items-center gap-2.5 text-faint">
                 <span className="h-px w-6 bg-line" />
@@ -301,7 +301,7 @@ function Home() {
               <p className="mt-5 font-serif text-[1.35rem] leading-[1.35] font-medium text-ink">
                 &ldquo;Thy word is a lamp unto my feet.&rdquo;
               </p>
-              <p className="mt-3 font-sans text-[13px] tracking-[0.18em] text-muted uppercase">
+              <p className="mt-3 font-sans text-[12px] tracking-[0.18em] text-muted uppercase">
                 Psalm 119 · 105
 </p>
           </div>
