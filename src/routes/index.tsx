@@ -285,13 +285,15 @@ function Home() {
           the word of LORD
         </p>
         
-        <img
-          src="/file_000000001e4c82118c3f10f74861d609.png"
-          alt="morgan merrick"
-          className="mx-auto mt-5 block size-40 rounded-full border border-line/70 object-cover"
-        />
+        <div className="glass mx-auto mt-5 w-fit rounded-[28px] p-1.5">
+          <img
+            src="/file_000000001e4c82118c3f10f74861d609.png"
+            alt="Morgan Merrick"
+            className="mx-auto block size-40 rounded-[22px] object-cover"
+          />
+        </div>
         <p className="mt-4 text-center font-sans text-[12px] text-muted">
-          Morgan Merrick
+          Made with love by{" "}
         </p>
       </footer>
     </div>
