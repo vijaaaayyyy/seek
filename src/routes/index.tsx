@@ -288,9 +288,9 @@ function Home() {
         <img
           src="/file_000000001e4c82118c3f10f74861d609.png"
           alt="morgan merrick"
-          className="mx-auto mt-5 block size-28 rounded-full border border-line/70 object-cover"
+          className="mx-auto mt-5 block size-40 rounded-full border border-line/70 object-cover"
         />
-        <p className="mt-3 text-center font-sans text-[12px] text-muted">
+        <p className="mt-4 text-center font-sans text-[12px] text-muted">
           Morgan Merrick
         </p>
       </footer>
