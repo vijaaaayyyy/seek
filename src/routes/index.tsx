@@ -288,15 +288,29 @@ function Home() {
         <div className="relative mt-5 overflow-hidden rounded-[32px] shadow-soft">
           <img
             src="/file_000000001e4c82118c3f10f74861d609.png"
-            alt="Morgan Merrick"
-            className="block h-64 w-full scale-[1.02] object-cover"
+            alt=""
+            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 grayscale"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-paper via-paper/20 to-paper/25 mix-blend-multiply dark:from-paper dark:mix-blend-screen" aria-hidden />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#3f4a42]/25 to-transparent" aria-hidden />
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-paper to-transparent" aria-hidden />
-          <p className="absolute inset-x-0 bottom-4 text-center font-serif text-lg font-medium italic text-ink">
-            Morgan
-          </p>
+          <div className="absolute inset-0 bg-gradient-to-b from-paper/40 via-paper/30 to-paper/60" aria-hidden />
+          <div className="relative z-10 flex flex-col items-center px-7 py-10 text-center">
+            <span aria-hidden className="flex items-center gap-2.5 text-faint">
+              <span className="h-px w-6 bg-line" />
+              <span className="size-1.5 rotate-45 bg-forest/60" />
+              <span className="h-px w-6 bg-line" />
+            </span>
+            <p className="mt-5 font-serif text-[1.35rem] leading-[1.35] font-medium text-ink">
+              &ldquo;Thy word is a lamp unto my feet.&rdquo;
+            </p>
+            <p className="mt-3 font-sans text-[13px] tracking-[0.18em] text-muted uppercase">
+              Psalm 119 · 105
+            </p>
+            <div className="glass glass-strong mt-6 flex items-center gap-2 rounded-full px-4 py-2.5">
+              <BookOpenCheck className="size-4 text-forest" strokeWidth={1.8} />
+              <span className="font-sans text-[12px] font-medium tracking-wide text-ink">
+                Seek the Word
+              </span>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
