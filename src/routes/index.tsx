@@ -107,7 +107,7 @@ function Home() {
         <p className="font-sans text-[11px] font-medium tracking-[0.18em] text-muted uppercase">
           King James Bible
         </p>
-        <h1 className="mt-2 font-serif text-[2rem] leading-[1.12] font-medium tracking-tight text-ink">
+        <h1 className="mt-2 font-serif text-[2.8rem] leading-[1.12] font-medium tracking-tight text-ink">
           Find the verse<br /> you remembered half
         </h1>
         <p className="mt-3 max-w-[22rem] font-sans text-[15px] leading-relaxed text-muted">
@@ -237,7 +237,7 @@ function Home() {
         </p>
         <p className="mt-2 text-center font-sans text-[13px] leading-relaxed text-faint">
           Whether you remember a verse word for word, or just the feeling it
-          gave you ΓÇö Seek finds it.
+          gives  you  Seek finds it.
         </p>
       </section>
 
@@ -245,10 +245,13 @@ function Home() {
         <p className="text-center font-serif text-lg font-medium text-ink">
           Seek
         </p>
-        <p className="mt-1 text-center font-sans text-[11px] tracking-[0.14em] text-faint uppercase">
+        <p className="mt-2 text-center font-sans text-[14px] tracking-[0.14em] text-faint uppercase">
           King James Bible
         </p>
-        <div className="mt-4 flex justify-center gap-4">
+        <p className="mt-1 text-center font-sans text-[12px] tracking-[0.14em] text-faint uppercase">
+          version
+        </p>
+        <div className="mt-5 flex justify-center gap-4">
           <a
             href="https://github.com/David-oy/get.stack"
             target="_blank"
@@ -256,7 +259,7 @@ function Home() {
             aria-label="GitHub"
             className="glass flex size-10 items-center justify-center rounded-full transition-transform duration-150 active:scale-[0.95]"
           >
-            <Github className="size-4 text-ink" />
+            <Github className="size-5 text-ink" />
           </a>
           <a
             href="https://x.com/vijayyyyy_7"
@@ -265,18 +268,30 @@ function Home() {
             aria-label="X"
             className="glass flex size-10 items-center justify-center rounded-full transition-transform duration-150 active:scale-[0.95]"
           >
-            <Twitter className="size-4 text-ink" />
+            <Twitter className="size-5 text-ink" />
           </a>
           <a
             href="mailto:vijay.peddenti434@gmail.com"
             aria-label="Email"
             className="glass flex size-10 items-center justify-center rounded-full transition-transform duration-150 active:scale-[0.95]"
           >
-            <Mail className="size-4 text-ink" />
+            <Mail className="size-5 text-ink" />
           </a>
         </div>
-        <p className="mt-4 text-center font-sans text-[11px] text-faint">
-          Made for the love of the Word.
+        <p className="mt-5 text-center font-sans text-[15px] text-faint">
+          Made for the love for
+        </p>
+        <p className="mt-1 text-center font-sans text-[14px] tracking-[0.14em] text-faint uppercase">
+          the word of LORD
+        </p>
+        
+        <img
+          src="/file_000000001e4c82118c3f10f74861d609.png"
+          alt="morgan merrick"
+          className="mx-auto mt-5 block size-28 rounded-full border border-line/70 object-cover"
+        />
+        <p className="mt-3 text-center font-sans text-[12px] text-muted">
+          Morgan Merrick
         </p>
       </footer>
     </div>
