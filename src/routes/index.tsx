@@ -303,18 +303,18 @@ function Home() {
               </p>
               <p className="mt-3 font-sans text-[13px] tracking-[0.18em] text-muted uppercase">
                 Psalm 119 · 105
-              </p>
-            </div>
-            <Link
-              to="/books"
-              className="glass glass-strong relative z-10 mx-auto -mb-6 flex w-fit items-center gap-2 rounded-full px-4 py-2.5 transition-transform duration-150 active:scale-[0.96]"
-            >
-              <BookOpenCheck className="size-4 text-forest" strokeWidth={1.8} />
-              <span className="font-sans text-[12px] font-medium tracking-wide text-ink">
-                Seek the Word
-              </span>
-</Link>
+</p>
+          </div>
         </div>
+        <Link
+          to="/books"
+          className="glass glass-strong relative z-10 mx-auto -mt-7 flex w-fit items-center gap-2 rounded-full px-4 py-2.5 transition-transform duration-150 active:scale-[0.96]"
+        >
+          <BookOpenCheck className="size-4 text-forest" strokeWidth={1.8} />
+          <span className="font-sans text-[12px] font-medium tracking-wide text-ink">
+            Seek the Word
+          </span>
+        </Link>
       </footer>
     </div>
   );
