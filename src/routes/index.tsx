@@ -269,16 +269,28 @@ function Home() {
               </div>
             </section>
 
-            <footer className="mt-10 border-t border-white/20 pt-6 pb-2">
-              <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-                <div className="flex items-center gap-2 text-white"><LeafMark className="size-4 text-forest" /><span className="font-serif text-[1.05rem] tracking-[0.04em]">SEEK</span></div>
-                <nav className="flex flex-wrap justify-center gap-x-4 gap-y-1 font-sans text-[13px] text-white/80">
-                  <Link to="/books" className="hover:text-white">Bible</Link>
-                  <Link to="/saved" className="hover:text-white">Saved</Link>
-                  <a href="#about" className="hover:text-white">About</a>
-                  <a href={`mailto:${CONTACT_EMAIL}?subject=SEEK%20bug%20report`} className="hover:text-white">Report a bug</a>
-                </nav>
+            <footer className="mt-10 border-t border-white/20 pt-8 pb-6 text-center">
+              <div className="flex items-center justify-center gap-2"><LeafMark className="size-4 text-forest" /><span className="font-serif text-[1.1rem] tracking-[0.04em]">SEEK</span></div>
+              <p className="mx-auto mt-2 max-w-md font-sans text-[13px] leading-relaxed text-white/75">A quiet place to search and read the King James Bible — God's love, His mercy toward sinners, the sacrifice of Christ, and the agape that never ends.</p>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-x-7 gap-y-2 font-sans text-[13px] text-white/85">
+                <a href="#about" className="transition-colors hover:text-white">Overview</a>
+                <a href="#" className="transition-colors hover:text-white">Pricing</a>
+                <a href="#" className="transition-colors hover:text-white">FAQ</a>
+                <a href="#" className="transition-colors hover:text-white">Changelog</a>
+                <a href={`mailto:${CONTACT_EMAIL}?subject=SEEK%20demo`} className="transition-colors hover:text-white">Book a demo</a>
               </div>
+              <p className="mt-5 font-sans text-[10px] font-semibold tracking-[0.14em] text-white/80 uppercase">Social media</p>
+              <div className="mt-1.5 flex items-center justify-center gap-4 font-sans text-[13px] text-white/85">
+                <a href="https://x.com" target="_blank" rel="noreferrer" className="transition-colors hover:text-white">X</a>
+                <a href="https://github.com" target="_blank" rel="noreferrer" className="transition-colors hover:text-white">GitHub</a>
+                <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="transition-colors hover:text-white">LinkedIn</a>
+              </div>
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 font-sans text-[13px] text-white/85">
+                <a href={`mailto:${CONTACT_EMAIL}`} className="transition-colors hover:text-white">{CONTACT_EMAIL}</a>
+                <a href={`mailto:${CONTACT_EMAIL}?subject=SEEK%20bug%20report`} className="transition-colors hover:text-white">Report a bug</a>
+              </div>
+              <p className="mt-5 font-sans text-[12px] text-white/70">Scripture text: King James Version (public domain).</p>
+              <p className="mt-1 font-sans text-[12px] text-white/70">© 2026 SEEK · Design and software rights reserved.</p>
             </footer>
           </div>
         </section>
@@ -367,9 +379,28 @@ function Home() {
             </div>
           )}
 
-          <footer className="mt-8 border-t border-white/20 pt-4 pb-2 text-center">
-            <div className="flex items-center justify-center gap-2 text-white"><LeafMark className="size-4 text-forest" /><span className="font-serif text-[1rem] tracking-[0.04em]">SEEK</span></div>
-            <p className="mt-2 font-sans text-[11px] text-white/70">© {new Date().getFullYear()} · KJV public domain</p>
+          <footer className="mt-8 border-t border-white/20 pt-6 pb-2 text-center">
+            <div className="flex items-center justify-center gap-2"><LeafMark className="size-4 text-forest" /><span className="font-serif text-[1rem] tracking-[0.04em]">SEEK</span></div>
+            <p className="mx-auto mt-2 max-w-xs font-sans text-[12px] leading-relaxed text-white/75">A quiet place to search and read the King James Bible — God's love, mercy, the sacrifice of Christ, and agape.</p>
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-sans text-[12px] text-white/85">
+              <a href="#about" className="hover:text-white">Overview</a>
+              <a href="#" className="hover:text-white">Pricing</a>
+              <a href="#" className="hover:text-white">FAQ</a>
+              <a href="#" className="hover:text-white">Changelog</a>
+              <a href={`mailto:${CONTACT_EMAIL}?subject=SEEK%20demo`} className="hover:text-white">Book a demo</a>
+            </div>
+            <p className="mt-4 font-sans text-[10px] font-semibold tracking-[0.14em] text-white/80 uppercase">Social media</p>
+            <div className="mt-1.5 flex items-center justify-center gap-4 font-sans text-[12px] text-white/85">
+              <a href="https://x.com" target="_blank" rel="noreferrer" className="hover:text-white">X</a>
+              <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-white">GitHub</a>
+              <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-white">LinkedIn</a>
+            </div>
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 font-sans text-[12px] text-white/85">
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-forest hover:text-white">{CONTACT_EMAIL}</a>
+              <a href={`mailto:${CONTACT_EMAIL}?subject=SEEK%20bug%20report`} className="hover:text-white">Report a bug</a>
+            </div>
+            <p className="mt-4 font-sans text-[11px] text-white/70">Scripture text: King James Version (public domain).</p>
+            <p className="mt-1 font-sans text-[11px] text-white/70">© 2026 SEEK · Design and software rights reserved.</p>
           </footer>
         </div>
       </div>
