@@ -59,6 +59,7 @@ function LeafMark({ className }: { className?: string }) {
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
+  const isAuthCallback = pathname.startsWith("/auth/callback");
   const activeIndex = Math.max(
     0,
     MOBILE_NAV.findIndex((item) => item.match(pathname)),
@@ -70,21 +71,24 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <div className="relative z-10 hidden min-h-dvh flex-col lg:flex">
         {!isHome && (
-          <header className="sticky top-0 z-40 px-6 pt-5 pb-3">
-            <div className="mx-auto flex h-14 max-w-6xl items-center justify-between rounded-full bg-white/55 px-5 shadow-sm ring-1 ring-black/5 backdrop-blur-xl dark:bg-black/40 dark:ring-white/10">
-              <Link to="/" className="flex items-center gap-2">
-                <LeafMark className="size-5 text-forest" />
-                <span className="font-serif text-[1.25rem] tracking-[0.04em] text-ink">
+          <header className="sticky top-0 z-40 flex justify-center px-4 pt-4 pb-2">
+            <div className="flex h-12 w-fit max-w-[min(100%,36rem)] items-center gap-1 rounded-full bg-white/55 px-2.5 shadow-sm ring-1 ring-black/5 backdrop-blur-xl dark:bg-black/45 dark:ring-white/10">
+              <Link
+                to="/"
+                className="flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5"
+              >
+                <LeafMark className="size-4 text-forest" />
+                <span className="font-serif text-[1.05rem] tracking-[0.04em] text-ink">
                   SEEK
                 </span>
               </Link>
-              <nav className="flex items-center gap-1">
+              <nav className="flex items-center gap-0.5">
                 {DESKTOP_LINKS.map((link) => (
                   <Link
                     key={link.to}
                     to={link.to}
                     className={cn(
-                      "rounded-full px-4 py-2 font-sans text-[13px] font-medium transition-colors",
+                      "rounded-full px-3 py-1.5 font-sans text-[12.5px] font-medium transition-colors",
                       pathname.startsWith(link.to)
                         ? "bg-ink/8 text-ink"
                         : "text-muted hover:text-ink",
@@ -94,7 +98,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   </Link>
                 ))}
               </nav>
-              <div className="flex items-center gap-2">
+              <div className="ml-1 flex items-center gap-1 border-l border-line/80 pl-2">
                 <ThemeToggle />
                 <UserMenu />
               </div>
@@ -104,7 +108,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         <main
           className={cn(
             "flex-1",
-            !isHome && "mx-auto w-full max-w-6xl px-6 pb-16",
+            !isHome && "mx-auto w-full max-w-5xl px-6 pb-16",
+            isAuthCallback && "flex items-center justify-center",
           )}
         >
           {children}
@@ -121,19 +126,19 @@ export function AppShell({ children }: { children: ReactNode }) {
           <header className="sticky top-0 z-30 shrink-0 px-4 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2">
             <div
               className={cn(
-                "flex h-14 items-center justify-between rounded-full pl-5 pr-1.5",
+                "mx-auto flex h-12 max-w-full items-center justify-between rounded-full pl-4 pr-1.5",
                 isHome
                   ? "bg-white/55 shadow-sm ring-1 ring-black/5 backdrop-blur-xl dark:bg-black/35 dark:ring-white/10"
                   : "glass",
               )}
             >
-              <Link to="/" className="flex min-h-11 items-center gap-2">
-                <LeafMark className="size-5 text-forest" />
-                <span className="font-serif text-[1.35rem] leading-none tracking-[0.04em] text-ink">
+              <Link to="/" className="flex min-h-10 items-center gap-1.5">
+                <LeafMark className="size-4 text-forest" />
+                <span className="font-serif text-[1.2rem] leading-none tracking-[0.04em] text-ink">
                   SEEK
                 </span>
               </Link>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1">
                 <ThemeToggle />
                 <UserMenu />
               </div>
@@ -149,41 +154,43 @@ export function AppShell({ children }: { children: ReactNode }) {
             {children}
           </main>
 
-          <nav
-            className="absolute inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
-            aria-label="Primary"
-          >
-            <div className="glass glass-strong relative grid h-[4.25rem] w-full grid-cols-4 rounded-full p-1.5">
-              <div
-                aria-hidden
-                className="absolute top-1.5 bottom-1.5 left-1.5 w-[calc((100%-0.75rem)/4)] rounded-full bg-ink/10 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] dark:bg-paper/14"
-                style={{ transform: `translateX(${activeIndex * 100}%)` }}
-              />
-              {MOBILE_NAV.map((item) => {
-                const Icon = item.icon;
-                const active = item.match(pathname);
-                return (
-                  <Link
-                    key={item.to}
-                    to={item.to}
-                    aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "relative z-10 flex min-h-11 flex-col items-center justify-center gap-0.5 rounded-full font-sans text-[10px] font-medium tracking-wide transition-colors duration-150",
-                      active ? "text-ink" : "text-muted",
-                    )}
-                  >
-                    <Icon
-                      className="size-5"
-                      strokeWidth={active ? 2.2 : 1.7}
-                      fill={active ? "currentColor" : "none"}
-                      fillOpacity={active ? 0.18 : 0}
-                    />
-                    {item.label}
-                  </Link>
-                );
-              })}
-            </div>
-          </nav>
+          {!isAuthCallback && (
+            <nav
+              className="absolute inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
+              aria-label="Primary"
+            >
+              <div className="glass glass-strong relative grid h-[4rem] w-full max-w-[380px] grid-cols-4 rounded-full p-1.5">
+                <div
+                  aria-hidden
+                  className="absolute top-1.5 bottom-1.5 left-1.5 w-[calc((100%-0.75rem)/4)] rounded-full bg-ink/10 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] dark:bg-paper/14"
+                  style={{ transform: `translateX(${activeIndex * 100}%)` }}
+                />
+                {MOBILE_NAV.map((item) => {
+                  const Icon = item.icon;
+                  const active = item.match(pathname);
+                  return (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      aria-current={active ? "page" : undefined}
+                      className={cn(
+                        "relative z-10 flex min-h-11 flex-col items-center justify-center gap-0.5 rounded-full font-sans text-[10px] font-medium tracking-wide transition-colors duration-150",
+                        active ? "text-ink" : "text-muted",
+                      )}
+                    >
+                      <Icon
+                        className="size-5"
+                        strokeWidth={active ? 2.2 : 1.7}
+                        fill={active ? "currentColor" : "none"}
+                        fillOpacity={active ? 0.18 : 0}
+                      />
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </nav>
+          )}
         </div>
       </div>
     </div>
