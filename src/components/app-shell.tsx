@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BookOpen, Bookmark, Search } from "lucide-react";
+import { BookOpen, Bookmark, Home } from "lucide-react";
 import type { ReactNode } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/user-menu";
@@ -8,13 +8,13 @@ import { cn } from "@/lib/utils";
 const NAV = [
   {
     to: "/",
-    label: "Seek",
-    icon: Search,
+    label: "Home",
+    icon: Home,
     match: (p: string) => p === "/" || p.startsWith("/search"),
   },
   {
     to: "/books",
-    label: "Books",
+    label: "Bible",
     icon: BookOpen,
     match: (p: string) => p.startsWith("/books") || p.startsWith("/read"),
   },
@@ -28,6 +28,7 @@ const NAV = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isHome = pathname === "/";
   const activeIndex = Math.max(
     0,
     NAV.findIndex((item) => item.match(pathname)),
@@ -35,28 +36,59 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="relative isolate min-h-dvh text-ink">
-      <div className="app-atmosphere" aria-hidden />
+      {!isHome && <div className="app-atmosphere" aria-hidden />}
 
       <div className="relative z-10 flex min-h-dvh items-stretch justify-center sm:items-center sm:p-4">
-        <div className="app-device relative flex h-dvh w-full max-w-[430px] flex-col overflow-hidden sm:h-[min(852px,calc(100dvh-2rem))] sm:rounded-[40px]">
+        <div
+          className={cn(
+            "app-device relative flex h-dvh w-full max-w-[430px] flex-col overflow-hidden sm:h-[min(852px,calc(100dvh-2rem))] sm:rounded-[40px]",
+            isHome && "bg-transparent",
+          )}
+        >
           <header className="sticky top-0 z-30 shrink-0 px-4 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2">
-            <div className="glass flex h-14 items-center justify-between rounded-full pl-5 pr-1.5">
+            <div
+              className={cn(
+                "flex h-14 items-center justify-between rounded-full pl-5 pr-1.5",
+                isHome
+                  ? "bg-white/55 shadow-sm ring-1 ring-black/5 backdrop-blur-xl dark:bg-black/35 dark:ring-white/10"
+                  : "glass",
+              )}
+            >
               <Link to="/" className="flex min-h-11 items-center gap-2">
-                <span className="font-serif text-[1.45rem] leading-none tracking-tight text-ink italic">
-                  Seek
+                <span
+                  className="inline-flex size-6 items-center justify-center text-forest"
+                  aria-hidden
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="size-5"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 21c-1.5-1.2-6-5.2-6-9.5A4.5 4.5 0 0 1 12 7.2 4.5 4.5 0 0 1 18 11.5c0 4.3-4.5 8.3-6 9.5Z" />
+                    <path d="M12 11.5V7.2" />
+                  </svg>
                 </span>
-                <span className="font-sans text-[11px] font-medium tracking-[0.14em] text-muted uppercase">
-                  KJV
+                <span className="font-serif text-[1.35rem] leading-none tracking-[0.04em] text-ink">
+                  SEEK
                 </span>
               </Link>
               <div className="flex items-center gap-1.5">
-                <UserMenu />
                 <ThemeToggle />
+                <UserMenu />
               </div>
             </div>
           </header>
 
-          <main className="hide-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pb-28">
+          <main
+            className={cn(
+              "hide-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pb-28",
+              isHome && "overflow-hidden",
+            )}
+          >
             {children}
           </main>
 
