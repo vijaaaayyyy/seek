@@ -63,6 +63,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isHome = pathname === "/";
   const isAuthCallback = pathname.startsWith("/auth/callback");
   const isRead = pathname.startsWith("/read");
+  const isLogin = pathname.startsWith("/login");
   const navHidden = useHideOnScroll(10);
   const activeIndex = Math.max(
     0,
@@ -73,15 +74,23 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="relative isolate min-h-dvh text-ink">
       {!isHome && <div className="app-atmosphere" aria-hidden />}
 
+      {/* ── DESKTOP ── */}
       <div className="relative z-10 hidden min-h-dvh flex-col lg:flex">
-        {!isHome && (
+        {!isAuthCallback && (
           <header
             className={cn(
-              "fixed top-0 right-0 left-0 z-40 flex justify-center px-4 pt-4 pb-2 transition-transform duration-300 ease-out",
+              "fixed top-0 right-0 left-0 z-40 flex justify-center px-4 pt-4 pb-2 transition-transform duration-300 ease-out will-change-transform",
               navHidden ? "-translate-y-[120%]" : "translate-y-0",
             )}
           >
-            <div className="flex h-12 w-fit max-w-[min(100%,36rem)] items-center gap-1 rounded-full bg-white/55 px-2.5 shadow-sm ring-1 ring-black/5 backdrop-blur-xl dark:bg-black/45 dark:ring-white/10">
+            <div
+              className={cn(
+                "flex h-12 w-fit max-w-[min(100%,40rem)] items-center gap-1 rounded-full px-2.5 shadow-sm ring-1 backdrop-blur-xl",
+                isHome
+                  ? "bg-white/85 ring-black/8 dark:bg-black/50 dark:ring-white/12"
+                  : "bg-white/55 ring-black/5 dark:bg-black/45 dark:ring-white/10",
+              )}
+            >
               <Link
                 to="/"
                 className="flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5"
@@ -118,13 +127,16 @@ export function AppShell({ children }: { children: ReactNode }) {
           className={cn(
             "flex-1",
             !isHome && "mx-auto w-full max-w-5xl px-6 pt-20 pb-16",
+            isHome && "pt-0",
             isAuthCallback && "flex items-center justify-center",
+            isLogin && "pt-20",
           )}
         >
           {children}
         </main>
       </div>
 
+      {/* ── MOBILE ── */}
       <div className="relative z-10 flex min-h-dvh items-stretch justify-center lg:hidden">
         <div
           className={cn(
@@ -132,37 +144,40 @@ export function AppShell({ children }: { children: ReactNode }) {
             isHome && "bg-transparent",
           )}
         >
-          <header
-            className={cn(
-              "fixed top-0 right-0 left-0 z-30 mx-auto w-full max-w-[430px] shrink-0 px-4 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 transition-transform duration-300 ease-out",
-              navHidden ? "-translate-y-[120%]" : "translate-y-0",
-            )}
-          >
-            <div
+          {!isAuthCallback && (
+            <header
               className={cn(
-                "mx-auto flex h-12 max-w-full items-center justify-between rounded-full pl-4 pr-1.5",
-                isHome
-                  ? "bg-white/55 shadow-sm ring-1 ring-black/5 backdrop-blur-xl dark:bg-black/35 dark:ring-white/10"
-                  : "glass",
+                "fixed top-0 right-0 left-0 z-30 mx-auto w-full max-w-[430px] shrink-0 px-4 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 transition-transform duration-300 ease-out will-change-transform",
+                navHidden ? "-translate-y-[120%]" : "translate-y-0",
               )}
             >
-              <Link to="/" className="flex min-h-10 items-center gap-1.5">
-                <LeafMark className="size-4 text-forest" />
-                <span className="font-serif text-[1.2rem] leading-none tracking-[0.04em] text-ink">
-                  SEEK
-                </span>
-              </Link>
-              <div className="flex items-center gap-1">
-                <ThemeToggle />
-                <UserMenu />
+              <div
+                className={cn(
+                  "mx-auto flex h-12 max-w-full items-center justify-between rounded-full pl-4 pr-1.5",
+                  isHome
+                    ? "bg-white/85 shadow-sm ring-1 ring-black/8 backdrop-blur-xl dark:bg-black/45 dark:ring-white/12"
+                    : "glass",
+                )}
+              >
+                <Link to="/" className="flex min-h-10 items-center gap-1.5">
+                  <LeafMark className="size-4 text-forest" />
+                  <span className="font-serif text-[1.2rem] leading-none tracking-[0.04em] text-ink">
+                    SEEK
+                  </span>
+                </Link>
+                <div className="flex items-center gap-1">
+                  <ThemeToggle />
+                  <UserMenu />
+                </div>
               </div>
-            </div>
-          </header>
+            </header>
+          )}
 
           <main
             className={cn(
               "hide-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pt-16 pb-28",
               isRead && "pt-16",
+              isHome && "px-0 pt-0 pb-28",
             )}
           >
             {children}

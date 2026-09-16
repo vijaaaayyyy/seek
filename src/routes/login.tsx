@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { BookOpen, LockKeyhole, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BibleReadingAnimation } from "@/components/bible-reading-animation";
 import { signIn, signInEmail, signUpEmail } from "@/lib/supa/client";
+import { useCurrentUserState } from "@/lib/supa/use-current-user";
 import { cn } from "@/lib/utils";
 import { Capacitor } from "@capacitor/core";
 
@@ -30,6 +31,7 @@ const PROVIDERS = [
 function LoginPage() {
   const navigate = useNavigate();
   const { redirect } = Route.useSearch();
+  const { user, isPending } = useCurrentUserState();
   const [mode, setMode] = useState<Mode>("signin");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -37,6 +39,13 @@ function LoginPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
+
+  // Already signed in → leave the login form (avatar in header is enough).
+  useEffect(() => {
+    if (!isPending && user) {
+      void navigate({ to: redirect || "/" });
+    }
+  }, [isPending, user, redirect, navigate]);
 
   function switchMode(next: Mode) {
     if (next === mode) return;
@@ -78,199 +87,185 @@ function LoginPage() {
         setBusy(false);
         return;
       }
-      await navigate({ to: redirect || "/", replace: true });
+      void navigate({ to: redirect || "/" });
     } catch {
       setError("Something went wrong. Please try again.");
       setBusy(false);
     }
   }
 
-  async function handleProvider(provider: "google" | "github") {
+  async function handleOAuth(provider: "google" | "github") {
+    setBusy(true);
     setError(null);
     try {
-      const callbackURL = Capacitor.isNativePlatform()
-        ? "com.seek.bible://auth/callback"
-        : redirect;
-        await signIn(provider, { callbackURL });
-      // OAuth navigates away to the provider — no further work here.
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Sign-in could not start.");
+      await signIn(provider, redirect || "/");
+    } catch {
+      setError("Could not start sign-in. Please try again.");
+      setBusy(false);
     }
   }
 
+  if (isPending) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <div className="size-8 animate-pulse rounded-full bg-ink/10" />
+      </div>
+    );
+  }
+
+  if (user) {
+    return null;
+  }
+
   return (
-    <div className="pt-3">
-      <div className="glass flex items-center gap-3 rounded-[28px] p-5">
-        <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-ink text-paper dark:bg-paper dark:text-ink">
-          <BookOpen className="size-6" strokeWidth={1.7} />
+    <div className="mx-auto flex w-full max-w-md flex-col items-center px-4 py-8">
+      <div className="mb-6 flex items-center gap-2 text-forest">
+        <BookOpen className="size-5" strokeWidth={1.8} />
+        <span className="font-sans text-[11px] font-semibold tracking-[0.16em] uppercase">
+          King James Bible
         </span>
-        <div>
-          <p className="font-sans text-[11px] font-medium tracking-[0.18em] text-muted uppercase">
-            King James Bible
-          </p>
-          <h1 className="mt-0.5 font-serif text-[1.6rem] leading-none font-medium tracking-tight text-ink">
-            {mode === "create" ? "Create your account" : "Welcome back"}
-          </h1>
-        </div>
+      </div>
+      <h1 className="font-serif text-[2rem] font-medium text-ink">
+        {mode === "signin" ? "Welcome back" : "Create account"}
+      </h1>
+      <p className="mt-2 text-center font-sans text-[14px] text-muted">
+        {mode === "signin"
+          ? "Sign in to save verses and keep your place."
+          : "Join SEEK to bookmark and sync across devices."}
+      </p>
+
+      <div className="mt-6 flex w-full gap-1 rounded-full bg-wash p-1">
+        <button
+          type="button"
+          onClick={() => switchMode("signin")}
+          className={cn(
+            "flex-1 rounded-full py-2 font-sans text-[13px] font-medium transition-colors",
+            mode === "signin" ? "bg-surface text-ink shadow-sm" : "text-muted",
+          )}
+        >
+          Sign in
+        </button>
+        <button
+          type="button"
+          onClick={() => switchMode("create")}
+          className={cn(
+            "flex-1 rounded-full py-2 font-sans text-[13px] font-medium transition-colors",
+            mode === "create" ? "bg-surface text-ink shadow-sm" : "text-muted",
+          )}
+        >
+          Create account
+        </button>
       </div>
 
-      <div className="glass-segmented relative mt-5 grid h-12 grid-cols-2 rounded-full p-1">
-        <div
-          aria-hidden
-          className="absolute top-1 bottom-1 left-1 w-[calc((100%-0.5rem)/2)] rounded-full bg-ink/10 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] dark:bg-paper/12"
-          style={{ transform: mode === "create" ? "translateX(100%)" : "translateX(0)" }}
-        />
-        {(["signin", "create"] as const).map((m) => (
-          <button
-            key={m}
-            type="button"
-            onClick={() => switchMode(m)}
-            className={cn(
-              "relative z-10 rounded-full font-sans text-sm font-medium transition-colors",
-              mode === m ? "text-ink" : "text-muted",
-            )}
-          >
-            {m === "signin" ? "Sign in" : "Create account"}
-          </button>
-        ))}
-      </div>
-
-      <form onSubmit={handleSubmit} className="mt-5 space-y-3">
+      <form onSubmit={handleSubmit} className="mt-6 w-full space-y-3">
         {mode === "create" && (
-          <div className="relative">
-            <Mail className="pointer-events-none absolute top-3.5 left-4 size-5 text-faint" />
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Your name"
-              autoComplete="name"
-              className="pl-12"
-            />
-          </div>
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Your name"
+            autoComplete="name"
+            disabled={busy}
+          />
         )}
         <div className="relative">
-          <Mail className="pointer-events-none absolute top-3.5 left-4 size-5 text-faint" />
+          <Mail className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
           <Input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
             autoComplete="email"
-            inputMode="email"
-            className="pl-12"
+            disabled={busy}
+            className="pl-10"
           />
         </div>
         <div className="relative">
-          <LockKeyhole className="pointer-events-none absolute top-3.5 left-4 size-5 text-faint" />
+          <LockKeyhole className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
           <Input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             autoComplete={mode === "create" ? "new-password" : "current-password"}
-            className="pl-12"
+            disabled={busy}
+            className="pl-10"
           />
         </div>
 
         {error && (
-          <p role="alert" className="rounded-2xl bg-mark/60 px-4 py-3 font-sans text-sm text-ink">
+          <p className="rounded-lg bg-red-500/10 px-3 py-2 font-sans text-[13px] text-red-700 dark:text-red-300">
             {error}
           </p>
         )}
         {info && (
-          <p className="rounded-2xl bg-forest/10 px-4 py-3 font-sans text-sm text-forest">
+          <p className="rounded-lg bg-forest/10 px-3 py-2 font-sans text-[13px] text-forest">
             {info}
           </p>
         )}
 
-        <Button type="submit" disabled={busy} className="w-full rounded-2xl">
-          {busy
-            ? "Please wait…"
-            : mode === "create"
-              ? "Create account"
-              : "Sign in"}
+        <Button type="submit" disabled={busy} className="h-11 w-full rounded-full">
+          {busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
         </Button>
       </form>
 
-      <div className="my-6 flex items-center gap-3">
-        <span className="h-px flex-1 bg-line" />
-        <span className="font-sans text-[11px] tracking-[0.14em] text-faint uppercase">
+      <div className="my-6 flex w-full items-center gap-3">
+        <div className="h-px flex-1 bg-line" />
+        <span className="font-sans text-[11px] tracking-wide text-muted uppercase">
           Or continue with
         </span>
-        <span className="h-px flex-1 bg-line" />
+        <div className="h-px flex-1 bg-line" />
       </div>
 
-      <div className="space-y-2.5">
-        {PROVIDERS.map((p) => (
-          <button
-            key={p.provider}
+      <div className="flex w-full flex-col gap-2">
+        {PROVIDERS.map(({ provider, label, icon: Icon }) => (
+          <Button
+            key={provider}
             type="button"
-            onClick={() => void handleProvider(p.provider)}
-            className="glass flex h-12 w-full items-center justify-center gap-2 rounded-2xl font-sans text-sm font-medium text-ink transition-transform duration-150 active:scale-[0.97] hover:bg-ink/5"
+            variant="outline"
+            disabled={busy}
+            onClick={() => void handleOAuth(provider)}
+            className="h-11 w-full justify-center gap-2 rounded-full"
           >
-            <p.icon />
-            Continue with {p.label}
-          </button>
+            <Icon className="size-4" />
+            Continue with {label}
+          </Button>
         ))}
       </div>
 
-      <div className="mt-6">
-        <BibleReadingAnimation />
-      </div>
-
-      <p className="mt-6 px-1 text-center font-sans text-[13px] leading-relaxed text-muted">
-        {mode === "create" ? (
-          <>
-            Already have an account?{" "}
-            <button type="button" onClick={() => switchMode("signin")} className="text-forest underline-offset-4 hover:underline">
-              Sign in instead
-            </button>
-          </>
-        ) : (
-          <>
-            New here?{" "}
-            <button type="button" onClick={() => switchMode("create")} className="text-forest underline-offset-4 hover:underline">
-              Create an account
-            </button>{" "}
-            to keep your saved verses on any device.
-          </>
-        )}
-      </p>
+      {!Capacitor.isNativePlatform() && (
+        <div className="mt-10">
+          <BibleReadingAnimation />
+        </div>
+      )}
     </div>
   );
 }
 
-function GoogleIcon() {
+function friendlyAuthError(err: { message?: string } | string): string {
+  const msg = typeof err === "string" ? err : err.message ?? "";
+  if (/invalid login/i.test(msg)) return "Email or password is incorrect.";
+  if (/already registered|already exists/i.test(msg))
+    return "That email is already registered. Try signing in.";
+  if (/email not confirmed/i.test(msg))
+    return "Confirm your email before signing in.";
+  return msg || "Something went wrong. Please try again.";
+}
+
+function GoogleIcon({ className }: { className?: string }) {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
-      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z" />
-      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z" />
-      <path fill="#FBBC05" d="M5.84 14.1A6.6 6.6 0 0 1 5.5 12c0-.73.13-1.44.34-2.1V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84z" />
-      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15A11 11 0 0 0 2.18 7.06L5.84 9.9C6.71 7.31 9.14 5.38 12 5.38z" />
+    <svg className={className} viewBox="0 0 24 24" aria-hidden>
+      <path
+        fill="#EA4335"
+        d="M12 10.2v3.9h5.5c-.2 1.3-1.6 3.8-5.5 3.8-3.3 0-6-2.7-6-6s2.7-6 6-6c1.9 0 3.1.8 3.8 1.5l2.6-2.5C16.7 3.3 14.6 2.4 12 2.4 6.9 2.4 2.8 6.5 2.8 11.6S6.9 20.8 12 20.8c5.5 0 9.1-3.9 9.1-9.3 0-.6-.1-1.1-.2-1.6H12z"
+      />
     </svg>
   );
 }
 
-function GithubIcon() {
+function GithubIcon({ className }: { className?: string }) {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.92.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.13-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.7 1.25 3.35.96.1-.75.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.25.45-2.28 1.18-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a10.9 10.9 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.18 1.84 1.18 3.09 0 4.42-2.7 5.39-5.26 5.68.41.35.77 1.05.77 2.12 0 1.53-.01 2.77-.01 3.15 0 .31.2.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z" />
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.56 2.36 1.11 2.94.85.09-.67.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05A9.3 9.3 0 0 1 12 6.84c.85 0 1.71.12 2.51.34 1.9-1.33 2.74-1.05 2.74-1.05.56 1.4.21 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .26.18.59.69.48A10.27 10.27 0 0 0 22 12.26C22 6.58 17.52 2 12 2z" />
     </svg>
   );
-}
-
-function friendlyAuthError(message: string | undefined): string {
-  if (!message) return "That didn't work. Please try again.";
-  const text = message.toLowerCase();
-  if (text.includes("already") || text.includes("exist")) {
-    return "An account with that email already exists. Try signing in.";
-  }
-  if (text.includes("invalid email")) return "That email address doesn't look right.";
-  if (text.includes("password") && text.includes("length")) {
-    return "Password must be at least 8 characters long.";
-  }
-  if (text.includes("invalid login") || text.includes("credentials")) {
-    return "That email and password don't match an account here.";
-  }
-  return message;
 }
