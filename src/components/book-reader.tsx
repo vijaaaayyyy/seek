@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BookPicker } from "@/components/book-picker";
@@ -8,7 +8,6 @@ import { BOOKS, type BookMeta } from "@/lib/bible/meta";
 import type { IndexedVerse } from "@/lib/bible/load";
 import { cn } from "@/lib/utils";
 
-/** Average glyph width (px) for the serif at 18px — tuned for Newsreader. */
 const CHAR_W = 8.2;
 const LINE_H = 30;
 const PAD_X = 44;
@@ -56,6 +55,8 @@ export function BookReader({
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [index, setIndex] = useState(0);
   const [flip, setFlip] = useState<Flip>(null);
+  const [chapterPrompt, setChapterPrompt] = useState(false);
+  const navigate = useNavigate();
   const sheetRef = useRef<HTMLDivElement>(null);
   const pointer = useRef<{ x: number; y: number } | null>(null);
   const handledFocus = useRef<number | undefined>(undefined);
@@ -80,13 +81,12 @@ export function BookReader({
     return () => ro.disconnect();
   }, []);
 
-  // Reset to the start when the chapter (or page layout) changes.
   useEffect(() => {
     setIndex(0);
     setFlip(null);
+    setChapterPrompt(false);
   }, [book.slug, chapter]);
 
-  // Jump to the page containing the focused verse (search hash).
   useEffect(() => {
     if (!focusVerse || handledFocus.current === focusVerse || pages.length === 0) return;
     handledFocus.current = focusVerse;
@@ -102,12 +102,16 @@ export function BookReader({
 
   const go = useCallback(
     (dir: "next" | "prev") => {
-      if (flip) return;
+      if (flip || chapterPrompt) return;
       const nextIndex = dir === "next" ? index + 1 : index - 1;
-      if (nextIndex < 0 || nextIndex >= pageCount) return;
+      if (nextIndex < 0) return;
+      if (nextIndex >= pageCount) {
+        if (dir === "next") setChapterPrompt(true);
+        return;
+      }
       setFlip({ dir, from: index });
     },
-    [flip, index, pageCount],
+    [flip, index, pageCount, chapterPrompt],
   );
 
   function commitFlip() {
@@ -116,7 +120,6 @@ export function BookReader({
     setFlip(null);
   }
 
-  // Keyboard: ArrowRight = next page, ArrowLeft = previous page.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "ArrowRight") go("next");
@@ -126,7 +129,6 @@ export function BookReader({
     return () => window.removeEventListener("keydown", onKey);
   }, [go]);
 
-  // Swipe: drag left = next, drag right = previous.
   function onPointerDown(e: React.PointerEvent) {
     pointer.current = { x: e.clientX, y: e.clientY };
   }
@@ -140,7 +142,6 @@ export function BookReader({
 
   const prevChapter = adjacentChapter(book, chapter, -1);
   const nextChapter = adjacentChapter(book, chapter, 1);
-
   const pageLabel = book.name + " " + chapter;
 
   return (
@@ -150,7 +151,11 @@ export function BookReader({
           <div className="min-w-0">
             <BookPicker book={book} chapter={chapter} />
             <p className="px-3 font-sans text-[11px] text-muted">
-              {book.testament === "OT" ? "Old Testament" : "New Testament"} · {verses.length} verses
+              Chapter {chapter} of {book.chapters.length}
+              <span className="text-faint"> · </span>
+              Page {Math.min(index + 1, Math.max(pageCount, 1))} / {Math.max(pageCount, 1)}
+              <span className="text-faint"> · </span>
+              {verses.length} verses
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-1">
@@ -197,7 +202,6 @@ export function BookReader({
             onPointerDown={onPointerDown}
             onPointerUp={onPointerUp}
           >
-            {/* Static page revealed beneath the turning leaf. */}
             <PageSheet
               book={book}
               chapter={chapter}
@@ -210,8 +214,6 @@ export function BookReader({
               aria-hidden={flip ? false : true}
             />
 
-            {/* The leaf that turns. Rendered only mid-flip, keyed so the
-                animation replays for every new flip. */}
             {flip && (
               <div
                 key={`${flip.dir}-${flip.from}`}
@@ -252,7 +254,7 @@ export function BookReader({
           <button
             type="button"
             onClick={() => go("next")}
-            disabled={flip !== null || index >= pageCount - 1}
+            disabled={flip !== null || chapterPrompt}
             aria-label="Next page"
             className="inline-flex size-11 items-center justify-center rounded-full glass text-ink transition-transform duration-150 active:scale-[0.94] disabled:opacity-35 disabled:active:scale-100"
           >
@@ -260,6 +262,53 @@ export function BookReader({
           </button>
         </div>
       </div>
+
+      {chapterPrompt && (
+        <div
+          className="fixed inset-0 z-[80] flex items-end justify-center bg-black/45 p-4 backdrop-blur-[2px] sm:items-center"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="w-full max-w-sm rounded-[28px] bg-paper p-6 text-ink shadow-[0_24px_64px_rgba(0,0,0,0.35)] ring-1 ring-black/10 dark:bg-[#1a1c22] dark:ring-white/10">
+            <p className="font-serif text-[1.35rem] font-medium tracking-tight">
+              Chapter {chapter} finished
+            </p>
+            <p className="mt-2 font-sans text-[14px] leading-relaxed text-muted">
+              {nextChapter
+                ? "Continue to the next chapter, or stay on this one?"
+                : "You've reached the end of this book. Stay on this chapter?"}
+            </p>
+            <div className="mt-5 grid gap-2">
+              {nextChapter && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setChapterPrompt(false);
+                    void navigate({
+                      to: "/read/$book/$chapter",
+                      params: {
+                        book: nextChapter.slug,
+                        chapter: String(nextChapter.chapter),
+                      },
+                      search: { q: undefined },
+                    });
+                  }}
+                  className="flex h-12 items-center justify-center rounded-full bg-ink font-sans text-[14px] font-medium text-paper transition-transform active:scale-[0.98]"
+                >
+                  Next chapter
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setChapterPrompt(false)}
+                className="flex h-12 items-center justify-center rounded-full bg-ink/8 font-sans text-[14px] font-medium text-ink transition-transform active:scale-[0.98] dark:bg-white/10"
+              >
+                Stay on chapter {chapter}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -282,6 +331,7 @@ function PageSheet({
   pageCount: number;
   highlight: string[];
   className?: string;
+  "aria-hidden"?: boolean;
 }) {
   return (
     <div
