@@ -1,0 +1,1 @@
+export const HERO_BIBLE_IMAGE = "PLACEHOLDER";
