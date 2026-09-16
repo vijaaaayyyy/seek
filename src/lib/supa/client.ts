@@ -5,7 +5,14 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
 /** Browser-side Supabase client (session stored in localStorage). */
-export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    flowType: "pkce",
+    detectSessionInUrl: true,
+    persistSession: true,
+    autoRefreshToken: true,
+  },
+});
 
 /** True when sign-in UI should be shown. */
 export const authEnabled = true;
