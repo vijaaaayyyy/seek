@@ -3,6 +3,7 @@ import { BookOpen, Bookmark, Home, UserRound } from "lucide-react";
 import type { ReactNode } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/user-menu";
+import { useHideOnScroll } from "@/hooks/use-hide-on-scroll";
 import { cn } from "@/lib/utils";
 
 const MOBILE_NAV = [
@@ -10,7 +11,8 @@ const MOBILE_NAV = [
     to: "/",
     label: "Home",
     icon: Home,
-    match: (p: string) => p === "/" || p.startsWith("/search"),
+    match: (p: string) =>
+      p === "/" || p.startsWith("/search") || p.startsWith("/explore"),
   },
   {
     to: "/books",
@@ -61,6 +63,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isHome = pathname === "/";
   const isAuthCallback = pathname.startsWith("/auth/callback");
   const isRead = pathname.startsWith("/read");
+  const navHidden = useHideOnScroll(10);
   const activeIndex = Math.max(
     0,
     MOBILE_NAV.findIndex((item) => item.match(pathname)),
@@ -72,7 +75,12 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <div className="relative z-10 hidden min-h-dvh flex-col lg:flex">
         {!isHome && (
-          <header className="sticky top-0 z-40 flex justify-center px-4 pt-4 pb-2">
+          <header
+            className={cn(
+              "fixed top-0 right-0 left-0 z-40 flex justify-center px-4 pt-4 pb-2 transition-transform duration-300 ease-out",
+              navHidden ? "-translate-y-[120%]" : "translate-y-0",
+            )}
+          >
             <div className="flex h-12 w-fit max-w-[min(100%,36rem)] items-center gap-1 rounded-full bg-white/55 px-2.5 shadow-sm ring-1 ring-black/5 backdrop-blur-xl dark:bg-black/45 dark:ring-white/10">
               <Link
                 to="/"
@@ -109,7 +117,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <main
           className={cn(
             "flex-1",
-            !isHome && "mx-auto w-full max-w-5xl px-6 pb-16",
+            !isHome && "mx-auto w-full max-w-5xl px-6 pt-20 pb-16",
             isAuthCallback && "flex items-center justify-center",
           )}
         >
@@ -124,7 +132,12 @@ export function AppShell({ children }: { children: ReactNode }) {
             isHome && "bg-transparent",
           )}
         >
-          <header className="sticky top-0 z-30 shrink-0 px-4 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2">
+          <header
+            className={cn(
+              "fixed top-0 right-0 left-0 z-30 mx-auto w-full max-w-[430px] shrink-0 px-4 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 transition-transform duration-300 ease-out",
+              navHidden ? "-translate-y-[120%]" : "translate-y-0",
+            )}
+          >
             <div
               className={cn(
                 "mx-auto flex h-12 max-w-full items-center justify-between rounded-full pl-4 pr-1.5",
@@ -148,8 +161,8 @@ export function AppShell({ children }: { children: ReactNode }) {
 
           <main
             className={cn(
-              "hide-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pb-28",
-              isRead && "pt-1",
+              "hide-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pt-16 pb-28",
+              isRead && "pt-16",
             )}
           >
             {children}
@@ -157,7 +170,10 @@ export function AppShell({ children }: { children: ReactNode }) {
 
           {!isAuthCallback && (
             <nav
-              className="absolute inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
+              className={cn(
+                "absolute inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] transition-transform duration-300 ease-out",
+                navHidden ? "translate-y-[140%]" : "translate-y-0",
+              )}
               aria-label="Primary"
             >
               <div className="glass glass-strong relative grid h-[4rem] w-full max-w-[380px] grid-cols-4 rounded-full p-1.5">
