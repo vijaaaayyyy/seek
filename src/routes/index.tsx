@@ -151,20 +151,19 @@ function Home() {
 
   return (
     <>
-      {/* DESKTOP — one continuous bg */}
+      {/* DESKTOP — same deep dark as reader */}
       <div className="relative hidden min-h-dvh flex-col lg:flex">
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute inset-0 bg-[#1a1610]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_50%_-10%,#c9b896_0%,transparent_55%)] opacity-90" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_75%_50%,#a8906a_0%,transparent_50%)] opacity-40" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_20%_70%,#8a9a7a_0%,transparent_45%)] opacity-25" />
-          <div className="absolute top-0 left-1/2 h-[50%] w-[85%] -translate-x-1/2 rounded-[100%] bg-[radial-gradient(ellipse_at_center,rgba(255,240,200,0.22)_0%,transparent_70%)]" />
+          <div className="absolute inset-0 bg-[#0b0c11]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_20%_0%,#2a3558_0%,transparent_55%)] opacity-50" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_85%_20%,#1a2238_0%,transparent_50%)] opacity-60" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_100%,#16171f_0%,transparent_55%)] opacity-80" />
         </div>
 
         <header className="relative z-20 mx-auto mt-6 flex w-full justify-center px-4">
-          <div className="flex h-12 w-fit max-w-[min(100%,42rem)] items-center gap-1 rounded-full bg-[#1c1915]/75 px-2.5 shadow-[0_8px_40px_rgba(0,0,0,0.25)] ring-1 ring-white/10 backdrop-blur-2xl">
-            <Link to="/" className="flex items-center gap-1.5 px-2.5 py-1.5 text-white">
-              <LeafMark className="size-4" />
+          <div className="flex h-12 w-fit max-w-[min(100%,42rem)] items-center gap-1 rounded-full bg-[#1c1f2c]/70 px-2.5 shadow-[0_8px_40px_rgba(0,0,0,0.4)] ring-1 ring-white/10 backdrop-blur-2xl">
+            <Link to="/" className="flex items-center gap-1.5 px-2.5 py-1.5 text-[#f2ebe0]">
+              <LeafMark className="size-4 text-[#c5d1c8]" />
               <span className="font-serif text-[1.05rem] tracking-[0.06em]">SEEK</span>
             </Link>
             <nav className="flex items-center gap-0.5">
@@ -176,48 +175,49 @@ function Home() {
                 <Link
                   key={l.to}
                   to={l.to}
-                  className="rounded-full px-3 py-1.5 font-sans text-[12.5px] font-medium text-white/70 transition-colors hover:text-white"
+                  className="rounded-full px-3 py-1.5 font-sans text-[12.5px] font-medium text-[#f2ebe0]/65 transition-colors hover:text-[#f2ebe0]"
                 >
                   {l.label}
                 </Link>
               ))}
             </nav>
-            <div className="ml-1 flex items-center gap-1 border-l border-white/15 pl-2">
-              <ThemeToggle className="border-0 bg-white/10 text-white ring-white/15 hover:bg-white/15" />
+            <div className="ml-1 flex items-center gap-1 border-l border-white/12 pl-2">
+              <ThemeToggle className="border-0 bg-white/10 text-[#f2ebe0] ring-white/10 hover:bg-white/15" />
               <Link
-                to="/books"
-                className="rounded-full bg-[#e8d54a] px-3.5 py-1.5 font-sans text-[12.5px] font-semibold text-[#1c1915] transition-transform active:scale-95"
+                to="/login"
+                search={{ redirect: "/" }}
+                className="rounded-full bg-white/12 px-3.5 py-1.5 font-sans text-[12.5px] font-medium text-[#f2ebe0] ring-1 ring-white/10 transition-transform active:scale-95 hover:bg-white/16"
               >
-                Open Bible
+                Sign in
               </Link>
             </div>
           </div>
         </header>
 
         <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center px-6 pt-16 pb-12 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1.5 ring-1 ring-white/20 backdrop-blur-md">
-            <Sparkles className="size-3.5 text-[#e8d54a]" strokeWidth={2} />
-            <span className="font-sans text-[12px] font-medium tracking-wide text-white/90">
+          <div className="inline-flex items-center gap-2 rounded-full bg-white/[0.08] px-3.5 py-1.5 ring-1 ring-white/12 backdrop-blur-md">
+            <Sparkles className="size-3.5 text-[#c5d1c8]" strokeWidth={2} />
+            <span className="font-sans text-[12px] font-medium tracking-wide text-[#f2ebe0]/90">
               Scripture for every season
             </span>
           </div>
 
-          <h1 className="mt-6 font-serif text-[3.75rem] leading-[1.08] font-medium tracking-tight text-white xl:text-[4.25rem]">
+          <h1 className="mt-6 font-serif text-[3.75rem] leading-[1.08] font-medium tracking-tight text-[#f2ebe0] xl:text-[4.25rem]">
             The Word
             <br />
-            <span className="italic text-[#e8d54a]">you were looking for.</span>
+            <span className="italic text-[#c5d1c8]">you were looking for.</span>
           </h1>
 
-          <p className="mt-5 max-w-md font-sans text-[16px] leading-relaxed text-white/75">
+          <p className="mt-5 max-w-md font-sans text-[16px] leading-relaxed text-[#a39b90]">
             Search the King James Bible by verse, phrase, feeling, or story —
             then read, save, and return whenever you need it.
           </p>
 
           <form onSubmit={submit} className="mt-8 w-full max-w-xl">
-            <div className="flex items-center gap-2 rounded-full bg-white/95 p-1.5 shadow-[0_12px_48px_rgba(0,0,0,0.2)] ring-1 ring-black/5">
+            <div className="flex items-center gap-2 rounded-full bg-[#1c1f2c]/80 p-1.5 shadow-[0_12px_48px_rgba(0,0,0,0.35)] ring-1 ring-white/10 backdrop-blur-xl">
               <div className="relative min-w-0 flex-1">
                 <Search
-                  className="pointer-events-none absolute top-1/2 left-4 size-[18px] -translate-y-1/2 text-muted"
+                  className="pointer-events-none absolute top-1/2 left-4 size-[18px] -translate-y-1/2 text-[#7a746b]"
                   strokeWidth={1.8}
                   aria-hidden
                 />
@@ -228,12 +228,12 @@ function Home() {
                   spellCheck={false}
                   enterKeyHint="search"
                   placeholder="Search a verse, phrase, or feeling…"
-                  className="h-12 w-full bg-transparent pr-3 pl-11 font-sans text-[15px] text-ink placeholder:text-faint focus:outline-none"
+                  className="h-12 w-full bg-transparent pr-3 pl-11 font-sans text-[15px] text-[#f2ebe0] placeholder:text-[#7a746b] focus:outline-none"
                 />
               </div>
               <button
                 type="submit"
-                className="shrink-0 rounded-full bg-[#e8d54a] px-5 py-3 font-sans text-[14px] font-semibold text-[#1c1915] transition-transform active:scale-95"
+                className="shrink-0 rounded-full bg-[#f2ebe0] px-5 py-3 font-sans text-[14px] font-semibold text-[#0b0c11] transition-transform active:scale-95"
               >
                 Search
               </button>
@@ -246,7 +246,7 @@ function Home() {
                 key={ex.q}
                 type="button"
                 onClick={() => runExample(ex.q)}
-                className="rounded-full bg-white/12 px-3.5 py-1.5 font-sans text-[12.5px] text-white/85 ring-1 ring-white/15 backdrop-blur-md transition-colors hover:bg-white/20"
+                className="rounded-full bg-white/[0.08] px-3.5 py-1.5 font-sans text-[12.5px] text-[#f2ebe0]/85 ring-1 ring-white/10 backdrop-blur-md transition-colors hover:bg-white/14"
               >
                 “{ex.label}”
               </button>
@@ -258,15 +258,14 @@ function Home() {
           {STATS.map((s) => (
             <div
               key={s.label}
-              className="rounded-2xl bg-white/[0.08] px-3 py-4 text-center ring-1 ring-white/10 backdrop-blur-xl"
+              className="rounded-2xl bg-[#1c1f2c]/50 px-3 py-4 text-center ring-1 ring-white/10 backdrop-blur-xl"
             >
-              <p className="font-serif text-[1.5rem] font-medium text-white tabular-nums">{s.value}</p>
-              <p className="mt-0.5 font-sans text-[11px] tracking-wide text-white/55 uppercase">{s.label}</p>
+              <p className="font-serif text-[1.5rem] font-medium text-[#f2ebe0] tabular-nums">{s.value}</p>
+              <p className="mt-0.5 font-sans text-[11px] tracking-wide text-[#a39b90] uppercase">{s.label}</p>
             </div>
           ))}
         </div>
 
-        {/* Same continuous bg — no border, no solid band */}
         <div className="relative z-10">
           <div className="mx-auto w-full max-w-5xl px-6 pt-2 pb-14">
             <div className="grid gap-4 md:grid-cols-2">
@@ -274,21 +273,21 @@ function Home() {
                 to="/read/$book/$chapter"
                 params={{ book: FEATURED.book, chapter: FEATURED.chapter }}
                 search={{ q: undefined }}
-                className="group rounded-[28px] bg-white/[0.07] p-6 text-left ring-1 ring-white/12 transition-colors hover:bg-white/12"
+                className="group rounded-[28px] bg-[#1c1f2c]/55 p-6 text-left ring-1 ring-white/10 transition-colors hover:bg-[#1c1f2c]/75"
               >
-                <div className="flex items-center gap-2 text-[#e8d54a]">
+                <div className="flex items-center gap-2 text-[#c5d1c8]">
                   <Star className="size-4" strokeWidth={2} fill="currentColor" />
                   <span className="font-sans text-[11px] font-semibold tracking-[0.16em] uppercase">Featured verse</span>
                 </div>
-                <p className="mt-4 font-serif text-[1.35rem] leading-snug text-white text-balance">“{FEATURED.text}”</p>
-                <p className="mt-3 font-sans text-[13px] text-white/55">{FEATURED.ref}</p>
-                <span className="mt-4 inline-flex items-center gap-1 font-sans text-[13px] font-medium text-white/75 group-hover:text-white">
+                <p className="mt-4 font-serif text-[1.35rem] leading-snug text-[#f2ebe0] text-balance">“{FEATURED.text}”</p>
+                <p className="mt-3 font-sans text-[13px] text-[#a39b90]">{FEATURED.ref}</p>
+                <span className="mt-4 inline-flex items-center gap-1 font-sans text-[13px] font-medium text-[#f2ebe0]/70 group-hover:text-[#f2ebe0]">
                   Read chapter <ChevronRight className="size-4" />
                 </span>
               </Link>
 
-              <div className="rounded-[28px] bg-white/[0.07] p-6 ring-1 ring-white/12">
-                <div className="flex items-center gap-2 text-white/75">
+              <div className="rounded-[28px] bg-[#1c1f2c]/55 p-6 ring-1 ring-white/10">
+                <div className="flex items-center gap-2 text-[#f2ebe0]/70">
                   <Heart className="size-4" strokeWidth={2} />
                   <span className="font-sans text-[11px] font-semibold tracking-[0.16em] uppercase">Browse by feeling</span>
                 </div>
@@ -298,23 +297,23 @@ function Home() {
                       key={t.q}
                       type="button"
                       onClick={() => runExample(t.q)}
-                      className="flex flex-col items-center gap-1 rounded-2xl bg-white/8 px-2 py-3 transition-colors hover:bg-white/16"
+                      className="flex flex-col items-center gap-1 rounded-2xl bg-white/[0.06] px-2 py-3 transition-colors hover:bg-white/12"
                     >
                       <span className="text-lg">{t.emoji}</span>
-                      <span className="font-sans text-[12px] font-medium text-white/90">{t.label}</span>
+                      <span className="font-sans text-[12px] font-medium text-[#f2ebe0]/90">{t.label}</span>
                     </button>
                   ))}
                 </div>
               </div>
             </div>
 
-            <section className="mt-4 rounded-[28px] bg-white/[0.07] p-6 ring-1 ring-white/12">
+            <section className="mt-4 rounded-[28px] bg-[#1c1f2c]/55 p-6 ring-1 ring-white/10">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-white/75">
+                <div className="flex items-center gap-2 text-[#f2ebe0]/70">
                   <BookOpen className="size-4" strokeWidth={2} />
                   <span className="font-sans text-[11px] font-semibold tracking-[0.16em] uppercase">Popular books</span>
                 </div>
-                <Link to="/books" className="font-sans text-[13px] font-medium text-white/65 hover:text-white">All 66 books →</Link>
+                <Link to="/books" className="font-sans text-[13px] font-medium text-[#a39b90] hover:text-[#f2ebe0]">All 66 books →</Link>
               </div>
               <div className="mt-4 grid grid-cols-3 gap-2 md:grid-cols-6">
                 {POPULAR_BOOKS.map((b) => (
@@ -323,42 +322,42 @@ function Home() {
                     to="/read/$book/$chapter"
                     params={{ book: b.slug, chapter: "1" }}
                     search={{ q: undefined }}
-                    className="rounded-2xl bg-white/8 px-3 py-3.5 text-center transition-colors hover:bg-white/16"
+                    className="rounded-2xl bg-white/[0.06] px-3 py-3.5 text-center transition-colors hover:bg-white/12"
                   >
-                    <p className="font-serif text-[15px] font-medium text-white">{b.name}</p>
-                    <p className="mt-0.5 font-sans text-[11px] text-white/50">{b.chapters} ch.</p>
+                    <p className="font-serif text-[15px] font-medium text-[#f2ebe0]">{b.name}</p>
+                    <p className="mt-0.5 font-sans text-[11px] text-[#a39b90]">{b.chapters} ch.</p>
                   </Link>
                 ))}
               </div>
             </section>
 
             <section className="mt-14">
-              <p className="text-center font-sans text-[11px] font-semibold tracking-[0.18em] text-white/45 uppercase">How it works</p>
-              <h2 className="mt-2 text-center font-serif text-[2rem] font-medium text-white">Three steps to the Word</h2>
+              <p className="text-center font-sans text-[11px] font-semibold tracking-[0.18em] text-[#7a746b] uppercase">How it works</p>
+              <h2 className="mt-2 text-center font-serif text-[2rem] font-medium text-[#f2ebe0]">Three steps to the Word</h2>
               <div className="mt-8 grid gap-4 md:grid-cols-3">
                 {STEPS.map((s) => (
-                  <div key={s.n} className="rounded-[24px] bg-white/[0.06] p-5 ring-1 ring-white/10">
-                    <p className="font-sans text-[12px] font-semibold tracking-[0.2em] text-[#e8d54a]">{s.n}</p>
-                    <p className="mt-2 font-serif text-[1.25rem] text-white">{s.title}</p>
-                    <p className="mt-2 font-sans text-[14px] leading-relaxed text-white/60">{s.body}</p>
+                  <div key={s.n} className="rounded-[24px] bg-[#1c1f2c]/45 p-5 ring-1 ring-white/10">
+                    <p className="font-sans text-[12px] font-semibold tracking-[0.2em] text-[#c5d1c8]">{s.n}</p>
+                    <p className="mt-2 font-serif text-[1.25rem] text-[#f2ebe0]">{s.title}</p>
+                    <p className="mt-2 font-sans text-[14px] leading-relaxed text-[#a39b90]">{s.body}</p>
                   </div>
                 ))}
               </div>
             </section>
 
             <section className="mt-14">
-              <p className="text-center font-sans text-[11px] font-semibold tracking-[0.18em] text-white/45 uppercase">Why Seek</p>
-              <h2 className="mt-2 text-center font-serif text-[2rem] font-medium text-white">Built for everyday reading</h2>
+              <p className="text-center font-sans text-[11px] font-semibold tracking-[0.18em] text-[#7a746b] uppercase">Why Seek</p>
+              <h2 className="mt-2 text-center font-serif text-[2rem] font-medium text-[#f2ebe0]">Built for everyday reading</h2>
               <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {FEATURES.map((f) => {
                   const Icon = f.icon;
                   return (
-                    <div key={f.title} className="rounded-[22px] bg-white/[0.06] p-5 ring-1 ring-white/10">
-                      <span className="inline-flex size-10 items-center justify-center rounded-full bg-white/10 text-[#e8d54a]">
+                    <div key={f.title} className="rounded-[22px] bg-[#1c1f2c]/45 p-5 ring-1 ring-white/10">
+                      <span className="inline-flex size-10 items-center justify-center rounded-full bg-white/10 text-[#c5d1c8]">
                         <Icon className="size-4.5" strokeWidth={1.8} />
                       </span>
-                      <p className="mt-3 font-serif text-[1.1rem] text-white">{f.title}</p>
-                      <p className="mt-1.5 font-sans text-[13.5px] leading-relaxed text-white/55">{f.body}</p>
+                      <p className="mt-3 font-serif text-[1.1rem] text-[#f2ebe0]">{f.title}</p>
+                      <p className="mt-1.5 font-sans text-[13.5px] leading-relaxed text-[#a39b90]">{f.body}</p>
                     </div>
                   );
                 })}
@@ -366,8 +365,8 @@ function Home() {
             </section>
 
             {recent.length > 0 && (
-              <section className="mt-10 rounded-[28px] bg-white/[0.06] p-6 ring-1 ring-white/10">
-                <div className="flex items-center gap-2 text-white/70">
+              <section className="mt-10 rounded-[28px] bg-[#1c1f2c]/45 p-6 ring-1 ring-white/10">
+                <div className="flex items-center gap-2 text-[#a39b90]">
                   <Clock className="size-4" strokeWidth={2} />
                   <span className="font-sans text-[11px] font-semibold tracking-[0.16em] uppercase">Recent searches</span>
                 </div>
@@ -377,7 +376,7 @@ function Home() {
                       key={q}
                       type="button"
                       onClick={() => runExample(q)}
-                      className="rounded-full bg-white/10 px-3.5 py-1.5 font-sans text-[13px] text-white/85 ring-1 ring-white/10 hover:bg-white/18"
+                      className="rounded-full bg-white/[0.08] px-3.5 py-1.5 font-sans text-[13px] text-[#f2ebe0]/85 ring-1 ring-white/10 hover:bg-white/14"
                     >
                       {q}
                     </button>
@@ -386,22 +385,22 @@ function Home() {
               </section>
             )}
 
-            <section className="mt-14 rounded-[32px] bg-white/[0.06] px-8 py-12 text-center ring-1 ring-white/12">
-              <h2 className="font-serif text-[2.25rem] font-medium text-white">Start reading today</h2>
-              <p className="mx-auto mt-3 max-w-md font-sans text-[15px] text-white/65">
+            <section className="mt-14 rounded-[32px] bg-[#1c1f2c]/55 px-8 py-12 text-center ring-1 ring-white/10 backdrop-blur-xl">
+              <h2 className="font-serif text-[2.25rem] font-medium text-[#f2ebe0]">Start reading today</h2>
+              <p className="mx-auto mt-3 max-w-md font-sans text-[15px] text-[#a39b90]">
                 Open the full King James Bible, search any passage, and keep the verses that speak to you.
               </p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
                 <Link
                   to="/books"
-                  className="inline-flex h-12 items-center rounded-full bg-[#e8d54a] px-6 font-sans text-[14px] font-semibold text-[#1c1915] transition-transform active:scale-95"
+                  className="inline-flex h-12 items-center rounded-full bg-[#f2ebe0] px-6 font-sans text-[14px] font-semibold text-[#0b0c11] transition-transform active:scale-95"
                 >
                   Browse books
                 </Link>
                 <Link
                   to="/login"
                   search={{ redirect: "/" }}
-                  className="inline-flex h-12 items-center rounded-full bg-white/10 px-6 font-sans text-[14px] font-medium text-white ring-1 ring-white/15 transition-colors hover:bg-white/15"
+                  className="inline-flex h-12 items-center rounded-full bg-white/10 px-6 font-sans text-[14px] font-medium text-[#f2ebe0] ring-1 ring-white/15 transition-colors hover:bg-white/15"
                 >
                   Sign in to save
                 </Link>
@@ -410,18 +409,18 @@ function Home() {
 
             <footer className="mt-16 border-t border-white/[0.06] pt-8 pb-6">
               <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-                <div className="flex items-center gap-2 text-white">
-                  <LeafMark className="size-4" />
+                <div className="flex items-center gap-2 text-[#f2ebe0]">
+                  <LeafMark className="size-4 text-[#c5d1c8]" />
                   <span className="font-serif text-[1.1rem] tracking-[0.06em]">SEEK</span>
                 </div>
-                <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-[13px] text-white/55">
-                  <Link to="/books" className="hover:text-white">Bible</Link>
-                  <Link to="/saved" className="hover:text-white">Saved</Link>
-                  <Link to="/profile" className="hover:text-white">Profile</Link>
-                  <Link to="/login" search={{ redirect: "/" }} className="hover:text-white">Sign in</Link>
+                <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-[13px] text-[#a39b90]">
+                  <Link to="/books" className="hover:text-[#f2ebe0]">Bible</Link>
+                  <Link to="/saved" className="hover:text-[#f2ebe0]">Saved</Link>
+                  <Link to="/profile" className="hover:text-[#f2ebe0]">Profile</Link>
+                  <Link to="/login" search={{ redirect: "/" }} className="hover:text-[#f2ebe0]">Sign in</Link>
                 </nav>
               </div>
-              <p className="mt-6 text-center font-sans text-[12px] text-white/35">
+              <p className="mt-6 text-center font-sans text-[12px] text-[#7a746b]">
                 King James Version · Public domain · Built for quiet reading
               </p>
             </footer>
