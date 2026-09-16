@@ -40,6 +40,8 @@ export function ChapterReader({
   const prev = adjacentChapter(book, chapter, -1);
   const next = adjacentChapter(book, chapter, 1);
 
+  // Keep every chapter the user has already read visible.
+  const [minChapter, setMinChapter] = useState(chapter);
   const [maxUnlocked, setMaxUnlocked] = useState(chapter);
   const [prompt, setPrompt] = useState<{
     finished: number;
@@ -47,14 +49,22 @@ export function ChapterReader({
   } | null>(null);
 
   useEffect(() => {
+    setMinChapter(chapter);
     setMaxUnlocked(chapter);
     setPrompt(null);
-  }, [book.slug, chapter]);
+  }, [book.slug]);
+
+  useEffect(() => {
+    setMinChapter((prev) => Math.min(prev, chapter));
+    setMaxUnlocked((prev) => Math.max(prev, chapter));
+    setPrompt(null);
+  }, [chapter]);
 
   const blocks: ChapterBlock[] = useMemo(() => {
     const out: ChapterBlock[] = [];
+    const start = Math.max(1, minChapter);
     const end = Math.min(maxUnlocked, book.chapters.length);
-    for (let ch = chapter; ch <= end; ch++) {
+    for (let ch = start; ch <= end; ch++) {
       if (bible) {
         out.push({ chapter: ch, verses: getChapter(bible, book.index, ch) });
       } else if (ch === chapter) {
@@ -62,7 +72,7 @@ export function ChapterReader({
       }
     }
     return out;
-  }, [bible, book, chapter, maxUnlocked, initialVerses]);
+  }, [bible, book, chapter, minChapter, maxUnlocked, initialVerses]);
 
   const [activeChapter, setActiveChapter] = useState(chapter);
   const sectionRefs = useRef<Map<number, HTMLElement>>(new Map());
@@ -114,7 +124,7 @@ export function ChapterReader({
 
     for (const el of roots) io.observe(el);
     return () => io.disconnect();
-  }, [blocks.length, book.slug, maxUnlocked]);
+  }, [blocks.length, book.slug, maxUnlocked, minChapter]);
 
   const onChapterEnd = useCallback(
     (finishedChapter: number) => {
@@ -178,45 +188,68 @@ export function ChapterReader({
               {activeVerses} verses
               <span className="text-faint"> · </span>
               {book.testament === "OT" ? "OT" : "NT"}
+              {minChapter < maxUnlocked && (
+                <>
+                  <span className="text-faint"> · </span>
+                  Showing ch. {minChapter}–{maxUnlocked}
+                </>
+              )}
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-1">
             <ReadingModeToggle />
-            {prev ? (
-              <Link
-                to="/read/$book/$chapter"
-                params={{ book: prev.slug, chapter: String(prev.chapter) }}
-                search={{ q: undefined }}
-                aria-label="Previous chapter"
-                className="inline-flex size-11 items-center justify-center rounded-full text-ink transition-transform duration-150 active:scale-[0.96] hover:bg-ink/8"
-              >
-                <ChevronLeft className="size-5" />
-              </Link>
-            ) : (
-              <span className="inline-flex size-11 items-center justify-center rounded-full text-faint opacity-40">
-                <ChevronLeft className="size-5" />
-              </span>
-            )}
-            {next ? (
-              <Link
-                to="/read/$book/$chapter"
-                params={{ book: next.slug, chapter: String(next.chapter) }}
-                search={{ q: undefined }}
-                aria-label="Next chapter"
-                className="inline-flex size-11 items-center justify-center rounded-full text-ink transition-transform duration-150 active:scale-[0.96] hover:bg-ink/8"
-              >
-                <ChevronRight className="size-5" />
-              </Link>
-            ) : (
-              <span className="inline-flex size-11 items-center justify-center rounded-full text-faint opacity-40">
-                <ChevronRight className="size-5" />
-              </span>
-            )}
+            <div className="flex items-center gap-0.5 rounded-full bg-ink/5 p-0.5 dark:bg-white/8">
+              {prev ? (
+                <Link
+                  to="/read/$book/$chapter"
+                  params={{ book: prev.book.slug, chapter: String(prev.chapter) }}
+                  search={{ q: undefined }}
+                  aria-label="Previous chapter"
+                  className="flex size-9 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/8"
+                >
+                  <ChevronLeft className="size-4" strokeWidth={2} />
+                </Link>
+              ) : (
+                <span className="flex size-9 items-center justify-center text-faint">
+                  <ChevronLeft className="size-4" strokeWidth={2} />
+                </span>
+              )}
+              {next ? (
+                <button
+                  type="button"
+                  aria-label="Next chapter"
+                  onClick={() => {
+                    if (next.chapter <= maxUnlocked) {
+                      void navigate({
+                        to: "/read/$book/$chapter",
+                        params: {
+                          book: next.book.slug,
+                          chapter: String(next.chapter),
+                        },
+                        search: { q: undefined },
+                      });
+                    } else {
+                      setPrompt({
+                        finished: maxUnlocked,
+                        nextChapter: next.chapter,
+                      });
+                    }
+                  }}
+                  className="flex size-9 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/8"
+                >
+                  <ChevronRight className="size-4" strokeWidth={2} />
+                </button>
+              ) : (
+                <span className="flex size-9 items-center justify-center text-faint">
+                  <ChevronRight className="size-4" strokeWidth={2} />
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="px-1 pt-2">
+      <div className="mx-auto max-w-2xl pt-2">
         {blocks.map((block) => (
           <section
             key={block.chapter}
@@ -227,126 +260,87 @@ export function ChapterReader({
             }}
             className="mb-2 scroll-mt-32"
           >
-            <div className="mb-4 flex items-center gap-3 pt-2">
-              <span className="h-px flex-1 bg-line/80" />
-              <span className="font-sans text-[11px] font-semibold tracking-[0.16em] text-muted uppercase">
-                {book.abbrev} {block.chapter}
-              </span>
-              <span className="h-px flex-1 bg-line/80" />
-            </div>
-
-            <article className="pb-2">
+            <p className="mb-4 text-center font-sans text-[11px] font-medium tracking-[0.2em] text-muted uppercase">
+              {book.abbrev.toUpperCase()} {block.chapter}
+            </p>
+            <div className="space-y-0">
               {block.verses.map((v) => {
-                const saved = isSaved(book.slug, v.chapter, v.verse);
+                const saved = isSaved(v);
                 return (
-                  <p
-                    key={`${block.chapter}-${v.verse}`}
+                  <div
+                    key={v.i}
                     id={`c${block.chapter}-v${v.verse}`}
                     className="group relative -mx-2 mb-3 scroll-mt-32 rounded-xl px-2 py-1"
                   >
-                    <button
-                      type="button"
-                      className="mr-1.5 align-super font-sans text-[11px] font-medium text-muted tabular-nums hover:text-ink"
-                      onClick={async () => {
-                        const citation = formatRef(book, v.chapter, v.verse);
-                        try {
-                          await navigator.clipboard.writeText(
-                            `${citation} — ${v.text}`,
+                    <p className="font-serif text-[1.05rem] leading-[1.65] text-ink">
+                      <sup className="mr-1.5 font-sans text-[11px] font-medium text-muted tabular-nums">
+                        {v.verse}
+                      </sup>
+                      <Highlighted text={v.text} matched={highlight} />
+                      <button
+                        type="button"
+                        aria-label={saved ? "Remove bookmark" : "Bookmark verse"}
+                        onClick={() => {
+                          toggleSaved(v);
+                          toast.success(
+                            saved ? "Removed from saved" : "Saved",
                           );
-                          toast("Copied verse");
-                        } catch {
-                          toast("Could not copy");
-                        }
-                      }}
-                      aria-label={`Copy ${formatRef(book, v.chapter, v.verse)}`}
-                    >
-                      {v.verse}
-                    </button>
-                    <Highlighted text={v.text} needles={highlight} />
-                    <button
-                      type="button"
-                      className={cn(
-                        "ml-1.5 inline-flex size-8 translate-y-0.5 items-center justify-center rounded-full text-faint transition-colors",
-                        saved ? "text-forest" : "opacity-70 hover:text-ink",
-                      )}
-                      aria-label={saved ? "Remove from saved" : "Save verse"}
-                      onClick={() =>
-                        void toggleSaved({
-                          book: book.name,
-                          slug: book.slug,
-                          chapter: v.chapter,
-                          verse: v.verse,
-                          text: v.text,
-                        })
-                      }
-                    >
-                      {saved ? (
-                        <BookmarkCheck className="size-3.5" />
-                      ) : (
-                        <Bookmark className="size-3.5" />
-                      )}
-                    </button>
-                  </p>
+                        }}
+                        className="ml-1.5 inline-flex translate-y-0.5 align-baseline text-muted opacity-0 transition-opacity group-hover:opacity-100"
+                      >
+                        {saved ? (
+                          <BookmarkCheck className="size-3.5 text-forest" strokeWidth={2} />
+                        ) : (
+                          <Bookmark className="size-3.5" strokeWidth={1.8} />
+                        )}
+                      </button>
+                    </p>
+                  </div>
                 );
               })}
-            </article>
-
-            {block.chapter === maxUnlocked && (
-              <ChapterEndSentinel
-                chapter={block.chapter}
-                onEnd={onChapterEnd}
-                blocked={!!prompt}
-              />
-            )}
+            </div>
+            <ChapterEndSensor
+              chapter={block.chapter}
+              onEnd={onChapterEnd}
+              isLastUnlocked={block.chapter === maxUnlocked}
+            />
           </section>
         ))}
-
-        {!prompt && maxUnlocked >= book.chapters.length && (
-          <p className="py-8 text-center font-sans text-[12px] text-faint">
-            End of {book.name}
-          </p>
-        )}
       </div>
 
       {prompt && (
         <div
-          className="fixed inset-0 z-[80] flex items-end justify-center bg-black/50 p-4 backdrop-blur-[2px] sm:items-center"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 backdrop-blur-[2px] sm:items-center"
           role="dialog"
           aria-modal="true"
-          aria-labelledby="next-ch-title"
+          aria-labelledby="next-chapter-title"
         >
-          <div className="w-full max-w-sm rounded-[28px] bg-paper p-6 text-ink shadow-[0_24px_64px_rgba(0,0,0,0.35)] ring-1 ring-black/10 dark:bg-[#1a1c22] dark:ring-white/10">
+          <div className="w-full max-w-sm rounded-[24px] bg-paper p-5 shadow-2xl ring-1 ring-black/10 dark:ring-white/10">
             <p
-              id="next-ch-title"
-              className="font-serif text-[1.35rem] font-medium tracking-tight"
+              id="next-chapter-title"
+              className="font-serif text-[1.25rem] font-medium text-ink"
             >
               Chapter {prompt.finished} finished
             </p>
-            <p className="mt-2 font-sans text-[14px] leading-relaxed text-muted">
-              {prompt.nextChapter != null
+            <p className="mt-1.5 font-sans text-[14px] text-muted">
+              {prompt.nextChapter
                 ? `Continue to ${book.name} ${prompt.nextChapter}, or stay on chapter ${prompt.finished}?`
-                : `You've reached the end of ${book.name}. ${
-                    BOOKS[book.index + 1]
-                      ? `Open ${BOOKS[book.index + 1].name}, or stay here?`
-                      : "Stay on this chapter?"
-                  }`}
+                : "Stay on this chapter?"}
             </p>
-            <div className="mt-5 grid gap-2">
-              {(prompt.nextChapter != null || BOOKS[book.index + 1]) && (
-                <button
-                  type="button"
-                  onClick={goNext}
-                  className="flex h-12 items-center justify-center rounded-full bg-ink font-sans text-[14px] font-medium text-paper transition-transform active:scale-[0.98]"
-                >
-                  {prompt.nextChapter != null
-                    ? `Next chapter (${prompt.nextChapter})`
-                    : `Open ${BOOKS[book.index + 1]?.name}`}
-                </button>
-              )}
+            <div className="mt-5 flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={goNext}
+                className="h-11 rounded-full bg-ink font-sans text-[14px] font-medium text-paper"
+              >
+                {prompt.nextChapter
+                  ? `Next chapter (${prompt.nextChapter})`
+                  : "Done"}
+              </button>
               <button
                 type="button"
                 onClick={stayHere}
-                className="flex h-12 items-center justify-center rounded-full bg-ink/8 font-sans text-[14px] font-medium text-ink transition-transform active:scale-[0.98] dark:bg-white/10"
+                className="h-11 rounded-full bg-ink/8 font-sans text-[14px] font-medium text-ink dark:bg-white/10"
               >
                 Stay on chapter {prompt.finished}
               </button>
@@ -358,60 +352,50 @@ export function ChapterReader({
   );
 }
 
-function ChapterEndSentinel({
+function ChapterEndSensor({
   chapter,
   onEnd,
-  blocked,
+  isLastUnlocked,
 }: {
   chapter: number;
   onEnd: (ch: number) => void;
-  blocked: boolean;
+  isLastUnlocked: boolean;
 }) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const fired = useRef(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fired.current = false;
-  }, [chapter]);
-
-  useEffect(() => {
+    if (!isLastUnlocked) return;
     const el = ref.current;
-    if (!el || blocked) return;
+    if (!el) return;
 
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (!entry?.isIntersecting) return;
-        if (fired.current) return;
-        fired.current = true;
-        onEnd(chapter);
+        if (entry?.isIntersecting) onEnd(chapter);
       },
-      { root: null, rootMargin: "0px 0px -8% 0px", threshold: 0.55 },
+      { root: null, rootMargin: "0px", threshold: 0.6 },
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [chapter, onEnd, blocked]);
+  }, [chapter, onEnd, isLastUnlocked]);
 
-  return (
-    <div
-      ref={ref}
-      className="flex h-20 flex-col items-center justify-center gap-2"
-      aria-hidden
-    >
-      <span className="h-px w-12 bg-line/60" />
-      <span className="font-sans text-[11px] text-faint">End of chapter {chapter}</span>
-    </div>
-  );
+  return <div ref={ref} className="h-8" aria-hidden />;
 }
 
-function adjacentChapter(book: BookMeta, chapter: number, dir: -1 | 1) {
-  const nextNum = chapter + dir;
-  if (nextNum >= 1 && nextNum <= book.chapters.length) {
-    return { slug: book.slug, chapter: nextNum };
+function adjacentChapter(
+  book: BookMeta,
+  chapter: number,
+  dir: -1 | 1,
+): { book: BookMeta; chapter: number } | null {
+  const next = chapter + dir;
+  if (next >= 1 && next <= book.chapters.length) {
+    return { book, chapter: next };
   }
-  const neighbor = BOOKS[book.index + dir];
-  if (!neighbor) return null;
-  return {
-    slug: neighbor.slug,
-    chapter: dir === 1 ? 1 : neighbor.chapters.length,
-  };
+  if (dir === 1) {
+    const nb = BOOKS[book.index + 1];
+    if (nb) return { book: nb, chapter: 1 };
+  } else {
+    const pb = BOOKS[book.index - 1];
+    if (pb) return { book: pb, chapter: pb.chapters.length };
+  }
+  return null;
 }
