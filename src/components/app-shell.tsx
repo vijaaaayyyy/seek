@@ -145,12 +145,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
           </header>
 
-          <main
-            className={cn(
-              "hide-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pb-28",
-              isHome && "overflow-hidden",
-            )}
-          >
+          <main className="hide-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pb-28">
             {children}
           </main>
 
