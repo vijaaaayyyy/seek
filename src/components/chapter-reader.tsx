@@ -24,7 +24,7 @@ type ChapterBlock = {
 export function ChapterReader({
   book,
   chapter,
-  verses: _initialVerses,
+  verses: initialVerses,
   highlight = [],
   focusVerse,
 }: {
@@ -40,40 +40,50 @@ export function ChapterReader({
   const prev = adjacentChapter(book, chapter, -1);
   const next = adjacentChapter(book, chapter, 1);
 
-  const blocks: ChapterBlock[] = useMemo(() => {
-    if (!bible) {
-      return [{ chapter, verses: _initialVerses }];
-    }
-    const out: ChapterBlock[] = [];
-    for (let ch = 1; ch <= book.chapters.length; ch++) {
-      out.push({ chapter: ch, verses: getChapter(bible, book.index, ch) });
-    }
-    return out;
-  }, [bible, book, chapter, _initialVerses]);
-
-  const [activeChapter, setActiveChapter] = useState(chapter);
+  const [maxUnlocked, setMaxUnlocked] = useState(chapter);
   const [prompt, setPrompt] = useState<{
     finished: number;
     nextChapter: number | null;
   } | null>(null);
-  const dismissedRef = useRef<Set<number>>(new Set());
+
+  useEffect(() => {
+    setMaxUnlocked(chapter);
+    setPrompt(null);
+  }, [book.slug, chapter]);
+
+  const blocks: ChapterBlock[] = useMemo(() => {
+    const out: ChapterBlock[] = [];
+    const end = Math.min(maxUnlocked, book.chapters.length);
+    for (let ch = chapter; ch <= end; ch++) {
+      if (bible) {
+        out.push({ chapter: ch, verses: getChapter(bible, book.index, ch) });
+      } else if (ch === chapter) {
+        out.push({ chapter: ch, verses: initialVerses });
+      }
+    }
+    return out;
+  }, [bible, book, chapter, maxUnlocked, initialVerses]);
+
+  const [activeChapter, setActiveChapter] = useState(chapter);
   const sectionRefs = useRef<Map<number, HTMLElement>>(new Map());
-  const scrollerRef = useRef<HTMLDivElement | null>(null);
   const didInitialScroll = useRef(false);
+
+  useEffect(() => {
+    setActiveChapter(chapter);
+  }, [chapter]);
 
   useEffect(() => {
     if (didInitialScroll.current) return;
     didInitialScroll.current = true;
-    const targetCh = chapter;
     const run = () => {
       if (focusVerse) {
-        const el = document.getElementById(`c${targetCh}-v${focusVerse}`);
+        const el = document.getElementById(`c${chapter}-v${focusVerse}`);
         if (el) {
           el.scrollIntoView({ block: "center", behavior: "auto" });
           return;
         }
       }
-      const sec = sectionRefs.current.get(targetCh);
+      const sec = sectionRefs.current.get(chapter);
       if (sec) sec.scrollIntoView({ block: "start", behavior: "auto" });
     };
     requestAnimationFrame(() => requestAnimationFrame(run));
@@ -93,59 +103,54 @@ export function ChapterReader({
             best = { ch, ratio: e.intersectionRatio };
           }
         }
-        if (best && best.ratio > 0.15) {
-          setActiveChapter(best.ch);
-        }
+        if (best && best.ratio > 0.12) setActiveChapter(best.ch);
       },
       {
         root: null,
-        rootMargin: "-20% 0px -55% 0px",
-        threshold: [0, 0.15, 0.35, 0.55, 0.75, 1],
+        rootMargin: "-25% 0px -50% 0px",
+        threshold: [0, 0.12, 0.3, 0.5, 0.75, 1],
       },
     );
 
     for (const el of roots) io.observe(el);
     return () => io.disconnect();
-  }, [blocks.length, book.slug]);
+  }, [blocks.length, book.slug, maxUnlocked]);
 
   const onChapterEnd = useCallback(
     (finishedChapter: number) => {
       if (prompt) return;
-      if (dismissedRef.current.has(finishedChapter)) return;
+      if (finishedChapter !== maxUnlocked) return;
 
       const nextCh =
         finishedChapter < book.chapters.length ? finishedChapter + 1 : null;
-
       setPrompt({ finished: finishedChapter, nextChapter: nextCh });
     },
-    [book.chapters.length, prompt],
+    [book.chapters.length, prompt, maxUnlocked],
   );
 
   function stayHere() {
-    if (!prompt) return;
-    dismissedRef.current.add(prompt.finished);
     setPrompt(null);
   }
 
   function goNext() {
     if (!prompt) return;
-    const finished = prompt.finished;
-    dismissedRef.current.add(finished);
     const nextCh = prompt.nextChapter;
     setPrompt(null);
 
     if (nextCh != null) {
-      const sec = sectionRefs.current.get(nextCh);
-      if (sec) {
-        sec.scrollIntoView({ block: "start", behavior: "smooth" });
-        setActiveChapter(nextCh);
-        void navigate({
-          to: "/read/$book/$chapter",
-          params: { book: book.slug, chapter: String(nextCh) },
-          search: { q: undefined },
-          replace: true,
+      setMaxUnlocked(nextCh);
+      void navigate({
+        to: "/read/$book/$chapter",
+        params: { book: book.slug, chapter: String(nextCh) },
+        search: { q: undefined },
+        replace: true,
+      });
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const sec = sectionRefs.current.get(nextCh);
+          if (sec) sec.scrollIntoView({ block: "start", behavior: "smooth" });
         });
-      }
+      });
     } else {
       const neighbor = BOOKS[book.index + 1];
       if (neighbor) {
@@ -162,9 +167,9 @@ export function ChapterReader({
     blocks.find((b) => b.chapter === activeChapter)?.verses.length ?? 0;
 
   return (
-    <div className="relative pb-6">
-      <div className="sticky top-0 z-20 px-0.5 pb-2">
-        <div className="glass glass-strong flex items-center justify-between gap-2 rounded-[22px] py-1.5 pr-1.5 pl-1">
+    <div className="relative pb-8">
+      <div className="sticky top-0 z-20 -mx-1 mb-1 px-0.5 pb-2 pt-0.5">
+        <div className="glass glass-strong flex items-center justify-between gap-2 rounded-[22px] py-1.5 pr-1.5 pl-1 shadow-sm">
           <div className="min-w-0">
             <BookPicker book={book} chapter={activeChapter} />
             <p className="px-3 font-sans text-[11px] text-muted">
@@ -211,7 +216,7 @@ export function ChapterReader({
         </div>
       </div>
 
-      <div ref={scrollerRef} className="px-1">
+      <div className="px-1 pt-2">
         {blocks.map((block) => (
           <section
             key={block.chapter}
@@ -220,9 +225,9 @@ export function ChapterReader({
               if (el) sectionRefs.current.set(block.chapter, el);
               else sectionRefs.current.delete(block.chapter);
             }}
-            className="mb-2 scroll-mt-28"
+            className="mb-2 scroll-mt-32"
           >
-            <div className="mb-4 flex items-center gap-3 pt-4">
+            <div className="mb-4 flex items-center gap-3 pt-2">
               <span className="h-px flex-1 bg-line/80" />
               <span className="font-sans text-[11px] font-semibold tracking-[0.16em] text-muted uppercase">
                 {book.abbrev} {block.chapter}
@@ -237,7 +242,7 @@ export function ChapterReader({
                   <p
                     key={`${block.chapter}-${v.verse}`}
                     id={`c${block.chapter}-v${v.verse}`}
-                    className="group relative -mx-2 mb-3 scroll-mt-36 rounded-xl px-2 py-1"
+                    className="group relative -mx-2 mb-3 scroll-mt-32 rounded-xl px-2 py-1"
                   >
                     <button
                       type="button"
@@ -286,22 +291,26 @@ export function ChapterReader({
               })}
             </article>
 
-            <ChapterEndSentinel
-              chapter={block.chapter}
-              onEnd={onChapterEnd}
-              disabled={!!prompt || dismissedRef.current.has(block.chapter)}
-            />
+            {block.chapter === maxUnlocked && (
+              <ChapterEndSentinel
+                chapter={block.chapter}
+                onEnd={onChapterEnd}
+                blocked={!!prompt}
+              />
+            )}
           </section>
         ))}
 
-        <p className="py-8 text-center font-sans text-[12px] text-faint">
-          End of {book.name}
-        </p>
+        {!prompt && maxUnlocked >= book.chapters.length && (
+          <p className="py-8 text-center font-sans text-[12px] text-faint">
+            End of {book.name}
+          </p>
+        )}
       </div>
 
       {prompt && (
         <div
-          className="fixed inset-0 z-[80] flex items-end justify-center bg-black/45 p-4 backdrop-blur-[2px] sm:items-center"
+          className="fixed inset-0 z-[80] flex items-end justify-center bg-black/50 p-4 backdrop-blur-[2px] sm:items-center"
           role="dialog"
           aria-modal="true"
           aria-labelledby="next-ch-title"
@@ -352,11 +361,11 @@ export function ChapterReader({
 function ChapterEndSentinel({
   chapter,
   onEnd,
-  disabled,
+  blocked,
 }: {
   chapter: number;
   onEnd: (ch: number) => void;
-  disabled: boolean;
+  blocked: boolean;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const fired = useRef(false);
@@ -367,7 +376,7 @@ function ChapterEndSentinel({
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || disabled) return;
+    if (!el || blocked) return;
 
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -376,19 +385,20 @@ function ChapterEndSentinel({
         fired.current = true;
         onEnd(chapter);
       },
-      { root: null, rootMargin: "0px", threshold: 0.6 },
+      { root: null, rootMargin: "0px 0px -8% 0px", threshold: 0.55 },
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [chapter, onEnd, disabled]);
+  }, [chapter, onEnd, blocked]);
 
   return (
     <div
       ref={ref}
-      className="flex h-16 items-center justify-center"
+      className="flex h-20 flex-col items-center justify-center gap-2"
       aria-hidden
     >
       <span className="h-px w-12 bg-line/60" />
+      <span className="font-sans text-[11px] text-faint">End of chapter {chapter}</span>
     </div>
   );
 }
