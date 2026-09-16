@@ -39,31 +39,32 @@
 .dark {
   color-scheme: dark;
 
-  --paper: #0b0c11;
-  --surface: #16171f;
-  --ink: #f2ebe0;
-  --muted: #a39b90;
-  --faint: #7a746b;
-  --line: color-mix(in oklab, var(--ink) 14%, transparent);
-  --forest: #c5d1c8;
-  --forest-fg: #121410;
-  --mark: #5a4c2e;
-  --wash: color-mix(in oklab, var(--ink) 8%, transparent);
-  --tint: #c5d1c8;
+  /* Higher-contrast dark palette so text/cards stay readable */
+  --paper: #0c0d12;
+  --surface: #1a1c26;
+  --ink: #f5f0e8;
+  --muted: #c4bbb0;
+  --faint: #9a9085;
+  --line: color-mix(in oklab, var(--ink) 18%, transparent);
+  --forest: #d2dfd4;
+  --forest-fg: #10140f;
+  --mark: #6b5a32;
+  --wash: color-mix(in oklab, var(--ink) 12%, transparent);
+  --tint: #d2dfd4;
 
-  --glass-fill: color-mix(in oklab, #1c1f2c 48%, transparent);
-  --glass-fill-strong: color-mix(in oklab, #1c1f2c 70%, transparent);
-  --glass-stroke: color-mix(in oklab, #ffffff 16%, transparent);
-  --glass-sheen: color-mix(in oklab, #ffffff 22%, transparent);
-  --glass-inset: color-mix(in oklab, #000000 40%, transparent);
-  --glass-drop: color-mix(in oklab, #000000 55%, transparent);
+  --glass-fill: color-mix(in oklab, #222636 72%, transparent);
+  --glass-fill-strong: color-mix(in oklab, #2a2f40 88%, transparent);
+  --glass-stroke: color-mix(in oklab, #ffffff 22%, transparent);
+  --glass-sheen: color-mix(in oklab, #ffffff 28%, transparent);
+  --glass-inset: color-mix(in oklab, #000000 35%, transparent);
+  --glass-drop: color-mix(in oklab, #000000 50%, transparent);
   --glass-blur: 36px;
 
   --orb-a: #2a3558;
   --orb-b: #3a2e1c;
   --orb-c: #1a2238;
 
-  --banner: #181e28;
+  --banner: #1a2030;
 }
 
 @theme {
