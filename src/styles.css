@@ -181,12 +181,48 @@
     -webkit-backdrop-filter: blur(var(--glass-blur));
     box-shadow:
       inset 0 1px 0 0 var(--glass-sheen),
-      0 1px 2px var(--glass-inset),
       0 8px 24px var(--glass-drop);
     border: 1px solid var(--glass-stroke);
   }
 
   .glass-strong {
     background: var(--glass-fill-strong);
+  }
+
+  /* Slow drift through the forest canopy (home background) */
+  .forest-drift {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120%;
+    height: 120%;
+    max-width: none;
+    object-fit: cover;
+    object-position: center 40%;
+    will-change: transform;
+    animation: forest-drift 55s ease-in-out infinite alternate;
+  }
+
+  @keyframes forest-drift {
+    0% {
+      transform: translate(-53%, -52%) scale(1.03);
+    }
+    50% {
+      transform: translate(-47%, -48%) scale(1.08);
+    }
+    100% {
+      transform: translate(-51%, -46%) scale(1.04);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .forest-drift {
+      animation: none;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform: none;
+    }
   }
 }

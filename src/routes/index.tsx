@@ -113,12 +113,12 @@ function Home() {
 
   return (
     <div className="relative">
-      {/* One continuous tree canopy — no cream band divide */}
-      <div className="pointer-events-none fixed inset-0 z-0">
+      {/* Continuous forest canopy — slowly drifts */}
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80"
           alt=""
-          className="h-full w-full object-cover object-[center_40%]"
+          className="forest-drift"
           decoding="async"
           fetchPriority="high"
         />
@@ -353,7 +353,7 @@ function Home() {
 
           <section id="about-mobile" className={cn(card, "mt-6 p-4")}>
             <p className="font-sans text-[11px] font-semibold tracking-[0.12em] text-muted uppercase">About SEEK</p>
-            <p className="mt-2 font-sans text-[13px] leading-relaxed text-muted">A quiet place to search and read the King James Bible — God's love, mercy, the sacrifice of Christ, and agape that never ends.</p>
+            <p className="mt-2 font-sans text-[13px] leading-relaxed text-muted">A quiet place to search and read the King James Bible — God&apos;s love, mercy, the sacrifice of Christ, and agape that never ends.</p>
             <div className="mt-3 space-y-1 font-sans text-[13px]">
               <p><a href={`mailto:${CONTACT_EMAIL}`} className="text-forest underline-offset-2 hover:underline">{CONTACT_EMAIL}</a></p>
               <p><a href={`mailto:${CONTACT_EMAIL}?subject=SEEK%20bug%20report`} className="text-muted underline-offset-2 hover:underline">Report a bug</a></p>
