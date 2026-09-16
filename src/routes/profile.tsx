@@ -1,15 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
-  Bell,
   BookOpen,
   ChevronRight,
-  CircleHelp,
-  Info,
-  Languages,
-  LockKeyhole,
   LogOut,
   Moon,
   Palette,
+  Sun,
   UserRound,
 } from "lucide-react";
 import { useState } from "react";
@@ -28,13 +24,8 @@ type Row = {
   onClick?: () => void;
 };
 
-function Section({
-  title,
-  rows,
-}: {
-  title: string;
-  rows: Row[];
-}) {
+function Section({ title, rows }: { title: string; rows: Row[] }) {
+  if (rows.length === 0) return null;
   return (
     <section className="mt-5">
       <p className="mb-2 px-1 font-sans text-[11px] font-medium tracking-[0.14em] text-muted uppercase">
@@ -58,7 +49,7 @@ function Section({
             </>
           );
           const className = cn(
-            "flex w-full items-center gap-3 px-3.5 py-3 transition-colors",
+            "flex w-full items-center gap-3 px-3.5 py-3.5 transition-colors",
             i > 0 && "border-t border-line/80",
             "active:bg-ink/4",
           );
@@ -70,7 +61,12 @@ function Section({
             );
           }
           return (
-            <button key={row.label} type="button" onClick={row.onClick} className={className}>
+            <button
+              key={row.label}
+              type="button"
+              onClick={row.onClick}
+              className={className}
+            >
               {inner}
             </button>
           );
@@ -90,8 +86,12 @@ function ProfilePage() {
   const email = user?.primaryEmail ?? "Sign in to sync your saves";
   const initial = name.charAt(0).toUpperCase();
 
+  const themeIcon = theme === "dark" ? Moon : theme === "light" ? Sun : Palette;
+  const themeLabel =
+    theme === "dark" ? "Dark" : theme === "light" ? "Light" : "System";
+
   return (
-    <div className="pb-4">
+    <div className="mx-auto w-full max-w-md pb-4">
       <h1 className="text-center font-serif text-[1.35rem] font-medium tracking-tight text-ink">
         Profile
       </h1>
@@ -120,57 +120,52 @@ function ProfilePage() {
         <Link
           to="/login"
           search={{ redirect: "/profile" }}
-          className="mt-3 flex items-center justify-center rounded-full bg-ink px-4 py-3 font-sans text-[14px] font-medium text-paper transition-transform active:scale-[0.98]"
+          className="mt-3 flex items-center justify-center rounded-full bg-ink px-4 py-3.5 font-sans text-[14px] font-medium text-paper transition-transform active:scale-[0.98]"
         >
           Sign in
         </Link>
       )}
 
       <Section
-        title="Account"
+        title="Library"
         rows={[
-          {
-            label: "Manage Profile",
-            icon: UserRound,
-            to: user ? undefined : "/login",
-            onClick: user
-              ? undefined
-              : () => void navigate({ to: "/login", search: { redirect: "/profile" } }),
-          },
-          {
-            label: "Password & Security",
-            icon: LockKeyhole,
-            to: user ? undefined : "/login",
-          },
-          { label: "Notifications", icon: Bell },
-          { label: "Language", icon: Languages, value: "English" },
+          { label: "Saved verses", icon: BookOpen, to: "/saved" },
+          { label: "Browse Bible", icon: BookOpen, to: "/books" },
         ]}
       />
 
       <Section
         title="Preferences"
         rows={[
-          { label: "About Seek", icon: Info, to: "/" },
           {
             label: "Theme",
-            icon: theme === "dark" ? Moon : Palette,
-            value: theme === "dark" ? "Dark" : "Light",
+            icon: themeIcon,
+            value: themeLabel,
             onClick: toggle,
           },
-          { label: "Saved verses", icon: BookOpen, to: "/saved" },
         ]}
       />
 
       <Section
-        title="Support"
+        title="Account"
         rows={[
-          { label: "Help Center", icon: CircleHelp },
+          ...(user
+            ? []
+            : [
+                {
+                  label: "Sign in",
+                  icon: UserRound,
+                  onClick: () =>
+                    void navigate({ to: "/login", search: { redirect: "/profile" } }),
+                } satisfies Row,
+              ]),
           ...(authEnabled && user
             ? [
                 {
                   label: signingOut ? "Signing out…" : "Sign out",
                   icon: LogOut,
                   onClick: () => {
+                    if (signingOut) return;
                     setSigningOut(true);
                     void signOut().catch(() => setSigningOut(false));
                   },
