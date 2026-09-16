@@ -115,22 +115,24 @@ function Home() {
   }
 
   return (
-    <div className="relative">
-      {/* ── HERO on the canopy photo ── */}
-      <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80"
-            alt=""
-            className="forest-drift"
-            decoding="async"
-            fetchPriority="high"
-          />
-          <div className="absolute inset-0 bg-black/50" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_70%_at_50%_30%,rgba(6,10,8,0.15)_0%,rgba(6,10,8,0.72)_100%)]" />
-        </div>
+    <div className="relative bg-paper">
+      {/* Forest spans the hero and first content so the photo dissolves into the page */}
+      <div
+        className="forest-melt pointer-events-none absolute inset-x-0 top-0 z-0 h-[calc(100dvh+16rem)] overflow-hidden sm:h-[calc(100dvh+20rem)]"
+        aria-hidden
+      >
+        <img
+          src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80"
+          alt=""
+          className="forest-drift"
+          decoding="async"
+          fetchPriority="high"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/58 via-black/32 via-[46%] to-transparent" />
+      </div>
 
-        <div className="relative z-10 flex min-h-[92dvh] flex-col items-center justify-center px-6 pt-24 pb-20 text-center">
+      <section className="relative z-10">
+        <div className="flex min-h-[84dvh] flex-col items-center justify-center px-6 pt-24 pb-8 text-center sm:min-h-[86dvh]">
           <div className="flex items-center gap-2 text-white/90">
             <LeafMark className="size-5 text-[#9cc49f]" />
             <span className="font-serif text-[1.2rem] tracking-[0.06em]">SEEK</span>
@@ -176,14 +178,11 @@ function Home() {
             <ChevronRight className="size-4 -rotate-90" strokeWidth={1.6} />
           </a>
         </div>
-
-        {/* Melt the canopy into the paper below */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-paper sm:h-40" aria-hidden />
       </section>
 
-      {/* ── CONTENT on paper ── */}
-      <div id="start" className="relative z-10 bg-paper">
-        <div className="mx-auto w-full max-w-5xl px-5 pt-16 pb-6 sm:px-6">
+      {/* First block sits in the forest melt — no hard cream cut */}
+      <div id="start" className="relative z-10 scroll-mt-8">
+        <div className="mx-auto w-full max-w-5xl px-5 pt-2 pb-10 sm:px-6 sm:pt-4">
           {/* The heart of the Gospel */}
           <div className="mx-auto max-w-2xl text-center">
             <div className="mx-auto flex size-10 items-center justify-center rounded-full border border-forest/25 text-forest">
@@ -204,9 +203,12 @@ function Home() {
               </div>
             ))}
           </div>
+        </div>
 
+        <div className="relative bg-paper">
+        <div className="mx-auto w-full max-w-5xl px-5 pb-6 sm:px-6">
           {/* The heart of the Gospel — featured verse */}
-          <section className="mt-12">
+          <section className="mt-8">
             <Link
               to="/read/$book/$chapter"
               params={{ book: FEATURED.book, chapter: FEATURED.chapter }}
@@ -383,10 +385,10 @@ function Home() {
         {/* ── FULL-WIDTH ANTIQUE PARCHMENT FOOTER ── */}
         <footer className="relative mt-10 overflow-hidden border-t border-[#8a764f]/25 bg-[#e7d8b7]">
           <img
-            src="/footer-bg-textfree.jpg"
+            src="/footer-parchment.jpg"
             alt=""
             loading="lazy"
-            className="pointer-events-none absolute inset-0 h-full w-full object-cover object-top opacity-[0.16] mix-blend-multiply blur-[1px]"
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover object-top opacity-45 mix-blend-multiply"
           />
           <div
             aria-hidden
@@ -467,16 +469,14 @@ function Home() {
             </div>
           </div>
 
-          {/* Giant faded SEEK watermark — top half visible, bottom half cropped */}
-          <div
-            aria-hidden
-            className="pointer-events-none h-[clamp(82px,18vw,260px)] overflow-hidden select-none"
-          >
-            <p className="-mt-[0.03em] text-center font-serif text-[clamp(160px,36vw,520px)] leading-[1] font-medium tracking-tighter text-[#32291a]/[0.18]">
+          {/* Smaller SEEK wordmark, fading out at the baseline */}
+          <div aria-hidden className="pointer-events-none -mb-1 select-none">
+            <p className="seek-wordmark-fade text-center font-serif text-[clamp(40px,8vw,96px)] leading-[0.82] font-medium tracking-tighter text-[#32291a]/22">
               SEEK
             </p>
           </div>
         </footer>
+        </div>
       </div>
     </div>
   );

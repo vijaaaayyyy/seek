@@ -124,6 +124,11 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
   body {
     min-height: 100dvh;
     background: var(--paper);
@@ -224,5 +229,47 @@
       height: 100%;
       transform: none;
     }
+  }
+
+  /* Photo dissolves into the page — no gray band */
+  .forest-melt {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 50%,
+      rgba(0, 0, 0, 0.7) 62%,
+      rgba(0, 0, 0, 0.28) 78%,
+      rgba(0, 0, 0, 0.06) 90%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 50%,
+      rgba(0, 0, 0, 0.7) 62%,
+      rgba(0, 0, 0, 0.28) 78%,
+      rgba(0, 0, 0, 0.06) 90%,
+      transparent 100%
+    );
+  }
+
+  /* Footer SEEK — fades out toward the baseline */
+  .seek-wordmark-fade {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 10%,
+      rgba(0, 0, 0, 0.42) 38%,
+      rgba(0, 0, 0, 0.1) 68%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 10%,
+      rgba(0, 0, 0, 0.42) 38%,
+      rgba(0, 0, 0, 0.1) 68%,
+      transparent 100%
+    );
   }
 }
