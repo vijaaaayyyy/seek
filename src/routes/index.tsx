@@ -62,11 +62,11 @@ function Home() {
           <div className="absolute top-0 left-1/2 h-[55%] w-[80%] -translate-x-1/2 rounded-[100%] bg-[radial-gradient(ellipse_at_center,rgba(255,240,200,0.35)_0%,transparent_70%)]" />
         </div>
 
-        <header className="relative z-20 mx-auto mt-6 w-full max-w-5xl px-6">
-          <div className="flex h-14 items-center justify-between rounded-full bg-[#1c1915]/72 px-5 shadow-[0_8px_40px_rgba(0,0,0,0.25)] ring-1 ring-white/10 backdrop-blur-2xl">
-            <Link to="/" className="flex items-center gap-2 text-white">
-              <LeafMark className="size-5" />
-              <span className="font-serif text-[1.2rem] tracking-[0.06em]">SEEK</span>
+        <header className="relative z-20 mx-auto mt-6 flex w-full justify-center px-4">
+          <div className="flex h-12 w-fit max-w-[min(100%,40rem)] items-center gap-1 rounded-full bg-[#1c1915]/75 px-2.5 shadow-[0_8px_40px_rgba(0,0,0,0.25)] ring-1 ring-white/10 backdrop-blur-2xl">
+            <Link to="/" className="flex items-center gap-1.5 px-2.5 py-1.5 text-white">
+              <LeafMark className="size-4" />
+              <span className="font-serif text-[1.05rem] tracking-[0.06em]">SEEK</span>
             </Link>
             <nav className="flex items-center gap-0.5">
               {[
@@ -77,17 +77,17 @@ function Home() {
                 <Link
                   key={l.to}
                   to={l.to}
-                  className="rounded-full px-4 py-2 font-sans text-[13px] font-medium text-white/70 transition-colors hover:text-white"
+                  className="rounded-full px-3 py-1.5 font-sans text-[12.5px] font-medium text-white/70 transition-colors hover:text-white"
                 >
                   {l.label}
                 </Link>
               ))}
             </nav>
-            <div className="flex items-center gap-2">
+            <div className="ml-1 flex items-center gap-1 border-l border-white/15 pl-2">
               <ThemeToggle className="border-0 bg-white/10 text-white ring-white/15 hover:bg-white/15" />
               <Link
                 to="/books"
-                className="rounded-full bg-[#e8d54a] px-4 py-2 font-sans text-[13px] font-semibold text-[#1c1915] transition-transform active:scale-95"
+                className="rounded-full bg-[#e8d54a] px-3.5 py-1.5 font-sans text-[12.5px] font-semibold text-[#1c1915] transition-transform active:scale-95"
               >
                 Open Bible
               </Link>
