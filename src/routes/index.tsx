@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { useSeekStore } from "@/lib/store";
 import { ArrowRight, ChevronRight, Search } from "lucide-react";
+import { HERO_BIBLE_IMAGE } from "@/data/hero-image";
 
 const EXAMPLES = [
   { q: "be not afraid", label: "be not afraid" },
@@ -38,8 +39,7 @@ function Home() {
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage:
-              "linear-gradient(180deg, rgba(245,235,215,0.72) 0%, rgba(245,235,215,0.35) 28%, rgba(245,235,215,0.08) 48%, rgba(20,16,10,0.15) 72%, rgba(20,16,10,0.45) 100%), url('/hero-bible.webp')",
+            backgroundImage: `linear-gradient(180deg, rgba(245,235,215,0.72) 0%, rgba(245,235,215,0.35) 28%, rgba(245,235,215,0.08) 48%, rgba(20,16,10,0.15) 72%, rgba(20,16,10,0.45) 100%), url(${HERO_BIBLE_IMAGE})`,
             backgroundPosition: "center 40%",
           }}
         />
@@ -122,7 +122,7 @@ function Home() {
             </p>
           </div>
           <img
-            src="/hero-bible.webp"
+            src={HERO_BIBLE_IMAGE}
             alt="Open Bible glowing with light"
             width={1400}
             height={1186}
