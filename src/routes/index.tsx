@@ -2,7 +2,6 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { useSeekStore } from "@/lib/store";
 import { ArrowRight, ChevronRight, Search } from "lucide-react";
-import { HERO_BIBLE_IMAGE } from "@/data/hero-image";
 
 const EXAMPLES = [
   { q: "be not afraid", label: "be not afraid" },
@@ -33,22 +32,17 @@ function Home() {
   }
 
   return (
-    <div className="relative -mx-4 -mt-3 flex min-h-[calc(100dvh-7.5rem)] flex-col overflow-hidden">
-      {/* Full-bleed scenic background */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `linear-gradient(180deg, rgba(245,235,215,0.72) 0%, rgba(245,235,215,0.35) 28%, rgba(245,235,215,0.08) 48%, rgba(20,16,10,0.15) 72%, rgba(20,16,10,0.45) 100%), url(${HERO_BIBLE_IMAGE})`,
-            backgroundPosition: "center 40%",
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f3e9d4]/80 via-transparent to-black/50 dark:from-[#0b0c11]/75 dark:via-transparent dark:to-black/70" />
+    <div className="relative -mx-4 -mt-3 flex min-h-[calc(100dvh-8.5rem)] flex-col">
+      {/* Warm scenic atmosphere */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,#f0c49a_0%,transparent_55%)] opacity-80 dark:opacity-30" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_45%_at_80%_100%,#c4a574_0%,transparent_50%)] opacity-60 dark:opacity-20" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_10%_90%,#b7cbb8_0%,transparent_50%)] opacity-50 dark:opacity-15" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/25 dark:to-black/50" />
       </div>
 
-      {/* Hero content */}
-      <div className="relative z-10 flex flex-1 flex-col px-5 pt-2 pb-3">
-        <p className="text-center font-sans text-[10px] font-medium tracking-[0.28em] text-ink/70 uppercase dark:text-ink/80">
+      <div className="relative z-10 flex flex-1 flex-col px-5 pt-1 pb-2">
+        <p className="text-center font-sans text-[10px] font-medium tracking-[0.28em] text-muted uppercase">
           Scripture for every season
         </p>
 
@@ -58,7 +52,7 @@ function Home() {
           <span className="italic">you were looking for.</span>
         </h1>
 
-        <p className="mx-auto mt-3 max-w-[17rem] text-center font-sans text-[14px] leading-relaxed text-ink/70 dark:text-ink/75">
+        <p className="mx-auto mt-3 max-w-[17rem] text-center font-sans text-[14px] leading-relaxed text-muted">
           Search Scripture by verse, phrase, feeling, or story.
         </p>
 
@@ -67,7 +61,7 @@ function Home() {
           <label htmlFor="home-search" className="sr-only">
             Search the Bible
           </label>
-          <div className="relative flex items-center rounded-full bg-white/90 shadow-[0_8px_32px_rgba(40,30,10,0.18)] ring-1 ring-black/5 backdrop-blur-xl dark:bg-[#1c1f2c]/85 dark:ring-white/10">
+          <div className="relative flex items-center rounded-full bg-white/90 shadow-[0_8px_32px_rgba(40,30,10,0.14)] ring-1 ring-black/5 backdrop-blur-xl dark:bg-[#1c1f2c]/90 dark:ring-white/10">
             <Search
               className="pointer-events-none absolute top-1/2 left-4 size-[18px] -translate-y-1/2 text-muted"
               strokeWidth={1.8}
@@ -101,40 +95,36 @@ function Home() {
               key={ex.q}
               type="button"
               onClick={() => runExample(ex.q)}
-              className="rounded-full bg-white/75 px-3.5 py-1.5 font-sans text-[12.5px] text-ink/80 shadow-sm ring-1 ring-black/5 backdrop-blur-md transition-transform duration-150 active:scale-[0.97] hover:bg-white/90 dark:bg-white/10 dark:text-ink/90 dark:ring-white/10"
+              className="rounded-full bg-white/70 px-3.5 py-1.5 font-sans text-[12.5px] text-ink/80 shadow-sm ring-1 ring-black/5 backdrop-blur-md transition-transform duration-150 active:scale-[0.97] hover:bg-white/90 dark:bg-white/10 dark:text-ink/90 dark:ring-white/10"
             >
               “{ex.label}”
             </button>
           ))}
         </div>
 
-        {/* Bible focal point + verse */}
-        <div className="relative mx-auto mt-auto w-full max-w-sm flex-1">
-          <div className="absolute inset-x-0 top-[8%] z-10 text-center">
-            <p className="font-serif text-[15px] tracking-[0.12em] text-white/95 drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)] uppercase">
+        {/* Verse focal point */}
+        <div className="mt-auto flex flex-1 flex-col items-center justify-center py-8">
+          <div className="relative text-center">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute top-1/2 left-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#f0c49a]/35 blur-3xl dark:bg-[#f0c49a]/15"
+            />
+            <p className="relative font-serif text-[17px] tracking-[0.14em] text-ink/90 uppercase">
               Your word
             </p>
-            <p className="mt-0.5 font-serif text-[15px] tracking-[0.12em] text-white/95 drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)] uppercase">
+            <p className="relative mt-1 font-serif text-[17px] tracking-[0.14em] text-ink/90 uppercase">
               lights my path.
             </p>
-            <p className="mt-1.5 font-sans text-[10px] tracking-[0.22em] text-white/75 uppercase">
+            <p className="relative mt-2.5 font-sans text-[10px] tracking-[0.22em] text-muted uppercase">
               Psalm 119:105
             </p>
           </div>
-          <img
-            src={HERO_BIBLE_IMAGE}
-            alt="Open Bible glowing with light"
-            width={1400}
-            height={1186}
-            decoding="async"
-            className="mx-auto mt-6 w-full max-w-[340px] object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
-          />
         </div>
 
         {/* Explore card */}
         <Link
           to="/books"
-          className="mt-2 mb-1 flex items-center gap-3 rounded-[20px] bg-black/45 px-4 py-3.5 ring-1 ring-white/10 backdrop-blur-xl transition-transform duration-150 active:scale-[0.99] dark:bg-black/55"
+          className="mb-1 flex items-center gap-3 rounded-[20px] bg-black/40 px-4 py-3.5 ring-1 ring-white/10 backdrop-blur-xl transition-transform duration-150 active:scale-[0.99] dark:bg-black/50"
         >
           <div className="min-w-0 flex-1">
             <p className="font-sans text-[14px] font-medium text-white">
