@@ -106,7 +106,6 @@ function Home() {
     void navigate({ to: "/search", search: { q } });
   }
 
-  /* Light: soft white glass. Dark: solid elevated surface so text stays readable on forest. */
   const card =
     "rounded-xl border border-white/20 bg-white/92 text-ink shadow-[0_8px_32px_rgba(0,0,0,0.18)] backdrop-blur-md dark:border-white/18 dark:bg-[#1a1c26]/95 dark:text-[#f5f0e8] dark:shadow-[0_12px_40px_rgba(0,0,0,0.55)]";
   const cardSoft =
@@ -135,9 +134,9 @@ function Home() {
             <h1 className="mt-3 font-serif text-[3.5rem] leading-[1.08] font-medium tracking-tight text-white drop-shadow-md xl:text-[4.25rem]">Look up.<br /><span className="italic">The Word is near.</span></h1>
             <p className="mx-auto mt-4 max-w-md font-sans text-[15px] leading-relaxed text-white/90 drop-shadow-sm">Search Scripture for the love that never fails — the mercy that meets us, the sacrifice that saves, the agape of God.</p>
             <form onSubmit={submit} className="mt-8 w-full max-w-md">
-              <div className="flex items-center gap-0 rounded-full bg-white/95 p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.28)] ring-1 ring-black/5">
+              <div className="flex items-center gap-0 rounded-full bg-white/70 p-1.5 shadow-[0_8px_28px_rgba(0,0,0,0.18)] ring-1 ring-white/25 backdrop-blur-md">
                 <label htmlFor="desktop-home-search" className="sr-only">Search the Bible</label>
-                <input id="desktop-home-search" value={value} onChange={(e) => setValue(e.target.value)} autoComplete="off" spellCheck={false} enterKeyHint="search" placeholder="Search love, mercy, a verse…" className="h-11 min-w-0 flex-1 bg-transparent px-4 font-sans text-[15px] text-ink placeholder:text-faint focus:outline-none" />
+                <input id="desktop-home-search" value={value} onChange={(e) => setValue(e.target.value)} autoComplete="off" spellCheck={false} enterKeyHint="search" placeholder="Search love, mercy, a verse…" className="h-11 min-w-0 flex-1 bg-transparent px-4 font-sans text-[15px] text-ink placeholder:text-ink/45 focus:outline-none" />
                 <button type="submit" aria-label="Search" className="flex size-11 shrink-0 items-center justify-center rounded-full bg-ink text-paper transition-transform active:scale-95"><ArrowRight className="size-4" strokeWidth={2.2} /></button>
               </div>
             </form>
@@ -291,9 +290,9 @@ function Home() {
           <h1 className="mt-3 text-center font-serif text-[2.4rem] leading-[1.12] font-medium tracking-tight text-white">Look up.<br /><span className="italic">The Word is near.</span></h1>
           <p className="mx-auto mt-3 max-w-[18rem] text-center font-sans text-[14px] leading-relaxed text-white/90">Search the love of God, His mercy, and the sacrifice of Christ.</p>
           <form onSubmit={submit} className="mx-auto mt-5 w-full max-w-md">
-            <div className="relative flex items-center rounded-full bg-white/95 shadow-lg ring-1 ring-black/5">
+            <div className="relative flex items-center rounded-full bg-white/70 shadow-[0_8px_28px_rgba(0,0,0,0.18)] ring-1 ring-white/25 backdrop-blur-md">
               <Search className="pointer-events-none absolute top-1/2 left-4 size-[18px] -translate-y-1/2 text-muted" strokeWidth={1.8} aria-hidden />
-              <input value={value} autoComplete="off" spellCheck={false} enterKeyHint="search" placeholder="Search love, mercy, a verse…" onChange={(e) => setValue(e.target.value)} className="h-12 w-full bg-transparent py-3 pr-14 pl-11 font-sans text-[15px] text-ink placeholder:text-faint focus:outline-none" />
+              <input value={value} autoComplete="off" spellCheck={false} enterKeyHint="search" placeholder="Search love, mercy, a verse…" onChange={(e) => setValue(e.target.value)} className="h-12 w-full bg-transparent py-3 pr-14 pl-11 font-sans text-[15px] text-ink placeholder:text-ink/45 focus:outline-none" />
               <button type="submit" aria-label="Search" className="absolute top-1/2 right-1.5 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-ink text-paper"><ArrowRight className="size-4" strokeWidth={2.2} /></button>
             </div>
           </form>
@@ -323,7 +322,7 @@ function Home() {
             </div>
           </section>
 
-                   <section className="mt-6">
+          <section className="mt-6">
             <div className="mb-2.5 flex items-center justify-between">
               <p className="font-sans text-[11px] font-medium tracking-[0.14em] text-white/80 uppercase">Books of love & mercy</p>
               <Link to="/books" className="font-sans text-[12px] font-medium text-white">All →</Link>
