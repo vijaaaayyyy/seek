@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+﻿import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { useSeekStore } from "@/lib/store";
 import { useCurrentUserState } from "@/lib/supa/use-current-user";
@@ -136,7 +136,7 @@ function Home() {
             <form onSubmit={submit} className="mt-8 w-full max-w-md">
               <div className="flex items-center gap-0 rounded-full bg-white/70 p-1.5 shadow-[0_8px_28px_rgba(0,0,0,0.18)] ring-1 ring-white/25 backdrop-blur-md">
                 <label htmlFor="desktop-home-search" className="sr-only">Search the Bible</label>
-                <input id="desktop-home-search" value={value} onChange={(e) => setValue(e.target.value)} autoComplete="off" spellCheck={false} enterKeyHint="search" placeholder="Search love, mercy, a verse…" className="h-11 min-w-0 flex-1 bg-transparent px-4 font-sans text-[15px] text-ink placeholder:text-ink/45 focus:outline-none" />
+                <input id="desktop-home-search" value={value} onChange={(e) => setValue(e.target.value)} autoComplete="off" spellCheck={false} enterKeyHint="search" placeholder="Search love, mercy, a verse…" className="h-15 min-w-0 flex-2 bg-transparent px-4 font-sans text-[15px] text-ink placeholder:text-ink/65 focus:outline-none" />
                 <button type="submit" aria-label="Search" className="flex size-11 shrink-0 items-center justify-center rounded-full bg-ink text-paper transition-transform active:scale-95"><ArrowRight className="size-4" strokeWidth={2.2} /></button>
               </div>
             </form>
@@ -292,7 +292,7 @@ function Home() {
           <form onSubmit={submit} className="mx-auto mt-5 w-full max-w-md">
             <div className="relative flex items-center rounded-full bg-white/70 shadow-[0_8px_28px_rgba(0,0,0,0.18)] ring-1 ring-white/25 backdrop-blur-md">
               <Search className="pointer-events-none absolute top-1/2 left-4 size-[18px] -translate-y-1/2 text-muted" strokeWidth={1.8} aria-hidden />
-              <input value={value} autoComplete="off" spellCheck={false} enterKeyHint="search" placeholder="Search love, mercy, a verse…" onChange={(e) => setValue(e.target.value)} className="h-12 w-full bg-transparent py-3 pr-14 pl-11 font-sans text-[15px] text-ink placeholder:text-ink/45 focus:outline-none" />
+              <input value={value} autoComplete="off" spellCheck={false} enterKeyHint="search" placeholder="Search love, mercy, a verse…" onChange={(e) => setValue(e.target.value)} className="h-12 w-full bg-transparent py-3 pr-14 pl-11 font-sans text-[15px] text-ink placeholder:text-ink/65 focus:outline-none" />
               <button type="submit" aria-label="Search" className="absolute top-1/2 right-1.5 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-ink text-paper"><ArrowRight className="size-4" strokeWidth={2.2} /></button>
             </div>
           </form>

@@ -98,7 +98,7 @@ function LoginPage() {
     setBusy(true);
     setError(null);
     try {
-      await signIn(provider, redirect || "/");
+      await signIn(provider, { callbackURL: redirect || "/" });
     } catch {
       setError("Could not start sign-in. Please try again.");
       setBusy(false);

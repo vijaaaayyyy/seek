@@ -85,7 +85,7 @@ export function SearchBox({
             onValueChange?.(e.target.value);
           }}
           className={cn(
-            "h-full w-full bg-transparent font-sans text-ink placeholder:text-faint focus:outline-none",
+            "h-full w-full bg-transparent font-sans text-ink placeholder:text-muted focus:outline-none",
             size === "lg" ? "pr-12 pl-11 text-[17px]" : "pr-12 pl-11 text-base",
           )}
         />

@@ -131,7 +131,7 @@ function ExplorePage() {
             autoComplete="off"
             spellCheck={false}
             enterKeyHint="search"
-            className="h-12 w-full bg-transparent py-3 pr-14 pl-11 font-sans text-[15px] text-ink placeholder:text-faint focus:outline-none"
+            className="h-12 w-full bg-transparent py-3 pr-14 pl-11 font-sans text-[15px] text-ink placeholder:text-muted focus:outline-none"
           />
           <button
             type="submit"

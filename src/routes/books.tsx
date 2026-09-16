@@ -48,7 +48,7 @@ function BooksPage() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Filter books — psalm, 1 cor, john…"
-          className="glass h-12 w-full rounded-full bg-white/60 pr-4 pl-10 font-sans text-[15px] text-ink placeholder:text-faint focus:outline-none focus:ring-2 focus:ring-ink/15 dark:bg-white/5"
+          className="glass h-12 w-full rounded-full bg-white/60 pr-4 pl-10 font-sans text-[15px] text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-ink/15 dark:bg-white/5"
           autoComplete="off"
           spellCheck={false}
         />

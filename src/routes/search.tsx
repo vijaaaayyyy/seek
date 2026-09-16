@@ -116,13 +116,13 @@ function SearchPage() {
             <div className="mb-3 flex flex-wrap gap-2">
               {books.map((b) => (
                 <Link
-                  key={b.slug}
+                  key={b.book.slug}
                   to="/read/$book/$chapter"
-                  params={{ book: b.slug, chapter: "1" }}
+                  params={{ book: b.book.slug, chapter: "1" }}
                   search={{ q: undefined }}
                   className="rounded-full bg-ink/6 px-3 py-1.5 font-sans text-[12px] font-medium text-ink ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10"
                 >
-                  {b.name}
+                  {b.book.name}
                 </Link>
               ))}
             </div>

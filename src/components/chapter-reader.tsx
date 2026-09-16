@@ -265,7 +265,7 @@ export function ChapterReader({
             </p>
             <div className="space-y-0">
               {block.verses.map((v) => {
-                const saved = isSaved(v);
+                const saved = isSaved(book.slug, v.chapter, v.verse);
                 return (
                   <div
                     key={v.i}
@@ -276,12 +276,12 @@ export function ChapterReader({
                       <sup className="mr-1.5 font-sans text-[11px] font-medium text-muted tabular-nums">
                         {v.verse}
                       </sup>
-                      <Highlighted text={v.text} matched={highlight} />
+                      <Highlighted text={v.text} needles={highlight} />
                       <button
                         type="button"
                         aria-label={saved ? "Remove bookmark" : "Bookmark verse"}
                         onClick={() => {
-                          toggleSaved(v);
+                          toggleSaved({ book: book.name, slug: book.slug, chapter: v.chapter, verse: v.verse, text: v.text });
                           toast.success(
                             saved ? "Removed from saved" : "Saved",
                           );
