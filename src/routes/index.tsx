@@ -151,13 +151,14 @@ function Home() {
 
   return (
     <>
+      {/* DESKTOP — one continuous bg */}
       <div className="relative hidden min-h-dvh flex-col lg:flex">
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_50%_0%,#e8d5b5_0%,transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_70%_100%,#c4a574_0%,transparent_55%)] opacity-70" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_15%_80%,#a8b89a_0%,transparent_50%)] opacity-50" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#12100c]" />
-          <div className="absolute top-0 left-1/2 h-[55%] w-[80%] -translate-x-1/2 rounded-[100%] bg-[radial-gradient(ellipse_at_center,rgba(255,240,200,0.35)_0%,transparent_70%)]" />
+          <div className="absolute inset-0 bg-[#1a1610]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_50%_-10%,#c9b896_0%,transparent_55%)] opacity-90" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_75%_50%,#a8906a_0%,transparent_50%)] opacity-40" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_20%_70%,#8a9a7a_0%,transparent_45%)] opacity-25" />
+          <div className="absolute top-0 left-1/2 h-[50%] w-[85%] -translate-x-1/2 rounded-[100%] bg-[radial-gradient(ellipse_at_center,rgba(255,240,200,0.22)_0%,transparent_70%)]" />
         </div>
 
         <header className="relative z-20 mx-auto mt-6 flex w-full justify-center px-4">
@@ -253,11 +254,11 @@ function Home() {
           </div>
         </div>
 
-        <div className="relative z-10 mx-auto mb-10 grid w-full max-w-3xl grid-cols-4 gap-3 px-6">
+        <div className="relative z-10 mx-auto mb-8 grid w-full max-w-3xl grid-cols-4 gap-3 px-6">
           {STATS.map((s) => (
             <div
               key={s.label}
-              className="rounded-2xl bg-white/10 px-3 py-4 text-center ring-1 ring-white/12 backdrop-blur-xl"
+              className="rounded-2xl bg-white/[0.08] px-3 py-4 text-center ring-1 ring-white/10 backdrop-blur-xl"
             >
               <p className="font-serif text-[1.5rem] font-medium text-white tabular-nums">{s.value}</p>
               <p className="mt-0.5 font-sans text-[11px] tracking-wide text-white/55 uppercase">{s.label}</p>
@@ -265,14 +266,15 @@ function Home() {
           ))}
         </div>
 
-        <div className="relative z-10 border-t border-white/10 bg-[#12100c]/90">
-          <div className="mx-auto w-full max-w-5xl px-6 py-14">
+        {/* Same continuous bg — no border, no solid band */}
+        <div className="relative z-10">
+          <div className="mx-auto w-full max-w-5xl px-6 pt-2 pb-14">
             <div className="grid gap-4 md:grid-cols-2">
               <Link
                 to="/read/$book/$chapter"
                 params={{ book: FEATURED.book, chapter: FEATURED.chapter }}
                 search={{ q: undefined }}
-                className="group rounded-[28px] bg-white/8 p-6 text-left ring-1 ring-white/12 transition-colors hover:bg-white/12"
+                className="group rounded-[28px] bg-white/[0.07] p-6 text-left ring-1 ring-white/12 transition-colors hover:bg-white/12"
               >
                 <div className="flex items-center gap-2 text-[#e8d54a]">
                   <Star className="size-4" strokeWidth={2} fill="currentColor" />
@@ -285,7 +287,7 @@ function Home() {
                 </span>
               </Link>
 
-              <div className="rounded-[28px] bg-white/8 p-6 ring-1 ring-white/12">
+              <div className="rounded-[28px] bg-white/[0.07] p-6 ring-1 ring-white/12">
                 <div className="flex items-center gap-2 text-white/75">
                   <Heart className="size-4" strokeWidth={2} />
                   <span className="font-sans text-[11px] font-semibold tracking-[0.16em] uppercase">Browse by feeling</span>
@@ -306,7 +308,7 @@ function Home() {
               </div>
             </div>
 
-            <section className="mt-4 rounded-[28px] bg-white/8 p-6 ring-1 ring-white/12">
+            <section className="mt-4 rounded-[28px] bg-white/[0.07] p-6 ring-1 ring-white/12">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-white/75">
                   <BookOpen className="size-4" strokeWidth={2} />
@@ -335,7 +337,7 @@ function Home() {
               <h2 className="mt-2 text-center font-serif text-[2rem] font-medium text-white">Three steps to the Word</h2>
               <div className="mt-8 grid gap-4 md:grid-cols-3">
                 {STEPS.map((s) => (
-                  <div key={s.n} className="rounded-[24px] bg-white/6 p-5 ring-1 ring-white/10">
+                  <div key={s.n} className="rounded-[24px] bg-white/[0.06] p-5 ring-1 ring-white/10">
                     <p className="font-sans text-[12px] font-semibold tracking-[0.2em] text-[#e8d54a]">{s.n}</p>
                     <p className="mt-2 font-serif text-[1.25rem] text-white">{s.title}</p>
                     <p className="mt-2 font-sans text-[14px] leading-relaxed text-white/60">{s.body}</p>
@@ -351,7 +353,7 @@ function Home() {
                 {FEATURES.map((f) => {
                   const Icon = f.icon;
                   return (
-                    <div key={f.title} className="rounded-[22px] bg-white/6 p-5 ring-1 ring-white/10">
+                    <div key={f.title} className="rounded-[22px] bg-white/[0.06] p-5 ring-1 ring-white/10">
                       <span className="inline-flex size-10 items-center justify-center rounded-full bg-white/10 text-[#e8d54a]">
                         <Icon className="size-4.5" strokeWidth={1.8} />
                       </span>
@@ -364,7 +366,7 @@ function Home() {
             </section>
 
             {recent.length > 0 && (
-              <section className="mt-10 rounded-[28px] bg-white/6 p-6 ring-1 ring-white/10">
+              <section className="mt-10 rounded-[28px] bg-white/[0.06] p-6 ring-1 ring-white/10">
                 <div className="flex items-center gap-2 text-white/70">
                   <Clock className="size-4" strokeWidth={2} />
                   <span className="font-sans text-[11px] font-semibold tracking-[0.16em] uppercase">Recent searches</span>
@@ -384,7 +386,7 @@ function Home() {
               </section>
             )}
 
-            <section className="mt-14 rounded-[32px] bg-gradient-to-br from-[#e8d54a]/15 to-white/5 px-8 py-12 text-center ring-1 ring-[#e8d54a]/25">
+            <section className="mt-14 rounded-[32px] bg-white/[0.06] px-8 py-12 text-center ring-1 ring-white/12">
               <h2 className="font-serif text-[2.25rem] font-medium text-white">Start reading today</h2>
               <p className="mx-auto mt-3 max-w-md font-sans text-[15px] text-white/65">
                 Open the full King James Bible, search any passage, and keep the verses that speak to you.
@@ -406,7 +408,7 @@ function Home() {
               </div>
             </section>
 
-            <footer className="mt-16 border-t border-white/10 pt-8 pb-6">
+            <footer className="mt-16 border-t border-white/[0.06] pt-8 pb-6">
               <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
                 <div className="flex items-center gap-2 text-white">
                   <LeafMark className="size-4" />
@@ -427,6 +429,7 @@ function Home() {
         </div>
       </div>
 
+      {/* MOBILE */}
       <div className="relative -mx-4 -mt-3 flex flex-col lg:hidden">
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,#f0c49a_0%,transparent_55%)] opacity-80 dark:opacity-30" />
@@ -447,7 +450,7 @@ function Home() {
 
           <form onSubmit={submit} className="mx-auto mt-5 w-full max-w-md">
             <label htmlFor="home-search" className="sr-only">Search the Bible</label>
-            <div className="relative flex items-center rounded-full bg-white/90 shadow-[0_8px_32px_rgba(40,30,10,0.14)] ring-1 ring-black/5 backdrop-blur-xl dark:bg-[#1c1f2c]/90 dark:ring-white/10">
+            <div className="relative flex items-center rounded-full bg-white shadow-sm ring-1 ring-black/10 dark:bg-[#1c1f2c]/90 dark:ring-white/10">
               <Search className="pointer-events-none absolute top-1/2 left-4 size-[18px] -translate-y-1/2 text-muted" strokeWidth={1.8} aria-hidden />
               <input
                 id="home-search"
@@ -476,7 +479,7 @@ function Home() {
                 key={ex.q}
                 type="button"
                 onClick={() => runExample(ex.q)}
-                className="rounded-full bg-white/70 px-3.5 py-1.5 font-sans text-[12.5px] text-ink/80 shadow-sm ring-1 ring-black/5 backdrop-blur-md active:scale-[0.97] dark:bg-white/10 dark:ring-white/10"
+                className="rounded-full bg-white px-3.5 py-1.5 font-sans text-[12.5px] text-ink shadow-sm ring-1 ring-black/8 active:scale-[0.97] dark:bg-white/10 dark:text-ink/90 dark:ring-white/10"
               >
                 “{ex.label}”
               </button>
@@ -485,7 +488,7 @@ function Home() {
 
           <div className="mt-6 grid grid-cols-4 gap-2">
             {STATS.map((s) => (
-              <div key={s.label} className="rounded-[16px] bg-white/70 px-1.5 py-3 text-center ring-1 ring-black/5 dark:bg-white/8 dark:ring-white/10">
+              <div key={s.label} className="rounded-[16px] bg-white px-1.5 py-3 text-center shadow-sm ring-1 ring-black/8 dark:bg-white/8 dark:ring-white/10 dark:shadow-none">
                 <p className="font-serif text-[1.05rem] font-medium text-ink tabular-nums">{s.value}</p>
                 <p className="mt-0.5 font-sans text-[9px] tracking-wide text-muted uppercase">{s.label}</p>
               </div>
@@ -496,7 +499,7 @@ function Home() {
             to="/read/$book/$chapter"
             params={{ book: FEATURED.book, chapter: FEATURED.chapter }}
             search={{ q: undefined }}
-            className="mt-5 block rounded-[22px] bg-white/75 p-4 ring-1 ring-black/5 backdrop-blur-xl dark:bg-white/8 dark:ring-white/10"
+            className="mt-5 block rounded-[22px] bg-white p-4 shadow-sm ring-1 ring-black/8 dark:bg-white/8 dark:ring-white/10 dark:shadow-none"
           >
             <div className="flex items-center gap-1.5 text-forest">
               <Star className="size-3.5" strokeWidth={2} fill="currentColor" />
@@ -514,7 +517,7 @@ function Home() {
                   key={t.q}
                   type="button"
                   onClick={() => runExample(t.q)}
-                  className="flex flex-col items-center gap-1 rounded-[18px] bg-white/70 px-1.5 py-3 ring-1 ring-black/5 active:scale-[0.97] dark:bg-white/8 dark:ring-white/10"
+                  className="flex flex-col items-center gap-1 rounded-[18px] bg-white px-1.5 py-3 shadow-sm ring-1 ring-black/8 active:scale-[0.97] dark:bg-white/8 dark:ring-white/10 dark:shadow-none"
                 >
                   <span className="text-base leading-none">{t.emoji}</span>
                   <span className="font-sans text-[11px] font-medium text-ink">{t.label}</span>
@@ -535,7 +538,7 @@ function Home() {
                   to="/read/$book/$chapter"
                   params={{ book: b.slug, chapter: "1" }}
                   search={{ q: undefined }}
-                  className="w-[7.25rem] shrink-0 rounded-[18px] bg-white/70 px-3 py-3.5 ring-1 ring-black/5 dark:bg-white/8 dark:ring-white/10"
+                  className="w-[7.25rem] shrink-0 rounded-[18px] bg-white px-3 py-3.5 shadow-sm ring-1 ring-black/8 dark:bg-white/8 dark:ring-white/10 dark:shadow-none"
                 >
                   <p className="font-serif text-[15px] font-medium text-ink">{b.name}</p>
                   <p className="mt-0.5 font-sans text-[11px] text-muted">{b.chapters} chapters</p>
@@ -548,7 +551,7 @@ function Home() {
             <p className="mb-3 px-0.5 font-sans text-[11px] font-medium tracking-[0.14em] text-muted uppercase">How it works</p>
             <div className="grid gap-2">
               {STEPS.map((s) => (
-                <div key={s.n} className="flex gap-3 rounded-[18px] bg-white/70 px-3.5 py-3 ring-1 ring-black/5 dark:bg-white/8 dark:ring-white/10">
+                <div key={s.n} className="flex gap-3 rounded-[18px] bg-white px-3.5 py-3 shadow-sm ring-1 ring-black/8 dark:bg-white/8 dark:ring-white/10 dark:shadow-none">
                   <span className="font-sans text-[12px] font-semibold tracking-wider text-forest">{s.n}</span>
                   <div>
                     <p className="font-serif text-[15px] text-ink">{s.title}</p>
@@ -565,7 +568,7 @@ function Home() {
               {FEATURES.slice(0, 4).map((f) => {
                 const Icon = f.icon;
                 return (
-                  <div key={f.title} className="rounded-[18px] bg-white/70 p-3.5 ring-1 ring-black/5 dark:bg-white/8 dark:ring-white/10">
+                  <div key={f.title} className="rounded-[18px] bg-white p-3.5 shadow-sm ring-1 ring-black/8 dark:bg-white/8 dark:ring-white/10 dark:shadow-none">
                     <Icon className="size-4 text-forest" strokeWidth={1.8} />
                     <p className="mt-2 font-serif text-[14px] text-ink">{f.title}</p>
                     <p className="mt-0.5 font-sans text-[11.5px] leading-snug text-muted">{f.body}</p>
@@ -584,7 +587,7 @@ function Home() {
                     key={q}
                     type="button"
                     onClick={() => runExample(q)}
-                    className="rounded-full bg-white/70 px-3.5 py-1.5 font-sans text-[12.5px] text-ink ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10"
+                    className="rounded-full bg-white px-3.5 py-1.5 font-sans text-[12.5px] text-ink shadow-sm ring-1 ring-black/8 dark:bg-white/10 dark:ring-white/10"
                   >
                     {q}
                   </button>
