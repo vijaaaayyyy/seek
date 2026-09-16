@@ -11,6 +11,7 @@ import { bookByName, formatRef } from "@/lib/bible/meta";
 import { getVerse, type IndexedVerse } from "@/lib/bible/load";
 import { useSeekStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
+import { Compass } from "lucide-react";
 
 type Tab = "all" | "wording" | "meaning";
 
@@ -51,8 +52,6 @@ function SearchPage() {
       setMeaning({ status: "idle" });
       return;
     }
-    // Debounce so a burst of typing only bills one meaning call (xAI/Gemini
-    // credits belong to the app owner).
     const timer = window.setTimeout(() => {
       setMeaning({ status: "loading" });
       searchByMeaning({ data: { query } })
@@ -100,62 +99,57 @@ function SearchPage() {
     ["wording", "Wording"],
     ["meaning", "Meaning"],
   ] as const;
-  const tabIndex = tabs.findIndex(([id]) => id === tab);
 
   return (
-    <div className="pt-3">
-      <SearchBox initial={q} size="md" onSubmitQuery={(next) => rememberQuery(next)} />
-      <p className="mt-3 px-1 font-sans text-[13px] text-muted">
-        {q.trim()
-          ? "Wording matches appear at once. Meaning looks past the letters."
-          : "Search a fragment, a misspelling, or the thought behind a verse."}
-      </p>
+    <div className="pb-28 lg:pb-16">
+      <div className="sticky top-0 z-20 -mx-1 mb-3 px-0.5 pb-2 pt-1">
+        <SearchBox initial={q} autoFocus={!q} />
+      </div>
 
-      {q.trim().length >= 2 && (
-        <div className="mt-5">
-          <div className="glass-segmented relative grid h-11 grid-cols-3 rounded-full p-1">
-            <div
-              aria-hidden
-              className="absolute top-1 bottom-1 left-1 w-[calc((100%-0.5rem)/3)] rounded-full bg-ink/10 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] dark:bg-paper/12"
-              style={{ transform: `translateX(${tabIndex * 100}%)` }}
-            />
+      {q.trim().length < 2 ? (
+        <p className="px-1 pt-6 text-center font-sans text-sm text-muted">
+          Type at least two characters to search Scripture.
+        </p>
+      ) : (
+        <div>
+          {books.length > 0 && (
+            <div className="mb-3 flex flex-wrap gap-2">
+              {books.map((b) => (
+                <Link
+                  key={b.slug}
+                  to="/read/$book/$chapter"
+                  params={{ book: b.slug, chapter: "1" }}
+                  search={{ q: undefined }}
+                  className="rounded-full bg-ink/6 px-3 py-1.5 font-sans text-[12px] font-medium text-ink ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10"
+                >
+                  {b.name}
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {meaning.status === "ok" && meaning.reading && (
+            <p className="mb-3 rounded-[18px] bg-forest/8 px-3.5 py-2.5 font-sans text-[13px] leading-relaxed text-ink dark:bg-forest/15">
+              <span className="font-medium text-forest">Reading · </span>
+              {meaning.reading}
+            </p>
+          )}
+
+          <div className="mb-3 flex gap-1 rounded-full bg-ink/5 p-1 dark:bg-white/8">
             {tabs.map(([id, label]) => (
               <button
                 key={id}
                 type="button"
                 onClick={() => setTab(id)}
                 className={cn(
-                  "relative z-10 rounded-full font-sans text-[13px] font-medium transition-colors",
-                  tab === id ? "text-ink" : "text-muted",
+                  "flex-1 rounded-full py-2 font-sans text-[12px] font-medium transition-colors",
+                  tab === id ? "bg-paper text-ink shadow-sm dark:bg-ink/40" : "text-muted",
                 )}
               >
                 {label}
               </button>
             ))}
           </div>
-
-          {meaning.status === "ok" && meaning.reading && tab !== "wording" && (
-            <p className="mt-5 font-serif text-[17px] leading-snug text-ink italic">
-              {meaning.reading}
-            </p>
-          )}
-
-          {books.length > 0 && tab !== "meaning" && (
-            <div className="hide-scrollbar mt-5 flex gap-2 overflow-x-auto pb-1">
-              {books.map(({ book, reason }) => (
-                <Link
-                  key={book.slug}
-                  to="/read/$book/$chapter"
-                  params={{ book: book.slug, chapter: "1" }}
-                  search={{ q: undefined }}
-                  className="glass inline-flex shrink-0 items-center gap-2 rounded-full px-3.5 py-2 font-sans text-sm"
-                >
-                  <span className="font-serif text-base">{book.name}</span>
-                  <span className="text-[11px] text-muted">{reason}</span>
-                </Link>
-              ))}
-            </div>
-          )}
 
           <div className="mt-5 space-y-3">
             {!ready && <ResultSkeleton />}
@@ -207,6 +201,35 @@ function SearchPage() {
                 Nothing matched by meaning. Try a story, a feeling, or a shorter fragment.
               </p>
             )}
+          </div>
+        </div>
+      )}
+
+      {q.trim().length >= 2 && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+4.75rem))] lg:pb-8">
+          <div className="pointer-events-auto flex w-full max-w-md items-center gap-2 rounded-full bg-ink/90 p-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-white/10 backdrop-blur-xl dark:bg-paper/95 dark:ring-black/10">
+            <Link
+              to="/explore"
+              className="flex min-w-0 flex-1 items-center gap-2.5 rounded-full px-3 py-2.5 text-paper transition-colors hover:bg-white/10 dark:text-ink dark:hover:bg-ink/5"
+            >
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white/15 dark:bg-ink/10">
+                <Compass className="size-4" strokeWidth={2} />
+              </span>
+              <span className="min-w-0 text-left">
+                <span className="block font-sans text-[13px] font-medium leading-tight">
+                  Next search
+                </span>
+                <span className="block truncate font-sans text-[11px] leading-tight text-paper/60 dark:text-ink/55">
+                  Recent, suggestions & more for you
+                </span>
+              </span>
+            </Link>
+            <Link
+              to="/"
+              className="shrink-0 rounded-full bg-white/15 px-3.5 py-2.5 font-sans text-[12px] font-medium text-paper dark:bg-ink/10 dark:text-ink"
+            >
+              Home
+            </Link>
           </div>
         </div>
       )}
