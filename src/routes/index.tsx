@@ -131,13 +131,13 @@ function Home() {
         <section className="relative flex min-h-dvh flex-col">
           <div className="relative flex flex-1 flex-col items-center justify-center px-6 pb-16 pt-28 text-center">
             <p className="font-sans text-[11px] font-medium tracking-[0.22em] text-white/90 uppercase drop-shadow-sm">Love · Mercy · Sacrifice · Agape</p>
-            <h1 className="mt-3 font-serif text-[3.5rem] leading-[1.08] font-medium tracking-tight text-white drop-shadow-md xl:text-[4.25rem]">Look up.<br /><span className="italic">The Word is near.</span></h1>
+            <h1 className="mt-3 font-serif text-[3.5rem] leading-[1.08] font-medium tracking-tight text-white drop-shadow-md xl:text-[4.25rem]">Look up.<br /><span className="italic">The Word is at HAND.</span></h1>
             <p className="mx-auto mt-4 max-w-md font-sans text-[15px] leading-relaxed text-white/90 drop-shadow-sm">Search Scripture for the love that never fails — the mercy that meets us, the sacrifice that saves, the agape of God.</p>
             <form onSubmit={submit} className="mt-8 w-full max-w-md">
               <div className="flex items-center gap-0 rounded-full bg-white/70 p-1.5 shadow-[0_8px_28px_rgba(0,0,0,0.18)] ring-1 ring-white/25 backdrop-blur-md">
                 <label htmlFor="desktop-home-search" className="sr-only">Search the Bible</label>
-                <input id="desktop-home-search" value={value} onChange={(e) => setValue(e.target.value)} autoComplete="off" spellCheck={false} enterKeyHint="search" placeholder="Search love, mercy, a verse…" className="h-15 min-w-0 flex-2 bg-transparent px-4 font-sans text-[15px] text-ink placeholder:text-ink/65 focus:outline-none" />
-                <button type="submit" aria-label="Search" className="flex size-11 shrink-0 items-center justify-center rounded-full bg-ink text-paper transition-transform active:scale-95"><ArrowRight className="size-4" strokeWidth={2.2} /></button>
+                <input id="desktop-home-search" value={value} onChange={(e) => setValue(e.target.value)} autoComplete="off" spellCheck={false} enterKeyHint="search" placeholder="Search love, mercy, a verse…" className="h-13 min-w-0 flex-1 bg-transparent px-4 font-sans text-[15px] text-[#1c1915] placeholder:text-[#1c1915]/55 focus:outline-none" />
+                <button type="submit" aria-label="Search" className="flex size-13 shrink-0 items-center justify-center rounded-full bg-ink text-paper transition-transform active:scale-95"><ArrowRight className="size-6" strokeWidth={3.2} /></button>
               </div>
             </form>
             <div className="mt-5 flex flex-wrap justify-center gap-2">
@@ -287,12 +287,12 @@ function Home() {
       <div className="relative z-10 flex flex-col lg:hidden">
         <div className="relative px-5 pb-8 pt-20">
           <p className="text-center font-sans text-[10px] font-medium tracking-[0.22em] text-white/90 uppercase">Love · Mercy · Sacrifice · Agape</p>
-          <h1 className="mt-3 text-center font-serif text-[2.4rem] leading-[1.12] font-medium tracking-tight text-white">Look up.<br /><span className="italic">The Word is near.</span></h1>
+          <h1 className="mt-3 text-center font-serif text-[2.4rem] leading-[1.12] font-medium tracking-tight text-white">Look up.<br /><span className="italic">The Word is at HAND.</span></h1>
           <p className="mx-auto mt-3 max-w-[18rem] text-center font-sans text-[14px] leading-relaxed text-white/90">Search the love of God, His mercy, and the sacrifice of Christ.</p>
           <form onSubmit={submit} className="mx-auto mt-5 w-full max-w-md">
             <div className="relative flex items-center rounded-full bg-white/70 shadow-[0_8px_28px_rgba(0,0,0,0.18)] ring-1 ring-white/25 backdrop-blur-md">
-              <Search className="pointer-events-none absolute top-1/2 left-4 size-[18px] -translate-y-1/2 text-muted" strokeWidth={1.8} aria-hidden />
-              <input value={value} autoComplete="off" spellCheck={false} enterKeyHint="search" placeholder="Search love, mercy, a verse…" onChange={(e) => setValue(e.target.value)} className="h-12 w-full bg-transparent py-3 pr-14 pl-11 font-sans text-[15px] text-ink placeholder:text-ink/65 focus:outline-none" />
+              <Search className="pointer-events-none absolute top-1/2 left-4 size-[18px] -translate-y-1/2 text-[#1c1915]/50" strokeWidth={1.8} aria-hidden />
+              <input value={value} autoComplete="off" spellCheck={false} enterKeyHint="search" placeholder="Search love, mercy, a verse…" onChange={(e) => setValue(e.target.value)} className="h-12 w-full bg-transparent py-3 pr-14 pl-11 font-sans text-[15px] text-[#1c1915] placeholder:text-[#1c1915]/55 focus:outline-none" />
               <button type="submit" aria-label="Search" className="absolute top-1/2 right-1.5 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-ink text-paper"><ArrowRight className="size-4" strokeWidth={2.2} /></button>
             </div>
           </form>
