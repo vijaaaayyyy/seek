@@ -15,8 +15,6 @@ import {
   Star,
   Zap,
 } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { useHideOnScroll } from "@/hooks/use-hide-on-scroll";
 import { cn } from "@/lib/utils";
 
 const CONTACT_EMAIL = "vijay.peddenti434@gmail.com";
@@ -139,7 +137,6 @@ function Home() {
   const recent = useSeekStore((s) => s.recent);
   const navigate = useNavigate();
   const [value, setValue] = useState("");
-  const navHidden = useHideOnScroll(14);
 
   function submit(e: FormEvent) {
     e.preventDefault();
@@ -158,7 +155,6 @@ function Home() {
     <>
       {/* ── DESKTOP ── */}
       <div className="relative hidden lg:block">
-        {/* Full-viewport canopy hero */}
         <section className="relative flex min-h-dvh flex-col overflow-hidden">
           <div className="pointer-events-none absolute inset-0 -z-10">
             <picture>
@@ -171,54 +167,13 @@ function Home() {
                 fetchPriority="high"
               />
             </picture>
-            {/* Soft vignette — keep center sky open for the search */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_50%_42%,transparent_0%,rgba(8,12,10,0.18)_65%,rgba(8,12,10,0.5)_100%)]" />
             <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/30 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black/45 to-transparent" />
           </div>
 
-          {/* Notion-light glass nav over photo */}
-          <header
-            className={cn(
-              "fixed top-0 right-0 left-0 z-30 flex justify-center px-4 pt-4 transition-transform duration-300 ease-out will-change-transform",
-              navHidden ? "-translate-y-[140%]" : "translate-y-0",
-            )}
-          >
-            <div className="flex h-11 w-fit max-w-[min(100%,40rem)] items-center gap-1 rounded-full bg-white/85 px-2.5 shadow-sm ring-1 ring-black/8 backdrop-blur-xl dark:bg-black/50 dark:ring-white/12">
-              <Link to="/" className="flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-ink">
-                <LeafMark className="size-4 text-forest" />
-                <span className="font-serif text-[1.05rem] tracking-[0.04em]">SEEK</span>
-              </Link>
-              <nav className="flex items-center gap-0.5">
-                {[
-                  { to: "/books" as const, label: "Bible" },
-                  { to: "/saved" as const, label: "Saved" },
-                  { to: "/profile" as const, label: "Profile" },
-                ].map((l) => (
-                  <Link
-                    key={l.to}
-                    to={l.to}
-                    className="rounded-full px-3 py-1.5 font-sans text-[12.5px] font-medium text-muted transition-colors hover:text-ink"
-                  >
-                    {l.label}
-                  </Link>
-                ))}
-              </nav>
-              <div className="ml-1 flex items-center gap-1 border-l border-line pl-2">
-                <ThemeToggle />
-                <Link
-                  to="/login"
-                  search={{ redirect: "/" }}
-                  className="rounded-full bg-ink px-3.5 py-1.5 font-sans text-[12.5px] font-medium text-paper transition-opacity hover:opacity-90"
-                >
-                  Sign in
-                </Link>
-              </div>
-            </div>
-          </header>
-
-          {/* Center gap — search in the open sky */}
-          <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-20 pt-24 text-center">
+          {/* AppShell owns the single shared header */}
+          <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-20 pt-28 text-center">
             <p className="font-sans text-[11px] font-medium tracking-[0.22em] text-white/90 uppercase drop-shadow-sm">
               Love · Mercy · Sacrifice · Agape
             </p>
@@ -272,7 +227,6 @@ function Home() {
           </div>
         </section>
 
-        {/* Content — cream / theme surface below */}
         <section className="relative bg-paper px-6 pt-12 pb-16 text-ink">
           <div className="mx-auto max-w-5xl">
             <p className="mx-auto max-w-2xl text-center font-serif text-[1.35rem] leading-snug text-ink">
@@ -559,8 +513,8 @@ function Home() {
       </div>
 
       {/* ── MOBILE ── */}
-      <div className="relative -mx-4 -mt-3 flex flex-col lg:hidden">
-        <div className="relative overflow-hidden px-5 pb-8 pt-2">
+      <div className="relative flex flex-col lg:hidden">
+        <div className="relative overflow-hidden px-5 pb-8 pt-20">
           <div className="pointer-events-none absolute inset-0 -z-10">
             <picture>
               <source srcSet="/canopy-hero.webp" type="image/webp" />
