@@ -106,14 +106,16 @@ function Home() {
     void navigate({ to: "/search", search: { q } });
   }
 
+  /* Light: soft white glass. Dark: solid elevated surface so text stays readable on forest. */
   const card =
-    "rounded-xl border border-white/15 bg-white/90 text-ink shadow-[0_8px_32px_rgba(0,0,0,0.18)] backdrop-blur-md dark:border-white/10 dark:bg-black/55 dark:text-paper";
+    "rounded-xl border border-white/20 bg-white/92 text-ink shadow-[0_8px_32px_rgba(0,0,0,0.18)] backdrop-blur-md dark:border-white/18 dark:bg-[#1a1c26]/95 dark:text-[#f5f0e8] dark:shadow-[0_12px_40px_rgba(0,0,0,0.55)]";
   const cardSoft =
-    "rounded-xl border border-white/12 bg-white/80 backdrop-blur-md dark:border-white/10 dark:bg-black/45";
+    "rounded-xl border border-white/15 bg-white/85 backdrop-blur-md dark:border-white/14 dark:bg-[#222636]/95";
+  const chip =
+    "rounded-lg border border-line/60 bg-white/75 transition-colors hover:bg-white dark:border-white/12 dark:bg-white/10 dark:hover:bg-white/16";
 
   return (
     <div className="relative">
-      {/* Continuous forest canopy — slowly drifts */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80"
@@ -122,8 +124,8 @@ function Home() {
           decoding="async"
           fetchPriority="high"
         />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_30%,transparent_0%,rgba(6,10,8,0.4)_55%,rgba(6,10,8,0.78)_100%)]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/60" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_30%,transparent_0%,rgba(6,10,8,0.45)_55%,rgba(6,10,8,0.82)_100%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/15 to-black/65" />
       </div>
 
       <div className="relative z-10 hidden lg:block">
@@ -149,7 +151,7 @@ function Home() {
 
         <section className="relative px-6 pt-4 pb-20">
           <div className="mx-auto max-w-5xl">
-            <p className="mx-auto max-w-2xl text-center font-serif text-[1.35rem] leading-snug text-white drop-shadow-sm">“Beloved, let us love one another: for love is of God.”<span className="mt-2 block font-sans text-[13px] text-white/70">1 John 4:7</span></p>
+            <p className="mx-auto max-w-2xl text-center font-serif text-[1.35rem] leading-snug text-white drop-shadow-sm">“Beloved, let us love one another: for love is of God.”<span className="mt-2 block font-sans text-[13px] text-white/80">1 John 4:7</span></p>
 
             <div className="mx-auto mt-10 grid max-w-2xl grid-cols-4 gap-3">
               {STATS.map((s) => (
@@ -171,7 +173,7 @@ function Home() {
                 <div className="flex items-center gap-2 text-muted"><Sparkles className="size-3.5" strokeWidth={2} /><span className="font-sans text-[11px] font-semibold tracking-[0.12em] uppercase">Seek by the heart</span></div>
                 <div className="mt-3 grid grid-cols-4 gap-2">
                   {TOPICS.map((t) => (
-                    <button key={t.q} type="button" onClick={() => runExample(t.q)} className="flex flex-col items-center gap-1 rounded-lg border border-line/60 bg-white/70 px-1.5 py-2.5 transition-colors hover:bg-white dark:bg-white/5 dark:hover:bg-white/10">
+                    <button key={t.q} type="button" onClick={() => runExample(t.q)} className={cn(chip, "flex flex-col items-center gap-1 px-1.5 py-2.5")}>
                       <span className="text-base leading-none">{t.emoji}</span>
                       <span className="font-sans text-[11px] font-medium">{t.label}</span>
                     </button>
@@ -187,7 +189,7 @@ function Home() {
               </div>
               <div className="mt-3 grid grid-cols-3 gap-2 md:grid-cols-6">
                 {POPULAR_BOOKS.map((b) => (
-                  <Link key={b.slug} to="/read/$book/$chapter" params={{ book: b.slug, chapter: "1" }} search={{ q: undefined }} className="rounded-lg border border-line/60 bg-white/70 px-3 py-3 text-center transition-colors hover:bg-white dark:bg-white/5 dark:hover:bg-white/10">
+                  <Link key={b.slug} to="/read/$book/$chapter" params={{ book: b.slug, chapter: "1" }} search={{ q: undefined }} className={cn(chip, "block px-3 py-3 text-center")}>
                     <p className="font-serif text-[14px] font-medium">{b.name}</p>
                     <p className="mt-0.5 font-sans text-[11px] text-muted">{b.chapters} ch.</p>
                   </Link>
@@ -196,7 +198,7 @@ function Home() {
             </section>
 
             <section className="mt-14">
-              <p className="text-center font-sans text-[11px] font-semibold tracking-[0.16em] text-white/70 uppercase">How it works</p>
+              <p className="text-center font-sans text-[11px] font-semibold tracking-[0.16em] text-white/80 uppercase">How it works</p>
               <h2 className="mt-2 text-center font-serif text-[1.75rem] font-medium text-white">Seek. Receive. Abide.</h2>
               <div className="mt-6 grid gap-3 md:grid-cols-3">
                 {STEPS.map((s) => (
@@ -210,7 +212,7 @@ function Home() {
             </section>
 
             <section className="mt-14">
-              <p className="text-center font-sans text-[11px] font-semibold tracking-[0.16em] text-white/70 uppercase">Why Seek</p>
+              <p className="text-center font-sans text-[11px] font-semibold tracking-[0.16em] text-white/80 uppercase">Why Seek</p>
               <h2 className="mt-2 text-center font-serif text-[1.75rem] font-medium text-white">A quiet place for the Gospel</h2>
               <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {FEATURES.map((f) => {
@@ -231,7 +233,7 @@ function Home() {
                 <div className="flex items-center gap-2 text-muted"><Clock className="size-3.5" strokeWidth={2} /><span className="font-sans text-[11px] font-semibold tracking-[0.12em] uppercase">Recent searches</span></div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {recent.map((q) => (
-                    <button key={q} type="button" onClick={() => runExample(q)} className="rounded-md border border-line/60 bg-white/70 px-3 py-1.5 font-sans text-[13px] transition-colors hover:bg-white dark:bg-white/5">{q}</button>
+                    <button key={q} type="button" onClick={() => runExample(q)} className={cn(chip, "px-3 py-1.5 font-sans text-[13px]")}>{q}</button>
                   ))}
                 </div>
               </section>
@@ -241,9 +243,9 @@ function Home() {
               <h2 className="font-serif text-[1.85rem] font-medium">Come and see</h2>
               <p className="mx-auto mt-2 max-w-md font-sans text-[14px] text-muted">Open the King James Bible. Search the love of God, His mercy, and the sacrifice of Christ — and keep the verses that hold you.</p>
               <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-                <Link to="/books" className="inline-flex h-10 items-center rounded-md bg-ink px-5 font-sans text-[13px] font-medium text-paper transition-opacity hover:opacity-90 dark:bg-paper dark:text-ink">Browse books</Link>
+                <Link to="/books" className="inline-flex h-10 items-center rounded-md bg-ink px-5 font-sans text-[13px] font-medium text-paper transition-opacity hover:opacity-90 dark:bg-[#f5f0e8] dark:text-[#0c0d12]">Browse books</Link>
                 {!user && (
-                  <Link to="/login" search={{ redirect: "/" }} className="inline-flex h-10 items-center rounded-md border border-line bg-white/80 px-5 font-sans text-[13px] font-medium transition-colors hover:bg-white">Sign in to save</Link>
+                  <Link to="/login" search={{ redirect: "/" }} className="inline-flex h-10 items-center rounded-md border border-line bg-white/80 px-5 font-sans text-[13px] font-medium transition-colors hover:bg-white dark:border-white/20 dark:bg-white/10 dark:text-[#f5f0e8]">Sign in to save</Link>
                 )}
               </div>
             </section>
@@ -268,10 +270,10 @@ function Home() {
               </div>
             </section>
 
-            <footer className="mt-10 border-t border-white/15 pt-6 pb-2">
+            <footer className="mt-10 border-t border-white/20 pt-6 pb-2">
               <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
                 <div className="flex items-center gap-2 text-white"><LeafMark className="size-4 text-forest" /><span className="font-serif text-[1.05rem] tracking-[0.04em]">SEEK</span></div>
-                <nav className="flex flex-wrap justify-center gap-x-4 gap-y-1 font-sans text-[13px] text-white/70">
+                <nav className="flex flex-wrap justify-center gap-x-4 gap-y-1 font-sans text-[13px] text-white/80">
                   <Link to="/books" className="hover:text-white">Bible</Link>
                   <Link to="/saved" className="hover:text-white">Saved</Link>
                   <a href="#about" className="hover:text-white">About</a>
@@ -310,7 +312,7 @@ function Home() {
           </Link>
 
           <section className="mt-5">
-            <p className="mb-2.5 font-sans text-[11px] font-medium tracking-[0.14em] text-white/70 uppercase">Seek by the heart</p>
+            <p className="mb-2.5 font-sans text-[11px] font-medium tracking-[0.14em] text-white/80 uppercase">Seek by the heart</p>
             <div className="grid grid-cols-4 gap-2">
               {TOPICS.map((t) => (
                 <button key={t.q} type="button" onClick={() => runExample(t.q)} className={cn(card, "flex flex-col items-center gap-1 px-1 py-2.5")}>
@@ -321,9 +323,9 @@ function Home() {
             </div>
           </section>
 
-          <section className="mt-6">
+                   <section className="mt-6">
             <div className="mb-2.5 flex items-center justify-between">
-              <p className="font-sans text-[11px] font-medium tracking-[0.14em] text-white/70 uppercase">Books of love & mercy</p>
+              <p className="font-sans text-[11px] font-medium tracking-[0.14em] text-white/80 uppercase">Books of love & mercy</p>
               <Link to="/books" className="font-sans text-[12px] font-medium text-white">All →</Link>
             </div>
             <div className="grid grid-cols-3 gap-2">
@@ -353,7 +355,7 @@ function Home() {
 
           <section id="about-mobile" className={cn(card, "mt-6 p-4")}>
             <p className="font-sans text-[11px] font-semibold tracking-[0.12em] text-muted uppercase">About SEEK</p>
-            <p className="mt-2 font-sans text-[13px] leading-relaxed text-muted">A quiet place to search and read the King James Bible — God&apos;s love, mercy, the sacrifice of Christ, and agape that never ends.</p>
+            <p className="mt-2 font-sans text-[13px] leading-relaxed text-muted">A quiet place to search and read the King James Bible — God's love, mercy, the sacrifice of Christ, and agape that never ends.</p>
             <div className="mt-3 space-y-1 font-sans text-[13px]">
               <p><a href={`mailto:${CONTACT_EMAIL}`} className="text-forest underline-offset-2 hover:underline">{CONTACT_EMAIL}</a></p>
               <p><a href={`mailto:${CONTACT_EMAIL}?subject=SEEK%20bug%20report`} className="text-muted underline-offset-2 hover:underline">Report a bug</a></p>
@@ -366,9 +368,9 @@ function Home() {
             </div>
           )}
 
-          <footer className="mt-8 border-t border-white/15 pt-4 pb-2 text-center">
+          <footer className="mt-8 border-t border-white/20 pt-4 pb-2 text-center">
             <div className="flex items-center justify-center gap-2 text-white"><LeafMark className="size-4 text-forest" /><span className="font-serif text-[1rem] tracking-[0.04em]">SEEK</span></div>
-            <p className="mt-2 font-sans text-[11px] text-white/55">© {new Date().getFullYear()} · KJV public domain</p>
+            <p className="mt-2 font-sans text-[11px] text-white/70">© {new Date().getFullYear()} · KJV public domain</p>
           </footer>
         </div>
       </div>
