@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as BooksRouteImport } from './routes/books'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SavedRouteImport } from './routes/saved'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -36,6 +37,11 @@ const LoginRoute = LoginRouteImport.update({
 const SavedRoute = SavedRouteImport.update({
   id: '/saved',
   path: '/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/books': typeof BooksRoute
   '/login': typeof LoginRoute
   '/saved': typeof SavedRoute
+  '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/books': typeof BooksRoute
   '/login': typeof LoginRoute
   '/saved': typeof SavedRoute
+  '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/books': typeof BooksRoute
   '/login': typeof LoginRoute
   '/saved': typeof SavedRoute
+  '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/books'
     | '/login'
     | '/saved'
+    | '/profile'
     | '/search'
     | '/auth/callback'
     | '/api/auth/$'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/books'
     | '/login'
     | '/saved'
+    | '/profile'
     | '/search'
     | '/auth/callback'
     | '/api/auth/$'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/books'
     | '/login'
     | '/saved'
+    | '/profile'
     | '/search'
     | '/auth/callback'
     | '/api/auth/$'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   BooksRoute: typeof BooksRoute
   LoginRoute: typeof LoginRoute
   SavedRoute: typeof SavedRoute
+  ProfileRoute: typeof ProfileRoute
   SearchRoute: typeof SearchRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -162,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/saved'
       fullPath: '/saved'
       preLoaderRoute: typeof SavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   BooksRoute: BooksRoute,
   LoginRoute: LoginRoute,
   SavedRoute: SavedRoute,
+  ProfileRoute: ProfileRoute,
   SearchRoute: SearchRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
