@@ -60,6 +60,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
   const isAuthCallback = pathname.startsWith("/auth/callback");
+  const isRead = pathname.startsWith("/read");
   const activeIndex = Math.max(
     0,
     MOBILE_NAV.findIndex((item) => item.match(pathname)),
@@ -145,7 +146,12 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
           </header>
 
-          <main className="hide-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pb-28">
+          <main
+            className={cn(
+              "hide-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pb-28",
+              isRead && "pt-1",
+            )}
+          >
             {children}
           </main>
 
