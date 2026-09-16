@@ -113,18 +113,15 @@ function Home() {
 
   return (
     <div className="relative">
-      {/* Continuous tree canopy — z-0 above body paper; html.home-canopy clears paper */}
+      {/* One continuous tree canopy — no cream band divide */}
       <div className="pointer-events-none fixed inset-0 z-0">
-        <picture>
-          <source srcSet="/canopy-hero.webp" type="image/webp" />
-          <img
-            src="/canopy-hero.jpg"
-            alt=""
-            className="h-full w-full object-cover object-[center_35%]"
-            decoding="async"
-            fetchPriority="high"
-          />
-        </picture>
+        <img
+          src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80"
+          alt=""
+          className="h-full w-full object-cover object-[center_40%]"
+          decoding="async"
+          fetchPriority="high"
+        />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_30%,transparent_0%,rgba(6,10,8,0.4)_55%,rgba(6,10,8,0.78)_100%)]" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/60" />
       </div>
