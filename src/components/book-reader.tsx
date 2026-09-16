@@ -39,6 +39,20 @@ function paginate(verses: IndexedVerse[], width: number, height: number): Indexe
   return pages;
 }
 
+function adjacentChapter(book: BookMeta, chapter: number, dir: -1 | 1) {
+  const nextNum = chapter + dir;
+  if (nextNum >= 1 && nextNum <= book.chapters.length) {
+    return { slug: book.slug, chapter: nextNum, name: book.name };
+  }
+  const neighbor = BOOKS[book.index + dir];
+  if (!neighbor) return null;
+  return {
+    slug: neighbor.slug,
+    chapter: dir === 1 ? 1 : neighbor.chapters.length,
+    name: neighbor.name,
+  };
+}
+
 export function BookReader({
   book,
   chapter,
@@ -98,6 +112,12 @@ export function BookReader({
   }, [focusVerse, pages]);
 
   const targetIndex = flip ? (flip.dir === "next" ? flip.from + 1 : flip.from - 1) : index;
+  const isPrevFlip = flip !== null && flip.dir === "prev";
+  const underBase = isPrevFlip
+    ? pages[flip!.from] ?? []
+    : pages[targetIndex] ?? [];
+  const sourcePage = flip ? (pages[flip.from] ?? []) : [];
+  const leafPage = isPrevFlip ? pages[targetIndex] ?? [] : sourcePage;
   const under = pages[targetIndex] ?? [];
 
   const go = useCallback(
@@ -106,12 +126,23 @@ export function BookReader({
       const nextIndex = dir === "next" ? index + 1 : index - 1;
       if (nextIndex < 0) return;
       if (nextIndex >= pageCount) {
-        if (dir === "next") setChapterPrompt(true);
+        if (dir === "next") {
+          const nc = adjacentChapter(book, chapter, 1);
+          if (nc) {
+            void navigate({
+              to: "/read/$book/$chapter",
+              params: { book: nc.slug, chapter: String(nc.chapter) },
+              search: { q: undefined },
+            });
+          } else {
+            setChapterPrompt(true);
+          }
+        }
         return;
       }
       setFlip({ dir, from: index });
     },
-    [flip, index, pageCount, chapterPrompt],
+    [flip, index, pageCount, chapterPrompt, book, chapter, navigate],
   );
 
   function commitFlip() {
@@ -140,73 +171,75 @@ export function BookReader({
     go(dx < 0 ? "next" : "prev");
   }
 
-  const prevChapter = adjacentChapter(book, chapter, -1);
-  const nextChapter = adjacentChapter(book, chapter, 1);
-  const pageLabel = book.name + " " + chapter;
+  const prevCh = adjacentChapter(book, chapter, -1);
+  const nextCh = adjacentChapter(book, chapter, 1);
+  const isFirstPage = index === 0;
+  const isLastPage = index >= pageCount - 1;
 
   return (
     <div className="pb-6">
-      <div className="sticky top-0 z-20 -mx-1 px-0.5 pb-2 pt-1">
-        <div className="glass glass-strong flex items-center justify-between gap-2 rounded-[22px] py-1.5 pr-1.5 pl-1">
-          <div className="min-w-0">
+      {/* ── Header: book picker + reading mode ── */}
+      <div className="sticky top-0 z-20 px-1 pb-1 pt-1 sm:px-1.5">
+        <div className="glass glass-strong flex items-center justify-between gap-2 rounded-[22px] px-2 py-1.5">
+          <div className="min-w-0 flex-1">
             <BookPicker book={book} chapter={chapter} />
             <p className="px-3 font-sans text-[11px] text-muted">
               Chapter {chapter} of {book.chapters.length}
               <span className="text-faint"> · </span>
               Page {Math.min(index + 1, Math.max(pageCount, 1))} / {Math.max(pageCount, 1)}
-              <span className="text-faint"> · </span>
-              {verses.length} verses
             </p>
           </div>
-          <div className="flex shrink-0 items-center gap-1">
-            <ReadingModeToggle />
-            {prevChapter ? (
-              <Link
-                to="/read/$book/$chapter"
-                params={{ book: prevChapter.slug, chapter: String(prevChapter.chapter) }}
-                search={{ q: undefined }}
-                aria-label="Previous chapter"
-                className="inline-flex size-10 items-center justify-center rounded-full text-ink transition-transform duration-150 active:scale-[0.96] hover:bg-ink/8"
-              >
-                <ChevronLeft className="size-5" />
-              </Link>
-            ) : (
-              <span className="inline-flex size-10 items-center justify-center rounded-full text-faint opacity-40">
-                <ChevronLeft className="size-5" />
-              </span>
-            )}
-            {nextChapter ? (
-              <Link
-                to="/read/$book/$chapter"
-                params={{ book: nextChapter.slug, chapter: String(nextChapter.chapter) }}
-                search={{ q: undefined }}
-                aria-label="Next chapter"
-                className="inline-flex size-10 items-center justify-center rounded-full text-ink transition-transform duration-150 active:scale-[0.96] hover:bg-ink/8"
-              >
-                <ChevronRight className="size-5" />
-              </Link>
-            ) : (
-              <span className="inline-flex size-10 items-center justify-center rounded-full text-faint opacity-40">
-                <ChevronRight className="size-5" />
-              </span>
-            )}
-          </div>
+          <ReadingModeToggle />
         </div>
       </div>
 
-      <div className="mt-3 px-0.5">
+      {/* ── Chapter nav bar ── */}
+      <div className="mx-auto mt-2 flex max-w-2xl items-center gap-2 px-1 sm:px-1.5">
+        {prevCh ? (
+          <Link
+            to="/read/$book/$chapter"
+            params={{ book: prevCh.slug, chapter: String(prevCh.chapter) }}
+            search={{ q: undefined }}
+            className="flex min-w-0 flex-1 items-center gap-2 rounded-2xl border border-line bg-surface px-3 py-2.5 transition-colors hover:border-ink/20 hover:bg-white dark:hover:bg-white/5"
+          >
+            <ChevronLeft className="size-4 shrink-0 text-muted" />
+            <span className="min-w-0 truncate font-sans text-[12.5px] font-medium text-ink">
+              {prevCh.name} {prevCh.chapter}
+            </span>
+          </Link>
+        ) : (
+          <div className="flex-1" />
+        )}
+        {nextCh ? (
+          <Link
+            to="/read/$book/$chapter"
+            params={{ book: nextCh.slug, chapter: String(nextCh.chapter) }}
+            search={{ q: undefined }}
+            className="flex min-w-0 flex-1 items-center justify-end gap-2 rounded-2xl border border-line bg-surface px-3 py-2.5 transition-colors hover:border-ink/20 hover:bg-white dark:hover:bg-white/5"
+          >
+            <span className="min-w-0 truncate font-sans text-[12.5px] font-medium text-ink">
+              {nextCh.name} {nextCh.chapter}
+            </span>
+            <ChevronRight className="size-4 shrink-0 text-muted" />
+          </Link>
+        ) : (
+          <div className="flex-1" />
+        )}
+      </div>
+
+      {/* ── Book page ── */}
+      <div className="mt-3 px-1 sm:px-1.5">
         <div className="book-stage mx-auto w-full max-w-2xl">
           <div
             ref={sheetRef}
-            className="relative h-[min(62dvh,560px)] min-h-[360px] w-full cursor-pointer select-none touch-pan-y"
+            className="relative h-[min(54dvh,560px)] min-h-[330px] w-full cursor-pointer select-none touch-pan-y"
             onPointerDown={onPointerDown}
             onPointerUp={onPointerUp}
           >
             <PageSheet
               book={book}
               chapter={chapter}
-              pageLabel={pageLabel}
-              verses={under}
+              verses={underBase}
               pageNo={targetIndex + 1}
               pageCount={pageCount || 1}
               highlight={highlight}
@@ -226,9 +259,8 @@ export function BookReader({
                 <PageSheet
                   book={book}
                   chapter={chapter}
-                  pageLabel={pageLabel}
-                  verses={pages[flip.from] ?? []}
-                  pageNo={flip.from + 1}
+                  verses={leafPage}
+                  pageNo={flip.dir === "prev" ? targetIndex + 1 : flip.from + 1}
                   pageCount={pageCount || 1}
                   highlight={highlight}
                   className="h-full"
@@ -238,31 +270,45 @@ export function BookReader({
           </div>
         </div>
 
-        <div className="mx-auto mt-4 flex w-full max-w-2xl items-center justify-between gap-3 px-1">
+        {/* ── Page nav: larger, clearer buttons ── */}
+        <div className="mx-auto mt-4 flex w-full max-w-2xl items-center justify-between gap-4 px-1">
           <button
             type="button"
             onClick={() => go("prev")}
-            disabled={flip !== null || index === 0}
+            disabled={flip !== null || isFirstPage}
             aria-label="Previous page"
-            className="inline-flex size-11 items-center justify-center rounded-full glass text-ink transition-transform duration-150 active:scale-[0.94] disabled:opacity-35 disabled:active:scale-100"
+            className={cn(
+              "flex h-12 min-w-[4.5rem] items-center justify-center gap-1.5 rounded-full border font-sans text-[13px] font-medium transition-all duration-150 active:scale-[0.96]",
+              isFirstPage
+                ? "border-line/50 text-faint opacity-35"
+                : "border-line bg-surface text-ink hover:border-ink/20 hover:bg-white dark:hover:bg-white/5",
+            )}
           >
-            <ChevronLeft className="size-5" />
+            <ChevronLeft className="size-4" />
+            <span className="hidden sm:inline">Prev</span>
           </button>
           <p className="font-sans text-[13px] text-muted tabular-nums">
-            Page {index + 1} <span className="text-faint">of {pageCount}</span>
+            {index + 1} / {pageCount}
           </p>
           <button
             type="button"
             onClick={() => go("next")}
             disabled={flip !== null || chapterPrompt}
-            aria-label="Next page"
-            className="inline-flex size-11 items-center justify-center rounded-full glass text-ink transition-transform duration-150 active:scale-[0.94] disabled:opacity-35 disabled:active:scale-100"
+            aria-label={isLastPage ? "Next chapter" : "Next page"}
+            className={cn(
+              "flex h-12 min-w-[4.5rem] items-center justify-center gap-1.5 rounded-full border font-sans text-[13px] font-medium transition-all duration-150 active:scale-[0.96]",
+              chapterPrompt
+                ? "border-line/50 text-faint opacity-35"
+                : "border-ink/20 bg-ink text-paper hover:bg-ink/90 dark:bg-[#f5f0e8] dark:text-ink dark:hover:bg-[#f5f0e8]/90",
+            )}
           >
-            <ChevronRight className="size-5" />
+            <span className="hidden sm:inline">{isLastPage ? "Next ch." : "Next"}</span>
+            <ChevronRight className="size-4" />
           </button>
         </div>
       </div>
 
+      {/* ── Chapter finished prompt ── */}
       {chapterPrompt && (
         <div
           className="fixed inset-0 z-[80] flex items-end justify-center bg-black/45 p-4 backdrop-blur-[2px] sm:items-center"
@@ -274,28 +320,25 @@ export function BookReader({
               Chapter {chapter} finished
             </p>
             <p className="mt-2 font-sans text-[14px] leading-relaxed text-muted">
-              {nextChapter
-                ? "Continue to the next chapter, or stay on this one?"
-                : "You've reached the end of this book. Stay on this chapter?"}
+              {nextCh
+                ? `Continue to ${nextCh.name} ${nextCh.chapter}?`
+                : "You've reached the end of this book."}
             </p>
             <div className="mt-5 grid gap-2">
-              {nextChapter && (
+              {nextCh && (
                 <button
                   type="button"
                   onClick={() => {
                     setChapterPrompt(false);
                     void navigate({
                       to: "/read/$book/$chapter",
-                      params: {
-                        book: nextChapter.slug,
-                        chapter: String(nextChapter.chapter),
-                      },
+                      params: { book: nextCh.slug, chapter: String(nextCh.chapter) },
                       search: { q: undefined },
                     });
                   }}
-                  className="flex h-12 items-center justify-center rounded-full bg-ink font-sans text-[14px] font-medium text-paper transition-transform active:scale-[0.98]"
+                  className="flex h-12 items-center justify-center rounded-full bg-ink font-sans text-[14px] font-medium text-paper transition-transform active:scale-[0.98] dark:bg-[#f5f0e8] dark:text-ink"
                 >
-                  Next chapter
+                  Continue to {nextCh.name} {nextCh.chapter}
                 </button>
               )}
               <button
@@ -316,7 +359,6 @@ export function BookReader({
 function PageSheet({
   book,
   chapter,
-  pageLabel,
   verses,
   pageNo,
   pageCount,
@@ -325,7 +367,6 @@ function PageSheet({
 }: {
   book: BookMeta;
   chapter: number;
-  pageLabel: string;
   verses: IndexedVerse[];
   pageNo: number;
   pageCount: number;
@@ -345,7 +386,7 @@ function PageSheet({
           Holy Bible
         </p>
         <p className="mt-0.5 font-serif text-[15px] leading-none font-medium tracking-tight">
-          {pageLabel}
+          {book.name} {chapter}
         </p>
         <span className="mx-auto mt-2 block h-px w-10 bg-line" />
       </div>
@@ -369,17 +410,4 @@ function PageSheet({
       </div>
     </div>
   );
-}
-
-function adjacentChapter(book: BookMeta, chapter: number, dir: -1 | 1) {
-  const nextNum = chapter + dir;
-  if (nextNum >= 1 && nextNum <= book.chapters.length) {
-    return { slug: book.slug, chapter: nextNum };
-  }
-  const neighbor = BOOKS[book.index + dir];
-  if (!neighbor) return null;
-  return {
-    slug: neighbor.slug,
-    chapter: dir === 1 ? 1 : neighbor.chapters.length,
-  };
 }

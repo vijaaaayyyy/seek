@@ -189,7 +189,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <main
             className={cn(
               "hide-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pt-16 pb-28",
-              isRead && "pt-16",
+              isRead && "px-0 pt-16",
               isHome && "px-0 pt-0 pb-28",
             )}
           >

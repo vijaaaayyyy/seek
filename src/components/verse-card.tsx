@@ -79,9 +79,15 @@ export function VerseCard({
           </Button>
         </div>
       </div>
-      <p className="mt-3 font-serif text-[17px] leading-relaxed text-ink">
+      <Link
+        to="/read/$book/$chapter"
+        params={{ book: book.slug, chapter: String(verse.chapter) }}
+        search={{ q: query }}
+        hash={`v${verse.verse}`}
+        className="mt-3 block font-serif text-[17px] leading-relaxed text-ink"
+      >
         <Highlighted text={verse.text} needles={matched} />
-      </p>
+      </Link>
       {(kind || reason) && (
         <div className="mt-4 flex flex-wrap items-center gap-2">
           {kind === "meaning" || alsoMeaning ? <Badge variant="forest">By meaning</Badge> : null}

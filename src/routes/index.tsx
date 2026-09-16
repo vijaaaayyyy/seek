@@ -26,14 +26,14 @@ const EXAMPLES = [
 ];
 
 const TOPICS = [
-  { q: "love of God", label: "Love", emoji: "❤️", line: "He first loved us." },
-  { q: "mercy", label: "Mercy", emoji: "🕊️", line: "His mercy endureth for ever." },
-  { q: "grace", label: "Grace", emoji: "✨", line: "By grace are ye saved." },
-  { q: "sacrifice", label: "Sacrifice", emoji: "✝️", line: "He gave His only Son." },
-  { q: "forgiveness", label: "Forgiveness", emoji: "🤝", line: "Cleanse us from our sins." },
-  { q: "hope", label: "Hope", emoji: "🌅", line: "An anchor of the soul." },
-  { q: "peace", label: "Peace", emoji: "🌿", line: "That passeth understanding." },
-  { q: "faith", label: "Faith", emoji: "🙏", line: "Substance of things hoped for." },
+  { q: "love of God", label: "Love", emoji: "❤️", line: "He first loved us.", ref: "1 Jn 4:19", tint: "from-rose-200/70 to-orange-100/40" },
+  { q: "mercy", label: "Mercy", emoji: "🕊️", line: "His mercy endureth for ever.", ref: "Ps 136:1", tint: "from-sky-200/70 to-indigo-100/40" },
+  { q: "grace", label: "Grace", emoji: "✨", line: "By grace are ye saved.", ref: "Eph 2:8", tint: "from-violet-200/70 to-fuchsia-100/40" },
+  { q: "sacrifice", label: "Sacrifice", emoji: "✝️", line: "He gave His only Son.", ref: "Jn 3:16", tint: "from-amber-200/70 to-yellow-100/40" },
+  { q: "forgiveness", label: "Forgiveness", emoji: "🤝", line: "Cleanse us from our sins.", ref: "1 Jn 1:9", tint: "from-teal-200/70 to-emerald-100/40" },
+  { q: "hope", label: "Hope", emoji: "🌅", line: "An anchor of the soul.", ref: "Heb 6:19", tint: "from-cyan-200/70 to-blue-100/40" },
+  { q: "peace", label: "Peace", emoji: "🌿", line: "That passeth understanding.", ref: "Phil 4:7", tint: "from-green-200/70 to-lime-100/40" },
+  { q: "faith", label: "Faith", emoji: "🙏", line: "Substance of things hoped for.", ref: "Heb 11:1", tint: "from-orange-200/70 to-amber-100/40" },
 ];
 
 const POPULAR_BOOKS = [
@@ -244,23 +244,32 @@ function Home() {
                 Mercy, grace, hope — or the longing beneath them.
               </p>
             </div>
-            <div className="mt-7 grid grid-cols-2 gap-2.5 md:grid-cols-4">
+            <div className="mt-7 grid grid-cols-2 gap-3 md:grid-cols-4">
               {TOPICS.map((t) => (
                 <button
                   key={t.q}
                   type="button"
                   onClick={() => runExample(t.q)}
                   className={cn(
-                    linkTile,
-                    "group flex flex-col items-start gap-3 p-4 text-left",
+                    "group relative flex flex-col items-start overflow-hidden rounded-3xl border border-line bg-surface p-4 text-left transition-all duration-300 hover:-translate-y-1 hover:border-ink/15 hover:shadow-[0_14px_40px_rgba(0,0,0,0.08)] dark:hover:border-white/15 dark:hover:bg-white/5",
                   )}
                 >
-                  <span className="flex size-9 items-center justify-center rounded-xl bg-forest/10 text-lg leading-none transition-transform duration-200 group-hover:scale-110">
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b opacity-80 transition-opacity duration-300 group-hover:opacity-100",
+                      t.tint,
+                    )}
+                  />
+                  <span className="relative flex size-10 items-center justify-center rounded-2xl bg-white/70 text-lg leading-none shadow-sm ring-1 ring-black/5 transition-transform duration-300 group-hover:scale-110 dark:bg-black/30 dark:ring-white/10">
                     {t.emoji}
                   </span>
-                  <span>
-                    <span className="block font-serif text-[1.02rem] font-medium text-ink">{t.label}</span>
-                    <span className="mt-0.5 block font-sans text-[11.5px] leading-snug text-muted">{t.line}</span>
+                  <span className="relative mt-auto pt-6">
+                    <span className="block font-serif text-[1.1rem] font-medium text-ink">{t.label}</span>
+                    <span className="mt-1 block font-sans text-[12px] leading-snug text-muted">{t.line}</span>
+                    <span className="mt-2.5 block font-sans text-[10px] font-semibold tracking-[0.14em] text-forest/80 uppercase">
+                      {t.ref}
+                    </span>
                   </span>
                 </button>
               ))}
@@ -344,7 +353,7 @@ function Home() {
           {/* CTA */}
           <section className="mt-20 text-center">
             <div className="rounded-3xl bg-gradient-to-b from-forest/8 to-transparent p-8 sm:p-12">
-              <h2 className="font-serif text-[1.8rem] font-medium tracking-tight">Come and see</h2>
+              <h2 className="font-serif text-[1.8rem] font-medium tracking-tight">COME & SEE</h2>
               <p className="mx-auto mt-2 max-w-md font-sans text-[14px] leading-relaxed text-muted">Open the King James Bible. Search the love of God, His mercy, and the sacrifice of Christ — and keep the verses that hold you.</p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
                 <Link to="/books" className="inline-flex h-10 items-center rounded-full bg-ink px-6 font-sans text-[13px] font-medium text-paper transition-transform hover:scale-[1.02] active:scale-95 dark:bg-[#f5f0e8] dark:text-[#0c0d12]">Browse books</Link>

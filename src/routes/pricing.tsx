@@ -62,7 +62,7 @@ function Pricing() {
           body: (
             <p>
               SEEK is a small, independent project. There are no ads, no trackers, and no paywalls.
-              Your searches live on your device, and saving is free whether you sign in or not.
+              Your searches live on your CLOUD, and saving is FREE IF YOU'RE SIGN-IN in if NOT then no!.
               If people wish to support the work, that is a gift of prayer — never a requirement to read.
             </p>
           ),

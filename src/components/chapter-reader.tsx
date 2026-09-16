@@ -178,7 +178,7 @@ export function ChapterReader({
 
   return (
     <div className="relative pb-8">
-      <div className="sticky top-0 z-20 -mx-1 mb-1 px-0.5 pb-2 pt-0.5">
+      <div className="sticky top-0 z-20 -mx-1 mt-0.5 mb-1 px-1 pb-2 pt-1 sm:px-1.5">
         <div className="glass glass-strong flex items-center justify-between gap-2 rounded-[22px] py-1.5 pr-1.5 pl-1 shadow-sm">
           <div className="min-w-0">
             <BookPicker book={book} chapter={activeChapter} />
@@ -198,55 +198,58 @@ export function ChapterReader({
           </div>
           <div className="flex shrink-0 items-center gap-1">
             <ReadingModeToggle />
-            <div className="flex items-center gap-0.5 rounded-full bg-ink/5 p-0.5 dark:bg-white/8">
-              {prev ? (
-                <Link
-                  to="/read/$book/$chapter"
-                  params={{ book: prev.book.slug, chapter: String(prev.chapter) }}
-                  search={{ q: undefined }}
-                  aria-label="Previous chapter"
-                  className="flex size-9 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/8"
-                >
-                  <ChevronLeft className="size-4" strokeWidth={2} />
-                </Link>
-              ) : (
-                <span className="flex size-9 items-center justify-center text-faint">
-                  <ChevronLeft className="size-4" strokeWidth={2} />
-                </span>
-              )}
-              {next ? (
-                <button
-                  type="button"
-                  aria-label="Next chapter"
-                  onClick={() => {
-                    if (next.chapter <= maxUnlocked) {
-                      void navigate({
-                        to: "/read/$book/$chapter",
-                        params: {
-                          book: next.book.slug,
-                          chapter: String(next.chapter),
-                        },
-                        search: { q: undefined },
-                      });
-                    } else {
-                      setPrompt({
-                        finished: maxUnlocked,
-                        nextChapter: next.chapter,
-                      });
-                    }
-                  }}
-                  className="flex size-9 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/8"
-                >
-                  <ChevronRight className="size-4" strokeWidth={2} />
-                </button>
-              ) : (
-                <span className="flex size-9 items-center justify-center text-faint">
-                  <ChevronRight className="size-4" strokeWidth={2} />
-                </span>
-              )}
-            </div>
           </div>
         </div>
+      </div>
+
+      {/* ── Chapter nav bar ── */}
+      <div className="mx-auto mt-1.5 flex max-w-2xl items-center gap-2 px-1 sm:px-1.5">
+        {prev ? (
+          <Link
+            to="/read/$book/$chapter"
+            params={{ book: prev.book.slug, chapter: String(prev.chapter) }}
+            search={{ q: undefined }}
+            className="flex min-w-0 flex-1 items-center gap-2 rounded-2xl border border-line bg-surface px-3 py-2.5 transition-colors hover:border-ink/20 hover:bg-white dark:hover:bg-white/5"
+          >
+            <ChevronLeft className="size-4 shrink-0 text-muted" />
+            <span className="min-w-0 truncate font-sans text-[12.5px] font-medium text-ink">
+              {prev.chapter <= maxUnlocked ? `${prev.book.name} ${prev.chapter}` : "Previous chapter"}
+            </span>
+          </Link>
+        ) : (
+          <div className="flex-1" />
+        )}
+        {next ? (
+          <button
+            type="button"
+            aria-label="Next chapter"
+            onClick={() => {
+              if (next.chapter <= maxUnlocked) {
+                void navigate({
+                  to: "/read/$book/$chapter",
+                  params: {
+                    book: next.book.slug,
+                    chapter: String(next.chapter),
+                  },
+                  search: { q: undefined },
+                });
+              } else {
+                setPrompt({
+                  finished: maxUnlocked,
+                  nextChapter: next.chapter,
+                });
+              }
+            }}
+            className="flex min-w-0 flex-1 items-center justify-end gap-2 rounded-2xl border border-line bg-surface px-3 py-2.5 transition-colors hover:border-ink/20 hover:bg-white dark:hover:bg-white/5"
+          >
+            <span className="min-w-0 truncate font-sans text-[12.5px] font-medium text-ink">
+              {next.chapter <= maxUnlocked ? `${next.book.name} ${next.chapter}` : `Chapter ${next.chapter} →`}
+            </span>
+            <ChevronRight className="size-4 shrink-0 text-muted" />
+          </button>
+        ) : (
+          <div className="flex-1" />
+        )}
       </div>
 
       <div className="mx-auto max-w-2xl pt-2">
