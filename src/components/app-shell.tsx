@@ -1,11 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BookOpen, Bookmark, Home } from "lucide-react";
+import { BookOpen, Bookmark, Home, UserRound } from "lucide-react";
 import type { ReactNode } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/user-menu";
 import { cn } from "@/lib/utils";
 
-const NAV = [
+const MOBILE_NAV = [
   {
     to: "/",
     label: "Home",
@@ -24,24 +24,97 @@ const NAV = [
     icon: Bookmark,
     match: (p: string) => p.startsWith("/saved"),
   },
+  {
+    to: "/profile",
+    label: "Profile",
+    icon: UserRound,
+    match: (p: string) => p.startsWith("/profile") || p.startsWith("/login"),
+  },
 ] as const;
+
+const DESKTOP_LINKS = [
+  { to: "/books", label: "Bible" },
+  { to: "/saved", label: "Saved" },
+  { to: "/profile", label: "Profile" },
+] as const;
+
+function LeafMark({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className={className}
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M12 21c-1.5-1.2-6-5.2-6-9.5A4.5 4.5 0 0 1 12 7.2 4.5 4.5 0 0 1 18 11.5c0 4.3-4.5 8.3-6 9.5Z" />
+      <path d="M12 11.5V7.2" />
+    </svg>
+  );
+}
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
   const activeIndex = Math.max(
     0,
-    NAV.findIndex((item) => item.match(pathname)),
+    MOBILE_NAV.findIndex((item) => item.match(pathname)),
   );
 
   return (
     <div className="relative isolate min-h-dvh text-ink">
       {!isHome && <div className="app-atmosphere" aria-hidden />}
 
-      <div className="relative z-10 flex min-h-dvh items-stretch justify-center sm:items-center sm:p-4">
+      <div className="relative z-10 hidden min-h-dvh flex-col lg:flex">
+        {!isHome && (
+          <header className="sticky top-0 z-40 px-6 pt-5 pb-3">
+            <div className="mx-auto flex h-14 max-w-6xl items-center justify-between rounded-full bg-white/55 px-5 shadow-sm ring-1 ring-black/5 backdrop-blur-xl dark:bg-black/40 dark:ring-white/10">
+              <Link to="/" className="flex items-center gap-2">
+                <LeafMark className="size-5 text-forest" />
+                <span className="font-serif text-[1.25rem] tracking-[0.04em] text-ink">
+                  SEEK
+                </span>
+              </Link>
+              <nav className="flex items-center gap-1">
+                {DESKTOP_LINKS.map((link) => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className={cn(
+                      "rounded-full px-4 py-2 font-sans text-[13px] font-medium transition-colors",
+                      pathname.startsWith(link.to)
+                        ? "bg-ink/8 text-ink"
+                        : "text-muted hover:text-ink",
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+              <div className="flex items-center gap-2">
+                <ThemeToggle />
+                <UserMenu />
+              </div>
+            </div>
+          </header>
+        )}
+        <main
+          className={cn(
+            "flex-1",
+            !isHome && "mx-auto w-full max-w-6xl px-6 pb-16",
+          )}
+        >
+          {children}
+        </main>
+      </div>
+
+      <div className="relative z-10 flex min-h-dvh items-stretch justify-center lg:hidden">
         <div
           className={cn(
-            "app-device relative flex h-dvh w-full max-w-[430px] flex-col overflow-hidden sm:h-[min(852px,calc(100dvh-2rem))] sm:rounded-[40px]",
+            "app-device relative flex h-dvh w-full max-w-[430px] flex-col overflow-hidden",
             isHome && "bg-transparent",
           )}
         >
@@ -55,23 +128,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               )}
             >
               <Link to="/" className="flex min-h-11 items-center gap-2">
-                <span
-                  className="inline-flex size-6 items-center justify-center text-forest"
-                  aria-hidden
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    className="size-5"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 21c-1.5-1.2-6-5.2-6-9.5A4.5 4.5 0 0 1 12 7.2 4.5 4.5 0 0 1 18 11.5c0 4.3-4.5 8.3-6 9.5Z" />
-                    <path d="M12 11.5V7.2" />
-                  </svg>
-                </span>
+                <LeafMark className="size-5 text-forest" />
                 <span className="font-serif text-[1.35rem] leading-none tracking-[0.04em] text-ink">
                   SEEK
                 </span>
@@ -96,13 +153,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             className="absolute inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
             aria-label="Primary"
           >
-            <div className="glass glass-strong relative grid h-[4.25rem] w-full grid-cols-3 rounded-full p-1.5">
+            <div className="glass glass-strong relative grid h-[4.25rem] w-full grid-cols-4 rounded-full p-1.5">
               <div
                 aria-hidden
-                className="absolute top-1.5 bottom-1.5 left-1.5 w-[calc((100%-0.75rem)/3)] rounded-full bg-ink/10 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] dark:bg-paper/14"
+                className="absolute top-1.5 bottom-1.5 left-1.5 w-[calc((100%-0.75rem)/4)] rounded-full bg-ink/10 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] dark:bg-paper/14"
                 style={{ transform: `translateX(${activeIndex * 100}%)` }}
               />
-              {NAV.map((item) => {
+              {MOBILE_NAV.map((item) => {
                 const Icon = item.icon;
                 const active = item.match(pathname);
                 return (
