@@ -471,7 +471,7 @@ function Home() {
 
 {/* Smaller SEEK wordmark, fading out at the baseline */}
           <div aria-hidden className="pointer-events-none -mb-1 select-none">
-            <p className="seek-wordmark-fade text-center font-serif text-[clamp(52px,10vw,120px)] leading-[0.82] font-medium tracking-tighter text-[#32291a]/22">
+            <p className="seek-wordmark-fade text-center font-serif text-[clamp(72px,14vw,170px)] leading-[0.82] font-medium tracking-tighter text-[#32291a]/22">
               SEEK
             </p>
           </div>
