@@ -76,6 +76,8 @@ const STEPS = [
   { n: "03", title: "Save", body: "Bookmark verses you want to return to later." },
 ];
 
+const CONTACT_EMAIL = "vijay.peddenti434@gmail.com";
+
 export const Route = createFileRoute("/")({ component: Home });
 
 function LeafMark({ className }: { className?: string }) {
@@ -326,12 +328,16 @@ function Home() {
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 <div className="rounded-[20px] bg-white/[0.05] p-4 ring-1 ring-white/8">
                   <p className="font-sans text-[12px] font-semibold tracking-wide text-[#c5d1c8] uppercase">Contact</p>
-                  <p className="mt-2 font-sans text-[14px] text-[#f2ebe0]"><a href="mailto:vijay@seek.bible" className="underline-offset-2 hover:underline">vijay@seek.bible</a></p>
+                  <p className="mt-2 font-sans text-[14px] text-[#f2ebe0]">
+                    <a href={`mailto:${CONTACT_EMAIL}`} className="underline-offset-2 hover:underline">{CONTACT_EMAIL}</a>
+                  </p>
                   <p className="mt-1 font-sans text-[12px] text-[#a39b90]">Questions, feedback, or partnership ideas.</p>
                 </div>
                 <div className="rounded-[20px] bg-white/[0.05] p-4 ring-1 ring-white/8">
                   <p className="font-sans text-[12px] font-semibold tracking-wide text-[#c5d1c8] uppercase">Report a bug</p>
-                  <p className="mt-2 font-sans text-[14px] text-[#f2ebe0]"><a href="mailto:vijay@seek.bible?subject=SEEK%20bug%20report&body=Page%20URL%3A%0AWhat%20happened%3A%0AWhat%20you%20expected%3A%0A" className="underline-offset-2 hover:underline">Send a bug report</a></p>
+                  <p className="mt-2 font-sans text-[14px] text-[#f2ebe0]">
+                    <a href={`mailto:${CONTACT_EMAIL}?subject=SEEK%20bug%20report&body=Page%20URL%3A%0AWhat%20happened%3A%0AWhat%20you%20expected%3A%0A`} className="underline-offset-2 hover:underline">Send a bug report</a>
+                  </p>
                   <p className="mt-1 font-sans text-[12px] text-[#a39b90]">Include the page URL and what you expected.</p>
                 </div>
               </div>
@@ -352,7 +358,7 @@ function Home() {
                   <Link to="/saved" className="transition-colors hover:text-[#f2ebe0]">Saved</Link>
                   <Link to="/profile" className="transition-colors hover:text-[#f2ebe0]">Profile</Link>
                   <a href="#about" className="transition-colors hover:text-[#f2ebe0]">About</a>
-                  <a href="mailto:vijay@seek.bible?subject=SEEK%20bug%20report" className="transition-colors hover:text-[#f2ebe0]">Report a bug</a>
+                  <a href={`mailto:${CONTACT_EMAIL}?subject=SEEK%20bug%20report`} className="transition-colors hover:text-[#f2ebe0]">Report a bug</a>
                 </nav>
               </div>
             </footer>
@@ -427,8 +433,8 @@ function Home() {
             <p className="font-sans text-[11px] font-semibold tracking-[0.14em] text-muted uppercase">About SEEK</p>
             <p className="mt-2 font-sans text-[13px] leading-relaxed text-ink">Search and read the King James Bible by verse, phrase, or feeling. Independent app · KJV text is public domain.</p>
             <div className="mt-3 space-y-1.5 font-sans text-[12px] text-muted">
-              <p>Contact: <a href="mailto:vijay@seek.bible" className="font-medium text-forest underline-offset-2 hover:underline">vijay@seek.bible</a></p>
-              <p><a href="mailto:vijay@seek.bible?subject=SEEK%20bug%20report&body=Page%20URL%3A%0AWhat%20happened%3A%0AWhat%20you%20expected%3A%0A" className="font-medium text-forest underline-offset-2 hover:underline">Report a bug</a></p>
+              <p>Contact: <a href={`mailto:${CONTACT_EMAIL}`} className="font-medium text-forest underline-offset-2 hover:underline">{CONTACT_EMAIL}</a></p>
+              <p><a href={`mailto:${CONTACT_EMAIL}?subject=SEEK%20bug%20report&body=Page%20URL%3A%0AWhat%20happened%3A%0AWhat%20you%20expected%3A%0A`} className="font-medium text-forest underline-offset-2 hover:underline">Report a bug</a></p>
               <p className="pt-1 text-[11px] text-faint">© {new Date().getFullYear()} SEEK · Design & software rights reserved</p>
             </div>
           </section>
