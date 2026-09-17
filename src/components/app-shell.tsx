@@ -92,10 +92,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         {!isAuthCallback && (
           <header
             className={cn(
-              "fixed top-0 right-0 left-0 z-40 flex justify-center px-4 pt-4 pb-2 transition-transform duration-300 ease-out will-change-transform",
+              "fixed top-0 right-0 left-0 z-40 flex items-center justify-center px-4 pt-4 pb-2 transition-transform duration-300 ease-out will-change-transform",
               navHidden ? "-translate-y-[120%]" : "translate-y-0",
             )}
           >
+            {/* Center island */}
             <div
               className={cn(
                 "flex h-12 w-fit max-w-[min(100%,40rem)] items-center gap-1 rounded-full px-2.5 shadow-sm ring-1 backdrop-blur-xl",
@@ -130,18 +131,25 @@ export function AppShell({ children }: { children: ReactNode }) {
                 ))}
               </nav>
               <div className="ml-1 flex items-center gap-1 border-l border-line/80 pl-2">
-                <Link
-                  to="/download"
-                  title="Download the app"
-                  aria-label="Download the app"
-                  className="flex size-9 shrink-0 items-center justify-center rounded-full ring-1 ring-black/10 text-muted transition-all hover:text-ink active:scale-95 dark:ring-white/15"
-                >
-                  <Download className="size-[18px]" strokeWidth={1.9} />
-                </Link>
                 <ThemeToggle />
                 <UserMenu />
               </div>
             </div>
+            {/* Download — top right, same level as island */}
+            <Link
+              to="/download"
+              title="Download the app"
+              aria-label="Download the app"
+              className={cn(
+                "absolute top-4 right-4 flex h-12 items-center gap-2 rounded-full px-4 font-sans text-[13px] font-medium shadow-sm ring-1 backdrop-blur-xl transition-all hover:opacity-90 active:scale-[0.98]",
+                isHome
+                  ? "bg-white/85 text-ink ring-black/8 dark:bg-black/50 dark:text-[#f5f0e8] dark:ring-white/12"
+                  : "bg-white/55 text-ink ring-black/5 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/10",
+              )}
+            >
+              <Download className="size-[18px]" strokeWidth={1.9} />
+              <span className="hidden sm:inline">Download</span>
+            </Link>
           </header>
         )}
         <main
@@ -168,36 +176,43 @@ export function AppShell({ children }: { children: ReactNode }) {
           {!isAuthCallback && (
             <header
               className={cn(
-                "fixed top-0 right-0 left-0 z-30 mx-auto w-full max-w-[430px] shrink-0 px-4 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 transition-transform duration-300 ease-out will-change-transform",
+                "fixed top-0 right-0 left-0 z-30 mx-auto w-full max-w-[430px] shrink-0 px-3 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 transition-transform duration-300 ease-out will-change-transform",
                 navHidden ? "-translate-y-[120%]" : "translate-y-0",
               )}
             >
-              <div
-                className={cn(
-                  "mx-auto flex h-12 max-w-full items-center justify-between rounded-full pl-4 pr-1.5",
-                  isHome
-                    ? "bg-white/85 shadow-sm ring-1 ring-black/8 backdrop-blur-xl dark:bg-black/45 dark:ring-white/12"
-                    : "glass",
-                )}
-              >
-                <Link to="/" className="flex min-h-10 items-center gap-1.5">
-                  <LeafMark className="size-4 text-forest" />
-                  <span className="font-serif text-[1.2rem] leading-none tracking-[0.04em] text-ink">
-                    SEEK
-                  </span>
-                </Link>
-                <div className="flex items-center gap-1">
-                  <Link
-                    to="/download"
-                    title="Download the app"
-                    aria-label="Download the app"
-                    className="flex size-9 shrink-0 items-center justify-center rounded-full ring-1 ring-black/10 text-muted transition-all hover:text-ink active:scale-95 dark:ring-white/15"
-                  >
-                    <Download className="size-[18px]" strokeWidth={1.9} />
+              <div className="flex h-12 items-center gap-2">
+                <div
+                  className={cn(
+                    "flex h-12 min-w-0 flex-1 items-center justify-between rounded-full pl-4 pr-1.5",
+                    isHome
+                      ? "bg-white/85 shadow-sm ring-1 ring-black/8 backdrop-blur-xl dark:bg-black/45 dark:ring-white/12"
+                      : "glass",
+                  )}
+                >
+                  <Link to="/" className="flex min-h-10 items-center gap-1.5">
+                    <LeafMark className="size-4 text-forest" />
+                    <span className="font-serif text-[1.2rem] leading-none tracking-[0.04em] text-ink">
+                      SEEK
+                    </span>
                   </Link>
-                  <ThemeToggle />
-                  <UserMenu />
+                  <div className="flex items-center gap-1">
+                    <ThemeToggle />
+                    <UserMenu />
+                  </div>
                 </div>
+                <Link
+                  to="/download"
+                  title="Download the app"
+                  aria-label="Download the app"
+                  className={cn(
+                    "flex size-12 shrink-0 items-center justify-center rounded-full shadow-sm ring-1 backdrop-blur-xl transition-all active:scale-95",
+                    isHome
+                      ? "bg-white/85 text-ink ring-black/8 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/12"
+                      : "bg-white/70 text-ink ring-black/8 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/12",
+                  )}
+                >
+                  <Download className="size-[18px]" strokeWidth={1.9} />
+                </Link>
               </div>
             </header>
           )}
