@@ -303,30 +303,42 @@ function Home() {
               </div>
             </section>
 
-            <footer id="about" className="mt-16 border-t border-line/60 pt-10">
-              <div className="grid gap-8 md:grid-cols-2">
-                <div>
-                  <p className="font-sans text-[11px] font-semibold tracking-[0.12em] text-muted uppercase">About SEEK</p>
-                  <p className="mt-3 max-w-sm font-sans text-[14px] leading-relaxed text-muted">
-                    SEEK is a quiet place to search and read the King James Bible — the love of God, His mercy, the sacrifice of Christ, and agape. Scripture is public domain.
-                  </p>
-                </div>
-                <div className="md:text-right">
-                  <p className="font-sans text-[11px] font-semibold tracking-[0.12em] text-muted uppercase">Contact</p>
-                  <p className="mt-3 font-sans text-[14px]">
-                    <a href={`mailto:${CONTACT_EMAIL}`} className="underline-offset-2 hover:underline">{CONTACT_EMAIL}</a>
-                  </p>
-                  <p className="mt-2 font-sans text-[14px] text-muted">
-                    <a href={`mailto:${CONTACT_EMAIL}?subject=SEEK%20bug%20report`} className="underline-offset-2 hover:underline">Report a bug</a>
-                  </p>
-                </div>
+            <footer id="about" className="relative mt-20 overflow-hidden border-t border-line/60 pt-16 pb-8">
+              {/* Half-visible SEEK fade */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center overflow-hidden select-none"
+              >
+                <span className="translate-y-[42%] font-serif text-[clamp(5.5rem,22vw,11rem)] leading-none font-medium tracking-[0.04em] text-ink/[0.06] dark:text-paper/[0.07]">
+                  SEEK
+                </span>
               </div>
-              <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-line/60 pt-6 sm:flex-row">
-                <div className="flex items-center gap-2">
-                  <LeafMark className="size-4 text-forest" />
-                  <span className="font-serif text-[1.05rem]">SEEK</span>
+
+              <div className="relative z-10 mx-auto flex max-w-lg flex-col items-center text-center">
+                <div className="flex items-center gap-2 text-forest">
+                  <LeafMark className="size-4" />
+                  <span className="font-serif text-[1.15rem] tracking-[0.06em] text-ink">SEEK</span>
                 </div>
-                <p className="font-sans text-[12px] text-muted">© {new Date().getFullYear()} · KJV public domain</p>
+
+                <p className="mt-5 max-w-sm font-sans text-[14px] leading-relaxed text-muted">
+                  A quiet place to search and read the King James Bible — the love of God, His mercy, the sacrifice of Christ, and agape.
+                </p>
+
+                <nav className="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-sans text-[13px] text-ink/80">
+                  <Link to="/books" className="transition-colors hover:text-forest">Bible</Link>
+                  <Link to="/saved" className="transition-colors hover:text-forest">Saved</Link>
+                  <Link to="/download" className="transition-colors hover:text-forest">Download</Link>
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="transition-colors hover:text-forest">Contact</a>
+                  <a href={`mailto:${CONTACT_EMAIL}?subject=SEEK%20bug%20report`} className="transition-colors hover:text-forest">Report a bug</a>
+                </nav>
+
+                <p className="mt-4 font-sans text-[13px] text-muted">
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="underline-offset-4 hover:underline">{CONTACT_EMAIL}</a>
+                </p>
+
+                <p className="mt-8 font-sans text-[11.5px] tracking-[0.04em] text-muted/80">
+                  © {new Date().getFullYear()} SEEK · KJV public domain
+                </p>
               </div>
             </footer>
           </div>
