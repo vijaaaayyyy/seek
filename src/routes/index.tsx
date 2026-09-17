@@ -112,7 +112,7 @@ function Home() {
     <div className="relative">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
         <img
-          src="/lotus-hero.jpg"
+          src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1920&q=85"
           alt=""
           className="forest-drift"
           decoding="async"
