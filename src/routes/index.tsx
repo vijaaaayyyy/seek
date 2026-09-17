@@ -90,9 +90,10 @@ function SectionHeader({ label, title, sub }: { label: string; title: string; su
   );
 }
 
-const tile = "rounded-2xl border border-line bg-surface p-4";
+const tile =
+  "rounded-3xl bg-surface p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:bg-white/[0.03]";
 const linkTile =
-  "rounded-2xl border border-line bg-surface p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-[border-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-ink/20 hover:shadow-[0_6px_20px_rgba(0,0,0,0.07)] dark:hover:bg-white/5";
+  "rounded-3xl bg-surface p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_28px_rgba(0,0,0,0.09)] dark:bg-white/[0.03] dark:hover:bg-white/5";
 
 function Home() {
   const rememberQuery = useSeekStore((s) => s.rememberQuery);
@@ -195,7 +196,7 @@ function Home() {
           </div>
 
           {/* Stats — quiet row */}
-          <div className="mx-auto mt-12 grid max-w-2xl grid-cols-4 divide-x divide-line/70 rounded-2xl border border-line bg-surface py-4">
+          <div className="mx-auto mt-12 grid max-w-2xl grid-cols-4 divide-x divide-line/70">
             {STATS.map((s) => (
               <div key={s.label} className="px-2 text-center">
                 <p className="font-serif text-[1.4rem] font-medium text-ink tabular-nums">{s.value}</p>
@@ -213,7 +214,7 @@ function Home() {
               to="/read/$book/$chapter"
               params={{ book: FEATURED.book, chapter: FEATURED.chapter }}
               search={{ q: undefined }}
-              className="group relative block overflow-hidden rounded-3xl border border-line bg-gradient-to-br from-forest/8 to-transparent px-6 pt-10 pb-8 text-center sm:px-10"
+              className="group relative block overflow-hidden rounded-3xl bg-gradient-to-br from-forest/8 via-transparent to-transparent px-6 pt-10 pb-8 text-center sm:px-10"
             >
               <span aria-hidden className="pointer-events-none absolute top-1 left-4 font-serif text-[4.5rem] leading-none text-forest/15 select-none">“</span>
               <span aria-hidden className="pointer-events-none absolute -bottom-6 right-4 font-serif text-[4.5rem] leading-none text-forest/15 select-none">”</span>
@@ -230,89 +231,187 @@ function Home() {
             </Link>
           </section>
 
-          {/* Seek by the heart */}
-          <section className="mt-20">
-            <div className="flex items-end justify-between gap-4">
-              <div>
-                <span className="inline-flex items-center gap-2">
-                  <span className="h-px w-6 bg-forest/40" aria-hidden />
-                  <span className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest uppercase">Seek by the heart</span>
+          {/* 01 · Seek by the heart — text left, topics right */}
+          <section className="mt-28">
+            <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
+              <div className="lg:sticky lg:top-28 lg:col-span-5 lg:self-start">
+                <span className="inline-flex items-center gap-2.5">
+                  <span className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest">01 · Seek by the heart</span>
+                  <span className="h-px w-8 bg-forest/30" aria-hidden />
                 </span>
-                <h2 className="mt-3 font-serif text-[1.7rem] leading-tight font-medium tracking-tight text-ink sm:text-[2rem]">What's on your heart?</h2>
-              </div>
-              <p className="hidden max-w-[15rem] pb-1 text-right font-sans text-[12.5px] leading-relaxed text-muted sm:block">
-                Mercy, grace, hope — or the longing beneath them.
-              </p>
-            </div>
-            <div className="mt-7 grid grid-cols-2 gap-3 md:grid-cols-4">
-              {TOPICS.map((t) => (
-                <button
-                  key={t.q}
-                  type="button"
-                  onClick={() => runExample(t.q)}
-                  className={cn(
-                    "group relative flex flex-col items-start overflow-hidden rounded-3xl border border-line bg-surface p-4 text-left transition-all duration-300 hover:-translate-y-1 hover:border-ink/15 hover:shadow-[0_14px_40px_rgba(0,0,0,0.08)] dark:hover:border-white/15 dark:hover:bg-white/5",
-                  )}
+                <h2 className="mt-4 font-serif text-[2.1rem] leading-[1.12] font-medium tracking-tight text-balance text-ink sm:text-[2.6rem]">What's on your heart?</h2>
+                <p className="mt-3 font-sans text-[14px] leading-relaxed text-muted">
+                  Mercy, grace, hope — or the longing beneath them. SEEK finds the verses that answer the feeling behind the word.
+                </p>
+                <ul className="mt-6 space-y-1">
+                  {[
+                    { t: "Mercy", q: "mercy" },
+                    { t: "Grace", q: "grace" },
+                    { t: "Hope", q: "hope" },
+                  ].map((item) => (
+                    <li key={item.q}>
+                      <button
+                        type="button"
+                        onClick={() => runExample(item.q)}
+                        className="group/link flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left font-sans text-[14px] text-ink/80 transition-colors hover:bg-ink/5 dark:hover:bg-paper/8"
+                      >
+                        {item.t}
+                        <ChevronRight className="size-4 text-muted transition-all group-hover/link:translate-x-0.5 group-hover/link:text-forest" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  to="/search"
+                  search={{ q: "love" }}
+                  className="mt-5 inline-flex items-center gap-1.5 font-sans text-[13px] font-semibold text-forest transition-opacity hover:opacity-80"
                 >
-                  <span
-                    aria-hidden
-                    className={cn(
-                      "pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b opacity-80 transition-opacity duration-300 group-hover:opacity-100",
-                      t.tint,
-                    )}
-                  />
-                  <span className="relative flex size-10 items-center justify-center rounded-2xl bg-white/70 text-lg leading-none shadow-sm ring-1 ring-black/5 transition-transform duration-300 group-hover:scale-110 dark:bg-black/30 dark:ring-white/10">
-                    {t.emoji}
-                  </span>
-                  <span className="relative mt-auto pt-6">
-                    <span className="block font-serif text-[1.1rem] font-medium text-ink">{t.label}</span>
-                    <span className="mt-1 block font-sans text-[12px] leading-snug text-muted">{t.line}</span>
-                    <span className="mt-2.5 block font-sans text-[10px] font-semibold tracking-[0.14em] text-forest/80 uppercase">
-                      {t.ref}
-                    </span>
-                  </span>
-                </button>
-              ))}
+                  Search a longing <ChevronRight className="size-4" />
+                </Link>
+              </div>
+
+              <div className="lg:col-span-7">
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Featured topic cards — wide, tonal, editorial */}
+                  {TOPICS.slice(0, 2).map((t, i) => (
+                    <button
+                      key={t.q}
+                      type="button"
+                      onClick={() => runExample(t.q)}
+                      className={cn(
+                        "group relative col-span-2 flex min-h-[150px] flex-col justify-end overflow-hidden rounded-3xl p-5 text-left transition-all duration-300 hover:shadow-[0_18px_50px_rgba(0,0,0,0.12)]",
+                        i === 0
+                          ? "bg-[linear-gradient(160deg,#fbdccd_0%,#f3b8a8_55%,#e49b8d_100%)] dark:bg-[linear-gradient(160deg,#8a4a42_0%,#a85a4a_60%,#c4765f_100%)]"
+                          : "bg-[linear-gradient(160deg,#d6e4f2_0%,#b3cbe6_55%,#91b0d6_100%)] dark:bg-[linear-gradient(160deg,#3b5068_0%,#46617e_60%,#5b7fa3_100%)]",
+                      )}
+                    >
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute -top-5 -right-2 font-serif text-[7rem] leading-none opacity-20 transition-transform duration-500 select-none group-hover:scale-110 sm:text-[8rem]"
+                      >
+                        {t.emoji}
+                      </span>
+                      <span className="relative flex items-center gap-2.5">
+                        <span
+                          aria-hidden
+                          className="h-px w-5 transition-all duration-300 group-hover:w-8"
+                          style={{ backgroundColor: i === 0 ? "#8c3a2e" : "#2f4f6e" }}
+                        />
+                        <span className="font-sans text-[10px] font-semibold tracking-[0.16em] uppercase" style={{ color: i === 0 ? "#8c3a2e" : "#2f4f6e" }}>
+                          {t.line}
+                        </span>
+                      </span>
+                      <span className="relative mt-2 flex items-end justify-between gap-3">
+                        <span className={cn("font-serif text-[1.9rem] leading-none font-medium tracking-tight", i === 0 ? "text-[#5c241b]" : "text-[#1c3245]")}>
+                          {t.label}
+                        </span>
+                        <span className="flex items-center gap-1.5 font-sans text-[12px] font-semibold uppercase" style={{ color: i === 0 ? "#5c241b" : "#1c3245" }}>
+                          {t.ref}
+                          <ChevronRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+                        </span>
+                      </span>
+                    </button>
+                  ))}
+
+                  {/* Compact topic tiles */}
+                  {TOPICS.slice(2).map((t) => (
+                    <button
+                      key={t.q}
+                      type="button"
+                      onClick={() => runExample(t.q)}
+                      className="group relative flex flex-col items-start overflow-hidden rounded-3xl bg-surface p-4 text-left shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_14px_40px_rgba(0,0,0,0.09)] dark:bg-white/[0.03] dark:hover:bg-white/5 sm:p-5"
+                    >
+                      <span
+                        aria-hidden
+                        className={cn(
+                          "pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b opacity-90 transition-opacity duration-300 group-hover:opacity-100",
+                          t.tint,
+                        )}
+                      />
+                      <span className="relative flex size-9 items-center justify-center rounded-xl bg-white/75 text-base leading-none shadow-sm ring-1 ring-black/5 transition-transform duration-300 group-hover:scale-110 dark:bg-black/30 dark:ring-white/10">
+                        {t.emoji}
+                      </span>
+                      <span className="relative mt-auto pt-5">
+                        <span className="block font-serif text-[1.1rem] font-medium text-ink">{t.label}</span>
+                        <span className="mt-0.5 block font-sans text-[11.5px] leading-snug text-muted">{t.line}</span>
+                        <span className="mt-2 block font-sans text-[10px] font-semibold tracking-[0.14em] text-forest/80 uppercase">
+                          {t.ref}
+                        </span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </section>
 
-          {/* Books of love & mercy */}
-          <section className="mt-16">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-muted">
-                <BookOpen className="size-3.5" strokeWidth={2} />
-                <span className="font-sans text-[10px] font-semibold tracking-[0.14em] uppercase">Books of love & mercy</span>
+          {/* 02 · Read */}
+          <section className="mt-24">
+            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <div className="max-w-2xl">
+                <span className="inline-flex items-center gap-2.5">
+                  <span className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest">02 · Read</span>
+                  <span className="h-px w-8 bg-forest/30" aria-hidden />
+                </span>
+                <h2 className="mt-4 font-serif text-[2.1rem] leading-[1.12] font-medium tracking-tight text-balance text-ink sm:text-[2.6rem]">The whole King James Bible, open to you.</h2>
+                <p className="mt-3 max-w-md font-sans text-[14px] leading-relaxed text-muted">
+                  All 66 books, 1,189 chapters, in calm page and scroll modes. Start with the books of love and mercy.
+                </p>
               </div>
-              <Link to="/books" className="font-sans text-[12.5px] font-medium text-forest hover:underline">All 66 books →</Link>
+              <Link to="/books" className="inline-flex shrink-0 items-center gap-1 self-start rounded-full bg-forest px-5 py-2.5 font-sans text-[13px] font-medium text-forest-fg transition-opacity hover:opacity-85 md:self-auto">
+                All 66 books <ChevronRight className="size-4" />
+              </Link>
             </div>
-            <div className="mt-3.5 grid grid-cols-3 gap-2.5 md:grid-cols-6">
+            <div className="mt-9 grid grid-cols-3 gap-3 md:grid-cols-6">
               {POPULAR_BOOKS.map((b) => (
-                <Link key={b.slug} to="/read/$book/$chapter" params={{ book: b.slug, chapter: "1" }} search={{ q: undefined }} className={cn(linkTile, "px-3 py-3.5 text-center")}>
-                  <p className="font-serif text-[14px] font-medium">{b.name}</p>
-                  <p className="mt-0.5 font-sans text-[11px] text-muted">{b.chapters} ch.</p>
+                <Link key={b.slug} to="/read/$book/$chapter" params={{ book: b.slug, chapter: "1" }} search={{ q: undefined }} className={cn(linkTile, "px-3 py-4 text-center")}>
+                  <p className="font-serif text-[15px] font-medium">{b.name}</p>
+                  <p className="mt-1 font-sans text-[11px] text-muted">{b.chapters} chapters</p>
                 </Link>
               ))}
             </div>
           </section>
 
-          {/* How it works */}
-          <section className="mt-20">
-            <SectionHeader label="How it works" title="Seek. Receive. Abide." />
-            <div className="mt-8 grid gap-3 md:grid-cols-3">
+          {/* 03 · How it works */}
+          <section className="mt-24">
+            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <div className="max-w-2xl">
+                <span className="inline-flex items-center gap-2.5">
+                  <span className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest">03 · How it works</span>
+                  <span className="h-px w-8 bg-forest/30" aria-hidden />
+                </span>
+                <h2 className="mt-4 font-serif text-[2.1rem] leading-[1.12] font-medium tracking-tight text-balance text-ink sm:text-[2.6rem]">Seek. Receive. Abide.</h2>
+                <p className="mt-3 max-w-md font-sans text-[14px] leading-relaxed text-muted">
+                  Three movements that take you from a longing to the Word that stays with you.
+                </p>
+              </div>
+            </div>
+            <div className="mt-9 grid gap-3 md:grid-cols-3">
               {STEPS.map((s) => (
                 <div key={s.n} className={cn(linkTile, "p-6")}>
-                  <span className="font-serif text-[1.9rem] leading-none font-light text-forest/60">{s.n}</span>
-                  <p className="mt-3 font-serif text-[1.15rem]">{s.title}</p>
-                  <p className="mt-1.5 font-sans text-[13px] leading-relaxed text-muted">{s.body}</p>
+                  <span className="font-sans text-[12px] font-semibold tracking-[0.18em] text-forest">{s.n}</span>
+                  <p className="mt-3 font-serif text-[1.25rem]">{s.title}</p>
+                  <p className="mt-2 font-sans text-[13.5px] leading-relaxed text-muted">{s.body}</p>
                 </div>
               ))}
             </div>
           </section>
 
-          {/* Why Seek */}
-          <section className="mt-20">
-            <SectionHeader label="Why Seek" title="A quiet place for the Gospel" />
-            <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {/* 04 · Why Seek */}
+          <section className="mt-24">
+            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <div className="max-w-2xl">
+                <span className="inline-flex items-center gap-2.5">
+                  <span className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest">04 · Why Seek</span>
+                  <span className="h-px w-8 bg-forest/30" aria-hidden />
+                </span>
+                <h2 className="mt-4 font-serif text-[2.1rem] leading-[1.12] font-medium tracking-tight text-balance text-ink sm:text-[2.6rem]">A quiet place for the Gospel.</h2>
+                <p className="mt-3 max-w-md font-sans text-[14px] leading-relaxed text-muted">
+                  Everything built to point you to Him, nothing to get in the way.
+                </p>
+              </div>
+            </div>
+            <div className="mt-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {[
                 { icon: Heart, title: "Rooted in agape", body: "Search the love that gives — God's self-giving love revealed in Scripture from Genesis to Revelation." },
                 { icon: Search, title: "Search by meaning", body: "Find verses on mercy, sacrifice, grace, and hope — by phrase, topic, or the feeling on your heart." },
@@ -324,9 +423,9 @@ function Home() {
                 const Icon = f.icon;
                 return (
                   <div key={f.title} className={cn(tile, "p-5")}>
-                    <span className="inline-flex size-9 items-center justify-center rounded-xl bg-forest/12 text-forest"><Icon className="size-4" strokeWidth={1.8} /></span>
-                    <p className="mt-3.5 font-serif text-[1.05rem]">{f.title}</p>
-                    <p className="mt-1 font-sans text-[13px] leading-relaxed text-muted">{f.body}</p>
+                    <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-forest/10 text-forest"><Icon className="size-[18px]" strokeWidth={1.8} /></span>
+                    <p className="mt-4 font-serif text-[1.1rem]">{f.title}</p>
+                    <p className="mt-1.5 font-sans text-[13px] leading-relaxed text-muted">{f.body}</p>
                   </div>
                 );
               })}

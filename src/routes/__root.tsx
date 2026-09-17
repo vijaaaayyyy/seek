@@ -10,6 +10,7 @@ import { AppShell } from "@/components/app-shell";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { SavePrompt } from "@/components/save-prompt";
+import { InstallProvider } from "@/components/install-provider";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "Seek";
@@ -115,16 +116,18 @@ function RootComponent() {
           <ThemeProvider>
             <BibleProvider>
               <SavedProvider>
+                <InstallProvider>
                 <AppShell>
                   <Outlet />
                 </AppShell>
+              </InstallProvider>
 
-                <Toaster />
-                <SavePrompt />
-              </SavedProvider>
-            </BibleProvider>
-          </ThemeProvider>
-        </AuthProvider>
+              <Toaster />
+              <SavePrompt />
+            </SavedProvider>
+          </BibleProvider>
+        </ThemeProvider>
+      </AuthProvider>
 
         <Scripts />
       </body>

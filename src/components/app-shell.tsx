@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BookOpen, Bookmark, Home, UserRound } from "lucide-react";
+import { BookOpen, Bookmark, Download, Home, UserRound } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/user-menu";
@@ -130,6 +130,14 @@ export function AppShell({ children }: { children: ReactNode }) {
                 ))}
               </nav>
               <div className="ml-1 flex items-center gap-1 border-l border-line/80 pl-2">
+                <Link
+                  to="/download"
+                  title="Download the app"
+                  aria-label="Download the app"
+                  className="flex size-9 shrink-0 items-center justify-center rounded-full ring-1 ring-black/10 text-muted transition-all hover:text-ink active:scale-95 dark:ring-white/15"
+                >
+                  <Download className="size-[18px]" strokeWidth={1.9} />
+                </Link>
                 <ThemeToggle />
                 <UserMenu />
               </div>
@@ -179,6 +187,14 @@ export function AppShell({ children }: { children: ReactNode }) {
                   </span>
                 </Link>
                 <div className="flex items-center gap-1">
+                  <Link
+                    to="/download"
+                    title="Download the app"
+                    aria-label="Download the app"
+                    className="flex size-9 shrink-0 items-center justify-center rounded-full ring-1 ring-black/10 text-muted transition-all hover:text-ink active:scale-95 dark:ring-white/15"
+                  >
+                    <Download className="size-[18px]" strokeWidth={1.9} />
+                  </Link>
                   <ThemeToggle />
                   <UserMenu />
                 </div>
