@@ -7,7 +7,7 @@ export const THEME_COLORS = {
   dark: "#0c0d12",
 } as const;
 
-/** iOS status bar: dark icons on light, light icons on dark translucent */
+/** iOS status bar: dark icons on light pages, light icons on dark surfaces */
 export const STATUS_BAR_STYLES = {
   light: "default",
   dark: "black-translucent",
@@ -28,22 +28,37 @@ export function systemTheme(): Theme {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
+function setMeta(name: string, content: string) {
+  let el = document.querySelector(`meta[name="${name}"]`);
+  if (!el) {
+    el = document.createElement("meta");
+    el.setAttribute("name", name);
+    document.head.appendChild(el);
+  }
+  el.setAttribute("content", content);
+}
+
+/**
+ * Status bar / theme-color chrome.
+ * Home hero is always a dark forest photo — force light icons there even in light mode,
+ * so time / battery stay visible.
+ */
+export function applyChrome(theme: Theme, opts?: { darkSurface?: boolean }) {
+  const darkSurface = opts?.darkSurface ?? theme === "dark";
+  const themeColor = darkSurface ? THEME_COLORS.dark : THEME_COLORS.light;
+  const statusStyle = darkSurface ? STATUS_BAR_STYLES.dark : STATUS_BAR_STYLES.light;
+
+  setMeta("theme-color", themeColor);
+  setMeta("apple-mobile-web-app-status-bar-style", statusStyle);
+}
+
 export function applyTheme(theme: Theme) {
   const root = document.documentElement;
   root.classList.toggle("dark", theme === "dark");
   root.style.colorScheme = theme;
 
-  const meta = document.querySelector('meta[name="theme-color"]:not([media])');
-  if (meta) meta.setAttribute("content", THEME_COLORS[theme]);
-
-  // Keep system clock / battery readable on both themes (esp. light mode)
-  let status = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-  if (!status) {
-    status = document.createElement("meta");
-    status.setAttribute("name", "apple-mobile-web-app-status-bar-style");
-    document.head.appendChild(status);
-  }
-  status.setAttribute("content", STATUS_BAR_STYLES[theme]);
+  const darkSurface = root.classList.contains("home-canopy") || theme === "dark";
+  applyChrome(theme, { darkSurface });
 }
 
 export function persistTheme(theme: Theme) {
