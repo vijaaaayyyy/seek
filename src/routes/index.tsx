@@ -309,7 +309,7 @@ function Home() {
                 aria-hidden
                 className="pointer-events-none absolute inset-x-0 bottom-0 z-0 flex h-[7.5rem] items-end justify-center overflow-hidden sm:h-[9.5rem]"
               >
-                <span className="translate-y-[48%] font-serif text-[clamp(7rem,30vw,14rem)] leading-none font-medium tracking-[0.02em] text-ink/15 dark:text-paper/20">
+                <span className="translate-y-[48%] font-serif text-[clamp(7rem,30vw,14rem)] leading-none font-medium tracking-[0.02em] text-ink/15 dark:text-[#f5f0e8]/35">
                   SEEK
                 </span>
               </div>
