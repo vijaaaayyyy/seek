@@ -14,7 +14,7 @@ import { InstallProvider } from "@/components/install-provider";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "Seek";
-const THEME_BOOT = `(function(){try{var k="seek-theme";var t=localStorage.getItem(k);if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}var r=document.documentElement;r.classList.toggle("dark",t==="dark");r.style.colorScheme=t;}catch(e){}})();`;
+const THEME_BOOT = `(function(){try{var k="seek-theme";var t=localStorage.getItem(k);if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}var r=document.documentElement;r.classList.toggle("dark",t==="dark");r.style.colorScheme=t;var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",t==="dark"?"#0c0d12":"#f7f5f0");var s=document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');if(s)s.setAttribute("content",t==="dark"?"black-translucent":"default");}catch(e){}})();`;
 
 export const Route = createRootRoute({
   head: () => ({
@@ -30,9 +30,9 @@ export const Route = createRootRoute({
         content:
           "The whole King James Bible. Search by a half-remembered word, a fragment, or the meaning you meant.",
       },
-      { name: "theme-color", content: "#ede6d8" },
+      { name: "theme-color", content: "#f7f5f0" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
       { name: "apple-mobile-web-app-title", content: APP_NAME },
       { name: "mobile-web-app-capable", content: "yes" },
     ],
