@@ -52,21 +52,21 @@ export function SavePrompt() {
         className="max-w-[430px] mx-auto rounded-t-[32px] border border-line bg-paper dark:bg-ink px-6 pt-4 pb-10 text-center"
         onPointerDownOutside={handleClose}
       >
-        <div className="mx-auto mb-1 h-1 w-10 rounded-full bg-ink/15" />
+        <div className="mx-auto mb-1 h-1 w-10 rounded-full bg-ink/15 dark:bg-white/20" />
 
         {saved ? (
           <div className="flex flex-col items-center gap-3 pt-6 pb-4">
             <span className="grid size-12 place-items-center rounded-full bg-forest/15">
               <BookmarkCheck className="size-6 text-forest" />
             </span>
-            <p className="font-sans text-[15px] font-semibold text-ink">
+            <p className="font-sans text-[15px] font-semibold text-ink dark:text-[#f5f0e8]">
               Saved to your collection
             </p>
           </div>
         ) : busy ? (
           <div className="flex flex-col items-center gap-3 pt-6 pb-4">
-            <span className="size-6 animate-spin rounded-full border-2 border-ink/20 border-t-ink" />
-            <p className="font-sans text-[13px] text-muted">Saving…</p>
+            <span className="size-6 animate-spin rounded-full border-2 border-ink/20 border-t-ink dark:border-white/25 dark:border-t-[#f5f0e8]" />
+            <p className="font-sans text-[13px] text-muted dark:text-[#f5f0e8]/80">Saving…</p>
           </div>
         ) : (
           <>
@@ -79,16 +79,16 @@ export function SavePrompt() {
               />
             </div>
 
-            <h2 className="font-serif text-[1.3rem] font-medium leading-snug text-ink dark:text-paper">
+            <h2 className="font-serif text-[1.3rem] font-medium leading-snug text-ink dark:text-[#f5f0e8]">
               Save "{ref}"
             </h2>
-            <p className="mx-auto mt-2 max-w-[240px] font-sans text-[13px] leading-relaxed text-muted">
+            <p className="mx-auto mt-2 max-w-[260px] font-sans text-[13.5px] leading-relaxed text-ink/75 dark:text-[#f5f0e8]/90">
               Sign in to save this verse to your collection and access it from any device.
             </p>
 
             {pendingSave.text && (
-              <div className="mx-auto mt-4 max-w-[300px] rounded-2xl bg-ink/5 dark:bg-paper/8 px-4 py-3">
-                <p className="font-serif text-[13px] leading-relaxed text-ink/70 dark:text-paper/70 line-clamp-3">
+              <div className="mx-auto mt-4 max-w-[300px] rounded-2xl bg-ink/5 dark:bg-white/[0.08] px-4 py-3">
+                <p className="font-serif text-[13.5px] leading-relaxed text-ink/85 dark:text-[#f5f0e8]/90 line-clamp-3">
                   "{pendingSave.text}"
                 </p>
               </div>
@@ -99,7 +99,7 @@ export function SavePrompt() {
                 variant="outline"
                 size="sm"
                 onClick={() => void signIn("google", { callbackURL: window.location.pathname })}
-                className="flex h-11 w-full items-center justify-center gap-2.5 rounded-full border border-line bg-paper dark:bg-ink font-sans text-[14px] font-medium text-ink dark:text-paper transition-colors hover:bg-ink/5 dark:hover:bg-paper/8"
+                className="flex h-11 w-full items-center justify-center gap-2.5 rounded-full border border-line bg-paper dark:border-white/20 dark:bg-white/[0.08] font-sans text-[14px] font-medium text-ink dark:text-[#f5f0e8] transition-colors hover:bg-ink/5 dark:hover:bg-white/[0.12]"
               >
                 <GoogleIcon /> Continue with Google
               </Button>
@@ -107,13 +107,13 @@ export function SavePrompt() {
                 variant="outline"
                 size="sm"
                 onClick={() => void signIn("github", { callbackURL: window.location.pathname })}
-                className="flex h-11 w-full items-center justify-center gap-2.5 rounded-full border border-line bg-paper dark:bg-ink font-sans text-[14px] font-medium text-ink dark:text-paper transition-colors hover:bg-ink/5 dark:hover:bg-paper/8"
+                className="flex h-11 w-full items-center justify-center gap-2.5 rounded-full border border-line bg-paper dark:border-white/20 dark:bg-white/[0.08] font-sans text-[14px] font-medium text-ink dark:text-[#f5f0e8] transition-colors hover:bg-ink/5 dark:hover:bg-white/[0.12]"
               >
                 <GithubIcon /> Continue with GitHub
               </Button>
             </div>
 
-            <p className="mt-4 font-sans text-[12px] text-muted">
+            <p className="mt-4 font-sans text-[12.5px] text-ink/55 dark:text-[#f5f0e8]/70">
               Free · Takes 10 seconds
             </p>
           </>
