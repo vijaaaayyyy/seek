@@ -103,7 +103,7 @@ export function InstallProvider({ children }: { children: ReactNode }) {
       return;
     }
     if (status === "ios") {
-      window.location.assign("/?install=1&platform=ios");
+      setGuideOpen(true);
       return;
     }
     setGuideOpen(true);
@@ -158,13 +158,20 @@ export function InstallProvider({ children }: { children: ReactNode }) {
                 On iPhone and iPad, SEEK installs from the Share button — this
                 shows you exactly where.
               </p>
-              <button
-                type="button"
-                onClick={install}
-                className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-ink font-sans text-[14px] font-medium text-paper transition-transform active:scale-[0.98] dark:bg-paper dark:text-ink"
-              >
-                <Plus className="size-4" strokeWidth={2} /> Show me how
-              </button>
+              <div className="mx-auto mt-6 w-full max-w-[300px] space-y-2.5 text-left">
+                <div className="flex items-center gap-3 rounded-2xl bg-ink/5 px-4 py-3 dark:bg-paper/8">
+                  <Share className="size-4 shrink-0 text-forest" strokeWidth={1.8} />
+                  <p className="font-sans text-[12.5px] leading-snug text-muted">
+                    Tap the <span className="font-semibold text-ink dark:text-paper">Share</span> button in Safari.
+                  </p>
+                </div>
+                <div className="flex items-center gap-3 rounded-2xl bg-ink/5 px-4 py-3 dark:bg-paper/8">
+                  <Plus className="size-4 shrink-0 text-forest" strokeWidth={1.8} />
+                  <p className="font-sans text-[12.5px] leading-snug text-muted">
+                    Choose <span className="font-semibold text-ink dark:text-paper">"Add to Home Screen"</span>.
+                  </p>
+                </div>
+              </div>
             </>
           )}
 
