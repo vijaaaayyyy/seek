@@ -112,7 +112,7 @@ function Home() {
     <div className="relative">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
         <img
-          src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1920&q=85"
+          src="/lotus-hero.jpg"
           alt=""
           className="forest-drift"
           decoding="async"
@@ -217,16 +217,6 @@ function Home() {
           </Link>
 
           <section className="mt-16 grid gap-8 lg:grid-cols-12 lg:gap-12">
-            <div className={cn(card, "p-6 lg:col-span-5")}>
-              <span className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest">01 · Seek by the heart</span>
-              <h2 className="mt-3 font-serif text-[2rem] leading-tight font-medium sm:text-[2.3rem]">What's on your heart?</h2>
-              <p className="mt-3 font-sans text-[14px] leading-relaxed text-muted">
-                Mercy, grace, hope — or the longing beneath them. SEEK finds the verses that answer the feeling behind the word.
-              </p>
-              <Link to="/search" search={{ q: "love" }} className="mt-5 inline-flex items-center gap-1.5 font-sans text-[13px] font-semibold text-forest">
-                Search a longing <ChevronRight className="size-4" />
-              </Link>
-            </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:col-span-7">
               {TOPICS.map((t) => (
                 <button
@@ -240,20 +230,30 @@ function Home() {
                 </button>
               ))}
             </div>
+            <div className={cn(card, "p-6 text-left lg:col-span-5 lg:text-right")}>
+              <span className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest">01 · Seek by the heart</span>
+              <h2 className="mt-3 font-serif text-[2rem] leading-tight font-medium sm:text-[2.3rem]">What's on your heart?</h2>
+              <p className="mt-3 font-sans text-[14px] leading-relaxed text-muted lg:ml-auto lg:max-w-sm">
+                Mercy, grace, hope — or the longing beneath them. SEEK finds the verses that answer the feeling behind the word.
+              </p>
+              <Link to="/search" search={{ q: "love" }} className="mt-5 inline-flex items-center gap-1.5 font-sans text-[13px] font-semibold text-forest lg:ml-auto">
+                Search a longing <ChevronRight className="size-4" />
+              </Link>
+            </div>
           </section>
 
           <section className="mt-16">
-            <div className="flex flex-col gap-6 md:flex-row-reverse md:items-end md:justify-between">
-              <div className={cn(card, "max-w-xl p-6")}>
+            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <Link to="/books" className="inline-flex shrink-0 items-center gap-1 self-start rounded-full bg-forest px-5 py-2.5 font-sans text-[13px] font-medium text-forest-fg hover:opacity-90">
+                All 66 books <ChevronRight className="size-4" />
+              </Link>
+              <div className={cn(card, "max-w-xl p-6 text-left md:text-right")}>
                 <span className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest">02 · Read</span>
                 <h2 className="mt-3 font-serif text-[2rem] leading-tight font-medium sm:text-[2.3rem]">The whole King James Bible, open to you.</h2>
-                <p className="mt-3 font-sans text-[14px] leading-relaxed text-muted">
+                <p className="mt-3 font-sans text-[14px] leading-relaxed text-muted md:ml-auto md:max-w-sm">
                   All 66 books, 1,189 chapters, in calm page and scroll modes.
                 </p>
               </div>
-              <Link to="/books" className="inline-flex shrink-0 items-center gap-1 rounded-full bg-forest px-5 py-2.5 font-sans text-[13px] font-medium text-forest-fg hover:opacity-90">
-                All 66 books <ChevronRight className="size-4" />
-              </Link>
             </div>
             <div className="mt-6 grid grid-cols-3 gap-3 md:grid-cols-6">
               {POPULAR_BOOKS.map((b) => (
@@ -272,47 +272,49 @@ function Home() {
           </section>
 
           <section className="mt-16">
-            <div className={cn(card, "max-w-xl p-6")}>
-              <span className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest">03 · How it works</span>
-              <h2 className="mt-3 font-serif text-[2rem] leading-tight font-medium sm:text-[2.3rem]">Seek. Receive. Abide.</h2>
-              <p className="mt-3 font-sans text-[14px] leading-relaxed text-muted">
-                Three movements from a longing to the Word that stays with you.
-              </p>
-            </div>
-            <div className="mt-6 grid gap-3 md:grid-cols-3">
-              {STEPS.map((s) => (
-                <div key={s.n} className={cn(card, "p-6")}>
-                  <span className="font-sans text-[12px] font-semibold tracking-[0.18em] text-forest">{s.n}</span>
-                  <p className="mt-3 font-serif text-[1.25rem]">{s.title}</p>
-                  <p className="mt-2 font-sans text-[13.5px] leading-relaxed text-muted">{s.body}</p>
-                </div>
-              ))}
+            <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+              <div className="grid flex-1 gap-3 md:grid-cols-3">
+                {STEPS.map((s) => (
+                  <div key={s.n} className={cn(card, "p-6")}>
+                    <span className="font-sans text-[12px] font-semibold tracking-[0.18em] text-forest">{s.n}</span>
+                    <p className="mt-3 font-serif text-[1.25rem]">{s.title}</p>
+                    <p className="mt-2 font-sans text-[13.5px] leading-relaxed text-muted">{s.body}</p>
+                  </div>
+                ))}
+              </div>
+              <div className={cn(card, "max-w-xl shrink-0 p-6 text-left md:text-right")}>
+                <span className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest">03 · How it works</span>
+                <h2 className="mt-3 font-serif text-[2rem] leading-tight font-medium sm:text-[2.3rem]">Seek. Receive. Abide.</h2>
+                <p className="mt-3 font-sans text-[14px] leading-relaxed text-muted md:ml-auto md:max-w-sm">
+                  Three movements from a longing to the Word that stays with you.
+                </p>
+              </div>
             </div>
           </section>
 
           <section className="mt-16">
-            <div className="flex flex-col gap-6 md:flex-row-reverse md:items-end md:justify-between">
-              <div className={cn(card, "max-w-xl p-6")}>
+            <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+              <div className="grid flex-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {FEATURES.map((f) => {
+                  const Icon = f.icon;
+                  return (
+                    <div key={f.title} className={cn(card, "p-5")}>
+                      <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-forest/10 text-forest">
+                        <Icon className="size-[18px]" strokeWidth={1.8} />
+                      </span>
+                      <p className="mt-4 font-serif text-[1.1rem]">{f.title}</p>
+                      <p className="mt-1.5 font-sans text-[13px] leading-relaxed text-muted">{f.body}</p>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className={cn(card, "max-w-xl shrink-0 p-6 text-left md:text-right")}>
                 <span className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest">04 · Why Seek</span>
                 <h2 className="mt-3 font-serif text-[2rem] leading-tight font-medium sm:text-[2.3rem]">A quiet place for the Gospel.</h2>
-                <p className="mt-3 font-sans text-[14px] leading-relaxed text-muted">
+                <p className="mt-3 font-sans text-[14px] leading-relaxed text-muted md:ml-auto md:max-w-sm">
                   Everything built to point you to Him, nothing to get in the way.
                 </p>
               </div>
-            </div>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {FEATURES.map((f) => {
-                const Icon = f.icon;
-                return (
-                  <div key={f.title} className={cn(card, "p-5")}>
-                    <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-forest/10 text-forest">
-                      <Icon className="size-[18px]" strokeWidth={1.8} />
-                    </span>
-                    <p className="mt-4 font-serif text-[1.1rem]">{f.title}</p>
-                    <p className="mt-1.5 font-sans text-[13px] leading-relaxed text-muted">{f.body}</p>
-                  </div>
-                );
-              })}
             </div>
           </section>
 
