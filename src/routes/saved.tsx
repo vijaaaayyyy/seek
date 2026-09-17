@@ -16,8 +16,6 @@ function SavedPage() {
 
   useEffect(() => setMounted(true), []);
 
-  // Render the same loading frame until hydration completes, so server HTML
-  // and the client's first paint always match.
   if (!mounted || isPending) {
     return (
       <div className="pt-3">
@@ -62,13 +60,14 @@ function SavedPage() {
             <span className="font-medium text-ink">
               {user.displayName ?? user.primaryEmail ?? "your account"}
             </span>
-            .
+            {saved.length > 0 ? ` · ${saved.length} verse${saved.length === 1 ? "" : "s"}` : ""}
           </>
         )}
       </p>
 
-      {status === "loading" || status === "idle" ? (
+      {status === "loading" ? (
         <div className="mt-6 space-y-3">
+          <Skeleton className="h-36 w-full rounded-[22px]" />
           <Skeleton className="h-36 w-full rounded-[22px]" />
         </div>
       ) : saved.length === 0 ? (
@@ -79,7 +78,7 @@ function SavedPage() {
             Tap the bookmark beside a verse while you read or search.
           </p>
           <Button asChild className="mt-6 rounded-full px-5">
-            <Link to="/">Search the Bible</Link>
+            <Link to="/books">Browse the Bible</Link>
           </Button>
         </div>
       ) : (
@@ -87,7 +86,7 @@ function SavedPage() {
           {saved.map((v) => (
             <article
               key={`${v.slug}:${v.chapter}:${v.verse}`}
-              className="glass rounded-[22px] p-5"
+              className="glass relative rounded-[22px] p-5 transition-shadow hover:shadow-[0_8px_28px_rgba(0,0,0,0.08)]"
             >
               <div className="flex items-start justify-between gap-3">
                 <Link
@@ -103,12 +102,33 @@ function SavedPage() {
                   variant="ghost"
                   size="sm"
                   type="button"
-                  onClick={() => void toggleSaved(v)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    void toggleSaved(v);
+                  }}
                 >
                   Remove
                 </Button>
               </div>
-              <p className="mt-3 font-serif text-[17px] leading-relaxed text-ink">{v.text}</p>
+              <Link
+                to="/read/$book/$chapter"
+                params={{ book: v.slug, chapter: String(v.chapter) }}
+                search={{ q: undefined }}
+                hash={`v${v.verse}`}
+                className="mt-3 block font-serif text-[17px] leading-relaxed text-ink"
+              >
+                {v.text}
+              </Link>
+              <Link
+                to="/read/$book/$chapter"
+                params={{ book: v.slug, chapter: String(v.chapter) }}
+                search={{ q: undefined }}
+                hash={`v${v.verse}`}
+                className="mt-4 inline-flex items-center gap-1 font-sans text-[12.5px] font-medium text-forest"
+              >
+                Open in Bible →
+              </Link>
             </article>
           ))}
         </div>
