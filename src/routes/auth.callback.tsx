@@ -11,19 +11,35 @@ function AuthCallbackPage() {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
-  const next = Route.useSearch({
+  const nextFromSearch = Route.useSearch({
     select: (s) => {
       const raw = (s as { next?: unknown }).next;
       return typeof raw === "string" && raw.startsWith("/") && !raw.startsWith("//")
         ? raw
-        : "/";
+        : null;
     },
   });
 
   useEffect(() => {
     let cancelled = false;
 
+    const resolveNext = () => {
+      if (nextFromSearch) return nextFromSearch;
+      try {
+        const stored = sessionStorage.getItem("seek-auth-next");
+        if (stored && stored.startsWith("/") && !stored.startsWith("//")) return stored;
+      } catch {
+        /* private mode */
+      }
+      return "/";
+    };
+
     const redirect = (dest: string) => {
+      try {
+        sessionStorage.removeItem("seek-auth-next");
+      } catch {
+        /* */
+      }
       if (dest.startsWith("com.seek.bible://")) {
         window.location.href = dest;
         return;
@@ -46,7 +62,7 @@ function AuthCallbackPage() {
     };
 
     const finishOk = () => {
-      if (!cancelled) redirect(next);
+      if (!cancelled) redirect(resolveNext());
     };
 
     const finishErr = (msg: string) => {
@@ -56,7 +72,25 @@ function AuthCallbackPage() {
     const exchangeCode = async (code: string) => {
       const { error } = await supabase.auth.exchangeCodeForSession(code);
       if (cancelled) return;
+
       if (error) {
+        const { data } = await supabase.auth.getSession();
+        if (data.session?.user) {
+          finishOk();
+          return;
+        }
+
+        const isPkce =
+          /code verifier|pkce/i.test(error.message || "") ||
+          error.message?.includes("code_verifier");
+
+        if (isPkce) {
+          finishErr(
+            "Sign-in could not finish in this browser session. Please try again from the same app or browser where you started — do not switch apps mid sign-in.",
+          );
+          return;
+        }
+
         finishErr(error.message || "Sign-in could not be completed. Please try again.");
         return;
       }
@@ -91,7 +125,7 @@ function AuthCallbackPage() {
           return;
         }
 
-        const hash = url.hash?.startsWith("#") ? url.hash.slice(1) : url.hash;
+        const hash = url.hash?.replace(/^#/, "");
         if (hash) {
           const params = new URLSearchParams(hash);
           const hashError = params.get("error_description") || params.get("error");
@@ -137,29 +171,31 @@ function AuthCallbackPage() {
       window.clearTimeout(timeout);
       void listener.then((handle) => handle.remove());
     };
-  }, [navigate, next]);
+  }, [navigate, nextFromSearch]);
 
   return (
-    <div className="flex min-h-[50dvh] items-center justify-center pt-3">
+    <div className="flex min-h-[50dvh] items-center justify-center px-4 pt-3">
       <div className="glass flex w-full max-w-sm flex-col items-center gap-3 rounded-[28px] p-8 text-center">
         <span className="grid size-12 place-items-center rounded-2xl bg-ink text-paper dark:bg-paper dark:text-ink">
           <span className="size-5 animate-spin rounded-full border-2 border-paper/40 border-t-paper dark:border-ink/40 dark:border-t-ink" />
         </span>
         {error ? (
-          <div role="alert" className="font-sans text-sm text-ink">
-            <p>{error}</p>
+          <div role="alert" className="font-sans text-sm text-ink dark:text-[#f5f0e8]">
+            <p className="leading-relaxed">{error}</p>
             <button
               type="button"
               onClick={() =>
                 void navigate({ to: "/login", search: { redirect: "/" }, replace: true })
               }
-              className="mt-3 block w-full rounded-2xl bg-ink/10 py-2.5 text-ink hover:bg-ink/15 dark:bg-paper/15 dark:text-paper"
+              className="mt-4 block w-full rounded-2xl bg-ink py-2.5 font-medium text-paper hover:opacity-90 dark:bg-[#f5f0e8] dark:text-[#0c0d12]"
             >
               Back to sign in
             </button>
           </div>
         ) : (
-          <p className="font-sans text-sm text-muted">Completing your sign-in…</p>
+          <p className="font-sans text-sm text-muted dark:text-[#f5f0e8]/75">
+            Completing your sign-in…
+          </p>
         )}
       </div>
     </div>

@@ -8,9 +8,12 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     flowType: "pkce",
-    detectSessionInUrl: true,
+    // Manual exchange on /auth/callback — avoids racing with detectSessionInUrl
+    detectSessionInUrl: false,
     persistSession: true,
     autoRefreshToken: true,
+    storage: typeof window !== "undefined" ? window.localStorage : undefined,
+    storageKey: "seek-auth",
   },
 });
 
@@ -49,14 +52,31 @@ export async function signIn(
   opts: { callbackURL?: string } = {},
 ): Promise<void> {
   const callbackURL = opts.callbackURL ?? "/";
+  // Remember where to return after OAuth (survives full-page redirects)
+  try {
+    sessionStorage.setItem("seek-auth-next", callbackURL);
+  } catch {
+    /* private mode */
+  }
+
   const redirectTo = isNative()
     ? "com.seek.bible://auth/callback"
     : window.location.origin + "/auth/callback?next=" + encodeURIComponent(callbackURL);
-  const { error } = await supabase.auth.signInWithOAuth({
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
-    options: { redirectTo },
+    options: {
+      redirectTo,
+      // Full navigation in the same browser context so PKCE verifier stays available
+      skipBrowserRedirect: false,
+    },
   });
   if (error) throw error;
+
+  // If the library returns a URL without auto-redirect, go there ourselves
+  if (data?.url) {
+    window.location.assign(data.url);
+  }
 }
 
 /** Email + password sign-in. */
@@ -86,7 +106,7 @@ export async function signUpEmail(
 export async function signOut(): Promise<void> {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
-  window.location.href = "/";
+  window.location.assign("/");
 }
 
 /** The current access token — forwarded to server functions. */
