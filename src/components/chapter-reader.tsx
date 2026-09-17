@@ -40,7 +40,6 @@ export function ChapterReader({
   const prev = adjacentChapter(book, chapter, -1);
   const next = adjacentChapter(book, chapter, 1);
 
-  // Keep every chapter the user has already read visible.
   const [minChapter, setMinChapter] = useState(chapter);
   const [maxUnlocked, setMaxUnlocked] = useState(chapter);
   const [prompt, setPrompt] = useState<{
@@ -83,19 +82,19 @@ export function ChapterReader({
   }, [chapter]);
 
   useEffect(() => {
-    if (didInitialScroll.current) return;
-    didInitialScroll.current = true;
     const run = () => {
       if (focusVerse) {
         const el = document.getElementById(`c${chapter}-v${focusVerse}`);
         if (el) {
-          el.scrollIntoView({ block: "center", behavior: "auto" });
+          el.scrollIntoView({ block: "center", behavior: "smooth" });
           return;
         }
       }
+      if (didInitialScroll.current) return;
       const sec = sectionRefs.current.get(chapter);
       if (sec) sec.scrollIntoView({ block: "start", behavior: "auto" });
     };
+    didInitialScroll.current = true;
     requestAnimationFrame(() => requestAnimationFrame(run));
   }, [chapter, focusVerse, book.slug]);
 
@@ -202,7 +201,6 @@ export function ChapterReader({
         </div>
       </div>
 
-      {/* ── Chapter nav bar ── */}
       <div className="mx-auto mt-1.5 flex max-w-2xl items-center gap-2 px-1 sm:px-1.5">
         {prev ? (
           <Link
@@ -269,14 +267,25 @@ export function ChapterReader({
             <div className="space-y-0">
               {block.verses.map((v) => {
                 const saved = isSaved(book.slug, v.chapter, v.verse);
+                const focused =
+                  focusVerse === v.verse && block.chapter === chapter;
                 return (
                   <div
                     key={v.i}
                     id={`c${block.chapter}-v${v.verse}`}
-                    className="group relative -mx-2 mb-3 scroll-mt-32 rounded-xl px-2 py-1"
+                    className={cn(
+                      "group relative -mx-2 mb-3 scroll-mt-32 rounded-xl px-2 py-1.5 transition-colors",
+                      focused &&
+                        "bg-mark/55 ring-1 ring-forest/25 dark:bg-mark/40 dark:ring-forest/35",
+                    )}
                   >
                     <p className="font-serif text-[1.05rem] leading-[1.65] text-ink">
-                      <sup className="mr-1.5 font-sans text-[11px] font-medium text-muted tabular-nums">
+                      <sup
+                        className={cn(
+                          "mr-1.5 font-sans text-[11px] font-medium tabular-nums",
+                          focused ? "text-forest" : "text-muted",
+                        )}
+                      >
                         {v.verse}
                       </sup>
                       <Highlighted text={v.text} needles={highlight} />
@@ -284,10 +293,14 @@ export function ChapterReader({
                         type="button"
                         aria-label={saved ? "Remove bookmark" : "Bookmark verse"}
                         onClick={() => {
-                          toggleSaved({ book: book.name, slug: book.slug, chapter: v.chapter, verse: v.verse, text: v.text });
-                          toast.success(
-                            saved ? "Removed from saved" : "Saved",
-                          );
+                          toggleSaved({
+                            book: book.name,
+                            slug: book.slug,
+                            chapter: v.chapter,
+                            verse: v.verse,
+                            text: v.text,
+                          });
+                          toast.success(saved ? "Removed from saved" : "Saved");
                         }}
                         className="ml-1.5 inline-flex translate-y-0.5 align-baseline text-muted opacity-0 transition-opacity group-hover:opacity-100"
                       >
