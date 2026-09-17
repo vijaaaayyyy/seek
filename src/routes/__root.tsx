@@ -14,7 +14,7 @@ import { InstallProvider } from "@/components/install-provider";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "Seek";
-const THEME_BOOT = `(function(){try{var k="seek-theme";var t=localStorage.getItem(k);if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}var r=document.documentElement;r.classList.toggle("dark",t==="dark");var home=location.pathname==="/"||location.pathname==="";var darkSurface=home||t==="dark";r.style.colorScheme=darkSurface?"dark":"light";if(document.body)document.body.style.colorScheme=darkSurface?"dark":"light";var color=darkSurface?"#0c0d12":"#f7f5f0";document.querySelectorAll('meta[name="theme-color"]').forEach(function(el){el.remove()});function add(c,m){var el=document.createElement("meta");el.setAttribute("name","theme-color");el.setAttribute("content",c);if(m)el.setAttribute("media",m);document.head.appendChild(el)}add(color);add(color,"(prefers-color-scheme: light)");add(color,"(prefers-color-scheme: dark)");var s=document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');if(s)s.setAttribute("content",darkSurface?"black-translucent":"default");}catch(e){}})();`;
+const THEME_BOOT = `(function(){try{var k="seek-theme";var t=localStorage.getItem(k);if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}var r=document.documentElement;r.classList.toggle("dark",t==="dark");var home=location.pathname==="/"||location.pathname==="";var darkSurface=home||t==="dark";r.style.colorScheme=darkSurface?"dark":"light";if(document.body)document.body.style.colorScheme=darkSurface?"dark":"light";var color=darkSurface?"#0c0d12":"#f7f5f0";document.querySelectorAll('meta[name="theme-color"]').forEach(function(el){el.remove()});function add(c,m){var el=document.createElement("meta");el.setAttribute("name","theme-color");el.setAttribute("content",c);if(m)el.setAttribute("media",m);document.head.appendChild(el)}add(color);add(color,"(prefers-color-scheme: light)");add(color,"(prefers-color-scheme: dark)");var s=document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');if(s)s.setAttribute("content",darkSurface?"black-translucent":"default");if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){})}}catch(e){}})();`;
 
 export const Route = createRootRoute({
   head: () => ({
@@ -41,7 +41,7 @@ export const Route = createRootRoute({
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
-      { rel: "apple-touch-icon", href: "/__grok/icon-180.png" },
+      { rel: "apple-touch-icon", href: "/icons/icon-180.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -78,7 +78,6 @@ function RootComponent() {
       }
     };
 
-    // Capacitor App is native-only — must not throw on web / PWA
     void (async () => {
       try {
         const { Capacitor } = await import("@capacitor/core");
