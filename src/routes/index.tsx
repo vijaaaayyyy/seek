@@ -102,9 +102,9 @@ function Home() {
   }
 
   return (
-    <div className="relative bg-paper">
+    <div className="relative bg-transparent">
       <div
-        className="forest-melt pointer-events-none absolute inset-x-0 top-0 z-0 h-[calc(100dvh+16rem)] overflow-hidden sm:h-[calc(100dvh+20rem)]"
+        className="forest-melt pointer-events-none fixed inset-x-0 top-0 z-0 h-[calc(100dvh+16rem)] overflow-hidden sm:h-[calc(100dvh+20rem)]"
         aria-hidden
       >
         <img
@@ -114,11 +114,11 @@ function Home() {
           decoding="async"
           fetchPriority="high"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/58 via-black/32 via-[46%] to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/72 via-black/40 via-[46%] to-transparent" />
       </div>
 
       <section className="relative z-10">
-        <div className="flex min-h-[84dvh] flex-col items-center justify-center px-6 pt-24 pb-8 text-center sm:min-h-[86dvh]">
+        <div className="flex min-h-[84dvh] w-full flex-col items-center justify-center px-4 pt-24 pb-8 text-center sm:min-h-[86dvh] sm:px-6">
           <div className="flex items-center gap-2 text-white/90">
             <LeafMark className="size-5 text-[#9cc49f]" />
             <span className="font-serif text-[1.2rem] tracking-[0.06em]">SEEK</span>
@@ -304,12 +304,11 @@ function Home() {
             </section>
 
             <footer id="about" className="relative mt-20 overflow-hidden border-t border-line/60 pt-16 pb-28 sm:pb-32">
-              {/* Big half-visible SEEK behind content */}
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-x-0 bottom-0 z-0 flex h-[7.5rem] items-end justify-center overflow-hidden sm:h-[9.5rem]"
               >
-                <span className="translate-y-[48%] font-serif text-[clamp(7rem,30vw,14rem)] leading-none font-medium tracking-[0.02em] text-ink/15 dark:text-[#f5f0e8]/35">
+                <span className="max-w-[100vw] translate-y-[48%] font-serif text-[clamp(6.5rem,28vw,12rem)] leading-none font-medium tracking-[0.02em] text-ink/15 dark:text-[#f5f0e8]/35">
                   SEEK
                 </span>
               </div>
