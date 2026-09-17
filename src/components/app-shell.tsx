@@ -70,7 +70,6 @@ export function AppShell({ children }: { children: ReactNode }) {
     MOBILE_NAV.findIndex((item) => item.match(pathname)),
   );
 
-  // Let the fixed canopy photo show through (no cream paper band under home).
   useEffect(() => {
     const root = document.documentElement;
     if (isHome) root.classList.add("home-canopy");
@@ -81,7 +80,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div
       className={cn(
-        "relative isolate min-h-dvh text-ink",
+        "relative isolate min-h-dvh overflow-x-hidden text-ink",
         isHome && "bg-transparent",
       )}
     >
@@ -96,7 +95,6 @@ export function AppShell({ children }: { children: ReactNode }) {
               navHidden ? "-translate-y-[120%]" : "translate-y-0",
             )}
           >
-            {/* Center island */}
             <div
               className={cn(
                 "flex h-12 w-fit max-w-[min(100%,40rem)] items-center gap-1 rounded-full px-2.5 shadow-sm ring-1 backdrop-blur-xl",
@@ -135,7 +133,6 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <UserMenu />
               </div>
             </div>
-            {/* Download — top right, same level as island */}
             <Link
               to="/download"
               title="Download the app"
@@ -165,22 +162,22 @@ export function AppShell({ children }: { children: ReactNode }) {
         </main>
       </div>
 
-      {/* ── MOBILE ── */}
-      <div className="relative z-10 flex min-h-dvh items-stretch justify-center lg:hidden">
+      {/* ── MOBILE — full width, no 430px phone frame ── */}
+      <div className="relative z-10 flex min-h-dvh w-full items-stretch lg:hidden">
         <div
           className={cn(
-            "relative flex h-dvh w-full max-w-[430px] flex-col overflow-hidden",
+            "relative flex h-dvh w-full flex-col overflow-x-hidden overflow-y-hidden",
             isHome ? "bg-transparent" : "app-device",
           )}
         >
           {!isAuthCallback && (
             <header
               className={cn(
-                "fixed top-0 right-0 left-0 z-30 mx-auto w-full max-w-[430px] shrink-0 px-3 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 transition-transform duration-300 ease-out will-change-transform",
+                "fixed top-0 right-0 left-0 z-30 w-full shrink-0 px-3 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 transition-transform duration-300 ease-out will-change-transform",
                 navHidden ? "-translate-y-[120%]" : "translate-y-0",
               )}
             >
-              <div className="flex h-12 items-center gap-2">
+              <div className="flex h-12 w-full items-center gap-2">
                 <div
                   className={cn(
                     "flex h-12 min-w-0 flex-1 items-center justify-between rounded-full pl-4 pr-1.5",
@@ -219,7 +216,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
           <main
             className={cn(
-              "hide-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pt-16 pb-28",
+              "hide-scrollbar min-h-0 w-full flex-1 overflow-x-hidden overflow-y-auto px-4 pt-16 pb-28",
               isRead && "px-0 pt-16",
               isHome && "px-0 pt-0 pb-28",
             )}
@@ -230,12 +227,12 @@ export function AppShell({ children }: { children: ReactNode }) {
           {!isAuthCallback && (
             <nav
               className={cn(
-                "absolute inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] transition-transform duration-300 ease-out",
+                "absolute inset-x-0 bottom-0 z-40 flex justify-center px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] transition-transform duration-300 ease-out",
                 navHidden ? "translate-y-[140%]" : "translate-y-0",
               )}
               aria-label="Primary"
             >
-              <div className="glass glass-strong relative grid h-[4rem] w-full max-w-[380px] grid-cols-4 rounded-full p-1.5">
+              <div className="glass glass-strong relative grid h-[4rem] w-full max-w-[min(100%,28rem)] grid-cols-4 rounded-full p-1.5">
                 <div
                   aria-hidden
                   className="absolute top-1.5 bottom-1.5 left-1.5 w-[calc((100%-0.75rem)/4)] rounded-full bg-ink/10 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] dark:bg-paper/14"
