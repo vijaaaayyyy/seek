@@ -79,10 +79,19 @@ export function AppShell({ children }: { children: ReactNode }) {
     if (isHome) root.classList.add("home-canopy");
     else root.classList.remove("home-canopy");
 
-    const theme = readStoredTheme() ?? systemTheme();
-    applyChrome(theme, { darkSurface: isHome || theme === "dark" });
+    const syncChrome = () => {
+      const theme = readStoredTheme() ?? systemTheme();
+      // Dark mode OR home forest → dark system status bar (light time/battery icons)
+      applyChrome(theme, { darkSurface: isHome || theme === "dark" });
+    };
+
+    syncChrome();
+    window.addEventListener("seek-theme", syncChrome);
+    window.addEventListener("storage", syncChrome);
 
     return () => {
+      window.removeEventListener("seek-theme", syncChrome);
+      window.removeEventListener("storage", syncChrome);
       root.classList.remove("home-canopy");
       const t = readStoredTheme() ?? systemTheme();
       applyChrome(t, { darkSurface: t === "dark" });
