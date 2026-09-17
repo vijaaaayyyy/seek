@@ -31,6 +31,10 @@ function detectIOS() {
   return /macintosh/i.test(ua) && navigator.maxTouchPoints > 1;
 }
 
+function detectDesktop() {
+  return !/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+}
+
 function isStandalone() {
   return (
     window.matchMedia("(display-mode: standalone)").matches ||
@@ -40,7 +44,6 @@ function isStandalone() {
 
 export function useInstall() {
   const ctx = useContext(InstallContext);
-  // Soft fallback so a missing provider never white-screens the app
   if (!ctx) {
     return {
       status: "unsupported" as InstallStatus,
@@ -109,10 +112,6 @@ export function InstallProvider({ children }: { children: ReactNode }) {
       });
       return;
     }
-    if (status === "ios") {
-      setGuideOpen(true);
-      return;
-    }
     setGuideOpen(true);
   }
 
@@ -120,8 +119,8 @@ export function InstallProvider({ children }: { children: ReactNode }) {
     setGuideOpen(true);
   }
 
-  const canGuide =
-    status === "ios" || status === "unsupported" || status === "ready";
+  const isDesktop = typeof navigator !== "undefined" && detectDesktop();
+  const isIos = status === "ios";
 
   return (
     <InstallContext.Provider value={{ status, install, openGuide }}>
@@ -130,70 +129,78 @@ export function InstallProvider({ children }: { children: ReactNode }) {
         <SheetContent
           side="bottom"
           onPointerDownOutside={() => setGuideOpen(false)}
-          className="max-w-[430px] mx-auto rounded-t-[32px] border border-line bg-paper px-6 pt-4 pb-10 text-center dark:bg-ink"
+          className="mx-auto max-w-[430px] rounded-t-[32px] border border-line bg-paper px-6 pt-4 pb-10 text-center dark:bg-ink"
         >
           <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-ink/15 dark:bg-paper/20" />
           <span className="mx-auto grid size-12 place-items-center rounded-full bg-forest/15">
             <Download className="size-6 text-forest" strokeWidth={1.8} />
           </span>
           <h2 className="mt-4 font-serif text-[1.3rem] font-medium leading-snug text-ink dark:text-paper">
-            Install the SEEK app
+            {isDesktop ? "Install SEEK on this PC" : "Add SEEK to Home Screen"}
           </h2>
-          <p className="mx-auto mt-2 max-w-[270px] font-sans text-[13px] leading-relaxed text-muted">
-            Open SEEK in a tap from your home screen — like a real app.
+          <p className="mx-auto mt-2 max-w-[280px] font-sans text-[13px] leading-relaxed text-muted">
+            {isDesktop
+              ? "One install — SEEK opens in its own window from the Start menu or taskbar."
+              : "Add SEEK to your Home Screen so it opens like a normal app."}
           </p>
 
           {status === "ready" && (
-            <>
-              <p className="mx-auto mt-4 max-w-[280px] font-sans text-[13px] leading-relaxed text-muted">
-                This device supports app installation. One tap and SEEK is
-                installed.
-              </p>
-              <button
-                type="button"
-                onClick={install}
-                className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-ink font-sans text-[14px] font-medium text-paper transition-transform active:scale-[0.98] dark:bg-paper dark:text-ink"
-              >
-                <Download className="size-4" strokeWidth={2} /> Install now
-              </button>
-            </>
+            <button
+              type="button"
+              onClick={install}
+              className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-ink font-sans text-[14px] font-medium text-paper transition-transform active:scale-[0.98] dark:bg-paper dark:text-ink"
+            >
+              <Download className="size-4" strokeWidth={2} /> Install now
+            </button>
           )}
 
-          {status === "ios" && (
-            <>
-              <p className="mx-auto mt-4 max-w-[290px] font-sans text-[13px] leading-relaxed text-muted">
-                On iPhone and iPad, SEEK installs from the Share button — this
-                shows you exactly where.
-              </p>
-              <div className="mx-auto mt-6 w-full max-w-[300px] space-y-2.5 text-left">
-                <div className="flex items-center gap-3 rounded-2xl bg-ink/5 px-4 py-3 dark:bg-paper/8">
-                  <Share className="size-4 shrink-0 text-forest" strokeWidth={1.8} />
-                  <p className="font-sans text-[12.5px] leading-snug text-muted">
-                    Tap the <span className="font-semibold text-ink dark:text-paper">Share</span> button in Safari.
-                  </p>
-                </div>
-                <div className="flex items-center gap-3 rounded-2xl bg-ink/5 px-4 py-3 dark:bg-paper/8">
-                  <Plus className="size-4 shrink-0 text-forest" strokeWidth={1.8} />
-                  <p className="font-sans text-[12.5px] leading-snug text-muted">
-                    Choose <span className="font-semibold text-ink dark:text-paper">"Add to Home Screen"</span>.
-                  </p>
-                </div>
-              </div>
-            </>
-          )}
-
-          {status === "unsupported" && canGuide && (
+          {isIos && (
             <div className="mx-auto mt-6 w-full max-w-[300px] space-y-2.5 text-left">
               <div className="flex items-center gap-3 rounded-2xl bg-ink/5 px-4 py-3 dark:bg-paper/8">
                 <Share className="size-4 shrink-0 text-forest" strokeWidth={1.8} />
                 <p className="font-sans text-[12.5px] leading-snug text-muted">
-                  Open the browser menu <span className="font-semibold text-ink dark:text-paper">(Share or ⋮)</span>.
+                  Tap <span className="font-semibold text-ink dark:text-paper">Share</span> at the bottom of Safari.
                 </p>
               </div>
               <div className="flex items-center gap-3 rounded-2xl bg-ink/5 px-4 py-3 dark:bg-paper/8">
                 <Plus className="size-4 shrink-0 text-forest" strokeWidth={1.8} />
                 <p className="font-sans text-[12.5px] leading-snug text-muted">
-                  Choose <span className="font-semibold text-ink dark:text-paper">"Add to Home Screen"</span> or <span className="font-semibold text-ink dark:text-paper">"Install app"</span>.
+                  Tap <span className="font-semibold text-ink dark:text-paper">Add to Home Screen</span>, then Add.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {!isIos && status !== "ready" && isDesktop && (
+            <div className="mx-auto mt-6 w-full max-w-[300px] space-y-2.5 text-left">
+              <div className="flex items-center gap-3 rounded-2xl bg-ink/5 px-4 py-3 dark:bg-paper/8">
+                <Download className="size-4 shrink-0 text-forest" strokeWidth={1.8} />
+                <p className="font-sans text-[12.5px] leading-snug text-muted">
+                  In <span className="font-semibold text-ink dark:text-paper">Edge or Chrome</span>, look for the{" "}
+                  <span className="font-semibold text-ink dark:text-paper">Install</span> icon in the address bar.
+                </p>
+              </div>
+              <div className="flex items-center gap-3 rounded-2xl bg-ink/5 px-4 py-3 dark:bg-paper/8">
+                <Plus className="size-4 shrink-0 text-forest" strokeWidth={1.8} />
+                <p className="font-sans text-[12.5px] leading-snug text-muted">
+                  Click <span className="font-semibold text-ink dark:text-paper">Install</span> — SEEK pins to Start and the taskbar.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {!isIos && status !== "ready" && !isDesktop && (
+            <div className="mx-auto mt-6 w-full max-w-[300px] space-y-2.5 text-left">
+              <div className="flex items-center gap-3 rounded-2xl bg-ink/5 px-4 py-3 dark:bg-paper/8">
+                <Plus className="size-4 shrink-0 text-forest" strokeWidth={1.8} />
+                <p className="font-sans text-[12.5px] leading-snug text-muted">
+                  Tap <span className="font-semibold text-ink dark:text-paper">Add to Home Screen</span> when your browser offers it.
+                </p>
+              </div>
+              <div className="flex items-center gap-3 rounded-2xl bg-ink/5 px-4 py-3 dark:bg-paper/8">
+                <Download className="size-4 shrink-0 text-forest" strokeWidth={1.8} />
+                <p className="font-sans text-[12.5px] leading-snug text-muted">
+                  Or open <span className="font-semibold text-ink dark:text-paper">Download</span> and get the Android APK file.
                 </p>
               </div>
             </div>
@@ -217,8 +224,13 @@ export function AppInstallButton({
 
   if (status === "installed") return null;
 
-  const on = () => (status === "ready" || status === "ios" ? install() : openGuide());
-  const view = status === "ios" ? "Get the app" : label;
+  const on = () => (status === "ready" ? install() : openGuide());
+  const view =
+    status === "ios"
+      ? "Add to Home Screen"
+      : status === "ready"
+        ? label
+        : label;
 
   if (variant === "icon") {
     return (
@@ -249,6 +261,7 @@ export function AppInstallButton({
         className,
       )}
     >
+      <Download className="size-4" strokeWidth={2} />
       {view}
     </button>
   );
