@@ -56,50 +56,47 @@ export const Route = createRootRoute({
 function RootComponent() {
   useEffect(() => {
     let cancelled = false;
+    let handle: { remove: () => Promise<void> } | null = null;
 
     const handleAuthCallback = async (url: string) => {
       try {
-        if (!url.startsWith("com.seek.bible://auth/callback")) {
-          return;
-        }
+        if (!url.startsWith("com.seek.bible://auth/callback")) return;
 
         const callbackUrl = new URL(url);
         const code = callbackUrl.searchParams.get("code");
+        if (!code) return;
 
-        if (!code) {
-          console.error("Android auth callback: missing code");
-          return;
-        }
-
-        const { error } =
-          await supabase.auth.exchangeCodeForSession(code);
-
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
         if (cancelled) return;
-
         if (error) {
           console.error("Android auth callback failed:", error);
           return;
         }
-
         window.location.replace("/");
       } catch (error) {
         console.error("Android auth callback error:", error);
       }
     };
 
-    const listener = App.addListener("appUrlOpen", ({ url }) => {
-      void handleAuthCallback(url);
-    });
+    // Capacitor App is native-only — must not throw on web / PWA
+    void (async () => {
+      try {
+        const { Capacitor } = await import("@capacitor/core");
+        if (!Capacitor.isNativePlatform()) return;
 
-    void App.getLaunchUrl().then((result) => {
-      if (result?.url) {
-        void handleAuthCallback(result.url);
+        handle = await App.addListener("appUrlOpen", ({ url }) => {
+          void handleAuthCallback(url);
+        });
+        const launch = await App.getLaunchUrl();
+        if (launch?.url) void handleAuthCallback(launch.url);
+      } catch {
+        /* web / unsupported */
       }
-    });
+    })();
 
     return () => {
       cancelled = true;
-      void listener.then((handle) => handle.remove());
+      void handle?.remove();
     };
   }, []);
 
@@ -118,13 +115,12 @@ function RootComponent() {
             <BibleProvider>
               <SavedProvider>
                 <InstallProvider>
-                <AppShell>
-                  <Outlet />
-                </AppShell>
-              </InstallProvider>
-
-              <Toaster />
-              <SavePrompt />
+                  <AppShell>
+                    <Outlet />
+                  </AppShell>
+                  <Toaster />
+                  <SavePrompt />
+                </InstallProvider>
             </SavedProvider>
           </BibleProvider>
         </ThemeProvider>
