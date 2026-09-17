@@ -99,6 +99,7 @@ export function BookReader({
     setIndex(0);
     setFlip(null);
     setChapterPrompt(false);
+    handledFocus.current = undefined;
   }, [book.slug, chapter]);
 
   useEffect(() => {
@@ -118,7 +119,6 @@ export function BookReader({
     : pages[targetIndex] ?? [];
   const sourcePage = flip ? (pages[flip.from] ?? []) : [];
   const leafPage = isPrevFlip ? pages[targetIndex] ?? [] : sourcePage;
-  const under = pages[targetIndex] ?? [];
 
   const go = useCallback(
     (dir: "next" | "prev") => {
@@ -178,7 +178,6 @@ export function BookReader({
 
   return (
     <div className="pb-6">
-      {/* ── Header: book picker + reading mode ── */}
       <div className="sticky top-0 z-20 px-1 pb-1 pt-1 sm:px-1.5">
         <div className="glass glass-strong flex items-center justify-between gap-2 rounded-[22px] px-2 py-1.5">
           <div className="min-w-0 flex-1">
@@ -193,7 +192,6 @@ export function BookReader({
         </div>
       </div>
 
-      {/* ── Chapter nav bar ── */}
       <div className="mx-auto mt-2 flex max-w-2xl items-center gap-2 px-1 sm:px-1.5">
         {prevCh ? (
           <Link
@@ -227,7 +225,6 @@ export function BookReader({
         )}
       </div>
 
-      {/* ── Book page ── */}
       <div className="mt-3 px-1 sm:px-1.5">
         <div className="book-stage mx-auto w-full max-w-2xl">
           <div
@@ -243,6 +240,7 @@ export function BookReader({
               pageNo={targetIndex + 1}
               pageCount={pageCount || 1}
               highlight={highlight}
+              focusVerse={focusVerse}
               className="absolute inset-0"
               aria-hidden={flip ? false : true}
             />
@@ -263,6 +261,7 @@ export function BookReader({
                   pageNo={flip.dir === "prev" ? targetIndex + 1 : flip.from + 1}
                   pageCount={pageCount || 1}
                   highlight={highlight}
+                  focusVerse={focusVerse}
                   className="h-full"
                 />
               </div>
@@ -270,7 +269,6 @@ export function BookReader({
           </div>
         </div>
 
-        {/* ── Page nav: larger, clearer buttons ── */}
         <div className="mx-auto mt-4 flex w-full max-w-2xl items-center justify-between gap-4 px-1">
           <button
             type="button"
@@ -308,7 +306,6 @@ export function BookReader({
         </div>
       </div>
 
-      {/* ── Chapter finished prompt ── */}
       {chapterPrompt && (
         <div
           className="fixed inset-0 z-[80] flex items-end justify-center bg-black/45 p-4 backdrop-blur-[2px] sm:items-center"
@@ -363,6 +360,7 @@ function PageSheet({
   pageNo,
   pageCount,
   highlight,
+  focusVerse,
   className,
 }: {
   book: BookMeta;
@@ -371,6 +369,7 @@ function PageSheet({
   pageNo: number;
   pageCount: number;
   highlight: string[];
+  focusVerse?: number;
   className?: string;
   "aria-hidden"?: boolean;
 }) {
@@ -393,8 +392,22 @@ function PageSheet({
 
       <div className="hide-scrollbar min-h-0 flex-1 overflow-y-auto px-5 pt-1 pb-2">
         {verses.map((v, i) => (
-          <p key={v.verse} className={cn("font-serif text-[17px] leading-[1.7]", i > 0 && "mt-1.5")}>
-            <sup className="mr-1 font-sans text-[10px] font-medium text-faint tabular-nums">
+          <p
+            key={v.verse}
+            id={`c${chapter}-v${v.verse}`}
+            className={cn(
+              "scroll-mt-24 rounded-lg px-1.5 py-0.5 font-serif text-[17px] leading-[1.7]",
+              i > 0 && "mt-1.5",
+              focusVerse === v.verse &&
+                "bg-mark/55 ring-1 ring-forest/25 dark:bg-mark/40",
+            )}
+          >
+            <sup
+              className={cn(
+                "mr-1 font-sans text-[10px] font-medium tabular-nums",
+                focusVerse === v.verse ? "text-forest" : "text-faint",
+              )}
+            >
               {v.verse}
             </sup>
             <Highlighted text={v.text} needles={highlight} />
