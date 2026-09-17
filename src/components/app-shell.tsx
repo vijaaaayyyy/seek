@@ -4,6 +4,7 @@ import { useEffect, type ReactNode } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/user-menu";
 import { useHideOnScroll } from "@/hooks/use-hide-on-scroll";
+import { useInstall } from "@/components/install-provider";
 import { applyChrome, readStoredTheme, systemTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
@@ -66,13 +67,13 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isRead = pathname.startsWith("/read");
   const isLogin = pathname.startsWith("/login");
   const navHidden = useHideOnScroll(10);
+  const { status: installStatus } = useInstall();
+  const isInstalled = installStatus === "installed";
   const activeIndex = Math.max(
     0,
     MOBILE_NAV.findIndex((item) => item.match(pathname)),
   );
 
-  // Home canopy is always a dark photo — force light status icons so time/battery
-  // stay visible even when the app theme is light.
   useEffect(() => {
     const root = document.documentElement;
     if (isHome) root.classList.add("home-canopy");
@@ -97,7 +98,6 @@ export function AppShell({ children }: { children: ReactNode }) {
     >
       {!isHome && <div className="app-atmosphere" aria-hidden />}
 
-      {/* ── DESKTOP ── */}
       <div className="relative z-10 hidden min-h-dvh flex-col lg:flex">
         {!isAuthCallback && (
           <header
@@ -144,20 +144,22 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <UserMenu />
               </div>
             </div>
-            <Link
-              to="/download"
-              title="Download the app"
-              aria-label="Download the app"
-              className={cn(
-                "absolute top-4 right-4 flex h-12 items-center gap-2 rounded-full px-4 font-sans text-[13px] font-medium shadow-sm ring-1 backdrop-blur-xl transition-all hover:opacity-90 active:scale-[0.98]",
-                isHome
-                  ? "bg-white/85 text-ink ring-black/8 dark:bg-black/50 dark:text-[#f5f0e8] dark:ring-white/12"
-                  : "bg-white/55 text-ink ring-black/5 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/10",
-              )}
-            >
-              <Download className="size-[18px]" strokeWidth={1.9} />
-              <span className="hidden sm:inline">Download</span>
-            </Link>
+            {!isInstalled && (
+              <Link
+                to="/download"
+                title="Download the app"
+                aria-label="Download the app"
+                className={cn(
+                  "absolute top-4 right-4 flex h-12 items-center gap-2 rounded-full px-4 font-sans text-[13px] font-medium shadow-sm ring-1 backdrop-blur-xl transition-all hover:opacity-90 active:scale-[0.98]",
+                  isHome
+                    ? "bg-white/85 text-ink ring-black/8 dark:bg-black/50 dark:text-[#f5f0e8] dark:ring-white/12"
+                    : "bg-white/55 text-ink ring-black/5 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/10",
+                )}
+              >
+                <Download className="size-[18px]" strokeWidth={1.9} />
+                <span className="hidden sm:inline">Download</span>
+              </Link>
+            )}
           </header>
         )}
         <main
@@ -173,7 +175,6 @@ export function AppShell({ children }: { children: ReactNode }) {
         </main>
       </div>
 
-      {/* ── MOBILE — full width ── */}
       <div className="relative z-10 flex min-h-dvh w-full items-stretch lg:hidden">
         <div
           className={cn(
@@ -208,19 +209,21 @@ export function AppShell({ children }: { children: ReactNode }) {
                     <UserMenu />
                   </div>
                 </div>
-                <Link
-                  to="/download"
-                  title="Download the app"
-                  aria-label="Download the app"
-                  className={cn(
-                    "flex size-12 shrink-0 items-center justify-center rounded-full shadow-sm ring-1 backdrop-blur-xl transition-all active:scale-95",
-                    isHome
-                      ? "bg-white/85 text-ink ring-black/8 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/12"
-                      : "bg-white/70 text-ink ring-black/8 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/12",
-                  )}
-                >
-                  <Download className="size-[18px]" strokeWidth={1.9} />
-                </Link>
+                {!isInstalled && (
+                  <Link
+                    to="/download"
+                    title="Download the app"
+                    aria-label="Download the app"
+                    className={cn(
+                      "flex size-12 shrink-0 items-center justify-center rounded-full shadow-sm ring-1 backdrop-blur-xl transition-all active:scale-95",
+                      isHome
+                        ? "bg-white/85 text-ink ring-black/8 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/12"
+                        : "bg-white/70 text-ink ring-black/8 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/12",
+                    )}
+                  >
+                    <Download className="size-[18px]" strokeWidth={1.9} />
+                  </Link>
+                )}
               </div>
             </header>
           )}
