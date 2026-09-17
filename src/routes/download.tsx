@@ -34,15 +34,15 @@ export function DownloadPage() {
             </span>
             <h2 className="mt-5 font-serif text-[1.25rem] font-medium">Windows</h2>
             <p className="mx-auto mt-2 max-w-[16rem] font-sans text-[13px] leading-relaxed text-muted">
-              Download SEEK for your PC. Opens in its own window and pins to the
+              Install SEEK on your PC. Opens in its own window and pins to the
               taskbar.
             </p>
             <AppInstallButton
-              label="Download for Windows"
-              className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-ink font-sans text-[14px] font-medium text-paper transition-transform active:scale-[0.98] dark:bg-paper dark:text-ink"
+              label="Install for Windows"
+              className="mt-6 h-12 w-full rounded-full bg-ink text-[14px] text-paper dark:bg-paper dark:text-ink"
             />
             <p className="mt-3 font-sans text-[11.5px] leading-relaxed text-muted">
-              Free · Windows 10 &amp; 11
+              Free · Edge or Chrome · Windows 10 &amp; 11
             </p>
           </div>
 
@@ -72,14 +72,14 @@ export function DownloadPage() {
             </span>
             <h2 className="mt-5 font-serif text-[1.25rem] font-medium">iPhone &amp; iPad</h2>
             <p className="mx-auto mt-2 max-w-[16rem] font-sans text-[13px] leading-relaxed text-muted">
-              Download SEEK to your Home Screen for the full app experience.
+              Add SEEK to your Home Screen for the full app experience.
             </p>
             <AppInstallButton
-              label="Download for iOS"
-              className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-ink font-sans text-[14px] font-medium text-paper transition-transform active:scale-[0.98] dark:bg-paper dark:text-ink"
+              label="Add to Home Screen"
+              className="mt-6 h-12 w-full rounded-full bg-ink text-[14px] text-paper dark:bg-paper dark:text-ink"
             />
             <p className="mt-3 font-sans text-[11.5px] leading-relaxed text-muted">
-              Free · Home Screen app
+              Free · Safari · Home Screen
             </p>
           </div>
         </div>
