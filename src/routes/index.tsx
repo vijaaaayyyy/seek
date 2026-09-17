@@ -303,18 +303,18 @@ function Home() {
               </div>
             </section>
 
-            <footer id="about" className="relative mt-20 overflow-hidden border-t border-line/60 pt-16 pb-8">
-              {/* Half-visible SEEK fade */}
+            <footer id="about" className="relative mt-20 overflow-hidden border-t border-line/60 pt-16 pb-28 sm:pb-32">
+              {/* Big half-visible SEEK behind content */}
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center overflow-hidden select-none"
+                className="pointer-events-none absolute inset-x-0 bottom-0 z-0 flex h-[7.5rem] items-end justify-center overflow-hidden sm:h-[9.5rem]"
               >
-                <span className="translate-y-[42%] font-serif text-[clamp(5.5rem,22vw,11rem)] leading-none font-medium tracking-[0.04em] text-ink/[0.06] dark:text-paper/[0.07]">
+                <span className="translate-y-[48%] font-serif text-[clamp(7rem,30vw,14rem)] leading-none font-medium tracking-[0.02em] text-ink/15 dark:text-paper/20">
                   SEEK
                 </span>
               </div>
 
-              <div className="relative z-10 mx-auto flex max-w-lg flex-col items-center text-center">
+              <div className="relative z-10 mx-auto flex max-w-lg flex-col items-center pb-6 text-center">
                 <div className="flex items-center gap-2 text-forest">
                   <LeafMark className="size-4" />
                   <span className="font-serif text-[1.15rem] tracking-[0.06em] text-ink">SEEK</span>
