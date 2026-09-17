@@ -209,30 +209,33 @@
     background: var(--glass-fill-strong);
   }
 
-  /* Slow zoom FORWARD through the forest (home background) */
+  /* Slow drift through lotus canopy — gentle pan + scale so leaves feel alive */
   .forest-drift {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 120%;
-    height: 120%;
+    width: 125%;
+    height: 125%;
     max-width: none;
     object-fit: cover;
-    object-position: center 42%;
+    object-position: center 40%;
     will-change: transform;
     transform: translate(-50%, -50%) scale(1);
-    animation: forest-drift 70s ease-in-out infinite alternate;
+    animation: forest-drift 55s ease-in-out infinite alternate;
   }
 
   @keyframes forest-drift {
     0% {
-      transform: translate(-50%, -50%) scale(1);
+      transform: translate(-52%, -51%) scale(1.02);
     }
-    50% {
-      transform: translate(-50%, -51%) scale(1.14);
+    33% {
+      transform: translate(-48%, -49%) scale(1.08);
+    }
+    66% {
+      transform: translate(-51%, -47%) scale(1.12);
     }
     100% {
-      transform: translate(-50%, -52%) scale(1.28);
+      transform: translate(-49%, -50%) scale(1.05);
     }
   }
 
