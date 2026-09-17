@@ -40,7 +40,14 @@ function isStandalone() {
 
 export function useInstall() {
   const ctx = useContext(InstallContext);
-  if (!ctx) throw new Error("useInstall must be used within InstallProvider");
+  // Soft fallback so a missing provider never white-screens the app
+  if (!ctx) {
+    return {
+      status: "unsupported" as InstallStatus,
+      install: () => {},
+      openGuide: () => {},
+    };
+  }
   return ctx;
 }
 
