@@ -35,11 +35,12 @@ export const Route = createRootRoute({
       { name: "apple-mobile-web-app-status-bar-style", content: "default" },
       { name: "apple-mobile-web-app-title", content: APP_NAME },
       { name: "mobile-web-app-capable", content: "yes" },
+      { name: "application-name", content: APP_NAME },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "stylesheet", href: appCss },
-      { rel: "manifest", href: "/__grok/manifest.webmanifest" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/__grok/icon-180.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
