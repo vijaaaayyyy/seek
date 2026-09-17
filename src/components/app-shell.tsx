@@ -4,6 +4,7 @@ import { useEffect, type ReactNode } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/user-menu";
 import { useHideOnScroll } from "@/hooks/use-hide-on-scroll";
+import { applyChrome, readStoredTheme, systemTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 const MOBILE_NAV = [
@@ -70,11 +71,21 @@ export function AppShell({ children }: { children: ReactNode }) {
     MOBILE_NAV.findIndex((item) => item.match(pathname)),
   );
 
+  // Home canopy is always a dark photo — force light status icons so time/battery
+  // stay visible even when the app theme is light.
   useEffect(() => {
     const root = document.documentElement;
     if (isHome) root.classList.add("home-canopy");
     else root.classList.remove("home-canopy");
-    return () => root.classList.remove("home-canopy");
+
+    const theme = readStoredTheme() ?? systemTheme();
+    applyChrome(theme, { darkSurface: isHome || theme === "dark" });
+
+    return () => {
+      root.classList.remove("home-canopy");
+      const t = readStoredTheme() ?? systemTheme();
+      applyChrome(t, { darkSurface: t === "dark" });
+    };
   }, [isHome]);
 
   return (
@@ -162,7 +173,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </main>
       </div>
 
-      {/* ── MOBILE — full width, no 430px phone frame ── */}
+      {/* ── MOBILE — full width ── */}
       <div className="relative z-10 flex min-h-dvh w-full items-stretch lg:hidden">
         <div
           className={cn(
