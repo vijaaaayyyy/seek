@@ -14,7 +14,7 @@ import { InstallProvider } from "@/components/install-provider";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "Seek";
-const THEME_BOOT = `(function(){try{var k="seek-theme";var t=localStorage.getItem(k);if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}var r=document.documentElement;r.classList.toggle("dark",t==="dark");r.style.colorScheme=t;var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",t==="dark"?"#0c0d12":"#f7f5f0");var s=document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');if(s)s.setAttribute("content",t==="dark"?"black-translucent":"default");}catch(e){}})();`;
+const THEME_BOOT = `(function(){try{var k="seek-theme";var t=localStorage.getItem(k);if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}var r=document.documentElement;r.classList.toggle("dark",t==="dark");r.style.colorScheme=t;var home=location.pathname==="/"||location.pathname==="";var darkSurface=home||t==="dark";var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",darkSurface?"#0c0d12":"#f7f5f0");var s=document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');if(s)s.setAttribute("content",darkSurface?"black-translucent":"default");}catch(e){}})();`;
 
 export const Route = createRootRoute({
   head: () => ({
@@ -88,7 +88,7 @@ function RootComponent() {
 
     const listener = App.addListener("appUrlOpen", ({ url }) => {
       void handleAuthCallback(url);
-    });
+    };
 
     void App.getLaunchUrl().then((result) => {
       if (result?.url) {
