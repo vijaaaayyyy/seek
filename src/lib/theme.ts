@@ -7,10 +7,10 @@ export const THEME_COLORS = {
   dark: "#0c0d12",
 } as const;
 
-/** iOS status bar: dark icons on light pages, light icons on dark surfaces */
+/** iOS status bar style */
 export const STATUS_BAR_STYLES = {
-  light: "default",
-  dark: "black-translucent",
+  light: "default", // dark icons on light bar
+  dark: "black-translucent", // light icons on dark bar
 } as const;
 
 export function readStoredTheme(): Theme | null {
@@ -28,40 +28,65 @@ export function systemTheme(): Theme {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
-function setMeta(name: string, content: string, media?: string) {
-  const selector = media
-    ? `meta[name="${name}"][media="${media}"]`
-    : `meta[name="${name}"]:not([media])`;
-  let el = document.querySelector(selector);
-  if (!el) {
-    el = document.createElement("meta");
-    el.setAttribute("name", name);
-    if (media) el.setAttribute("media", media);
-    document.head.appendChild(el);
-  }
-  el.setAttribute("content", content);
-}
-
 /**
- * Status bar / theme-color chrome.
- * Home hero is always a dark forest — force a dark system bar so the top
- * strip (time / battery / quick settings) matches the photo, even in light mode.
+ * Aggressively sync the system status / quick-settings bar color.
+ * Android Chrome only updates reliably if we replace theme-color metas
+ * (not just mutate content) and keep color-scheme in sync.
  */
 export function applyChrome(theme: Theme, opts?: { darkSurface?: boolean }) {
+  if (typeof document === "undefined") return;
+
   const darkSurface = opts?.darkSurface ?? theme === "dark";
   const themeColor = darkSurface ? THEME_COLORS.dark : THEME_COLORS.light;
   const statusStyle = darkSurface ? STATUS_BAR_STYLES.dark : STATUS_BAR_STYLES.light;
 
-  setMeta("theme-color", themeColor);
-  // Cover both system schemes so Android/iOS don’t flash the cream bar
-  setMeta("theme-color", themeColor, "(prefers-color-scheme: light)");
-  setMeta("theme-color", themeColor, "(prefers-color-scheme: dark)");
-  setMeta("apple-mobile-web-app-status-bar-style", statusStyle);
+  // Keep HTML color-scheme aligned so system UI (time, battery icons) invert correctly
+  const root = document.documentElement;
+  root.style.colorScheme = darkSurface ? "dark" : "light";
+  try {
+    document.body && (document.body.style.colorScheme = darkSurface ? "dark" : "light");
+  } catch {
+    /* */
+  }
+
+  // Remove every existing theme-color so stale media queries can’t win
+  document.querySelectorAll('meta[name="theme-color"]').forEach((el) => el.remove());
+
+  const head = document.head;
+  const make = (content: string, media?: string) => {
+    const el = document.createElement("meta");
+    el.setAttribute("name", "theme-color");
+    el.setAttribute("content", content);
+    if (media) el.setAttribute("media", media);
+    head.appendChild(el);
+  };
+
+  // Primary + both schemes forced to the same color (no cream bar in dark mode)
+  make(themeColor);
+  make(themeColor, "(prefers-color-scheme: light)");
+  make(themeColor, "(prefers-color-scheme: dark)");
+
+  // iOS / installed web app status bar
+  let apple = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+  if (!apple) {
+    apple = document.createElement("meta");
+    apple.setAttribute("name", "apple-mobile-web-app-status-bar-style");
+    head.appendChild(apple);
+  }
+  apple.setAttribute("content", statusStyle);
+
+  // Second tick — some Android WebViews only repaint on a delayed update
+  window.setTimeout(() => {
+    document.querySelectorAll('meta[name="theme-color"]').forEach((el) => {
+      el.setAttribute("content", themeColor);
+    });
+  }, 50);
 }
 
 export function applyTheme(theme: Theme) {
   const root = document.documentElement;
   root.classList.toggle("dark", theme === "dark");
+  // Base color-scheme follows theme; applyChrome may override on dark surfaces (home)
   root.style.colorScheme = theme;
 
   const darkSurface = root.classList.contains("home-canopy") || theme === "dark";
