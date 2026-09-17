@@ -4,6 +4,14 @@ import { supabase } from "@/lib/supa/client";
 import { App } from "@capacitor/app";
 
 export const Route = createFileRoute("/auth/callback")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    next:
+      typeof search.next === "string" &&
+      search.next.startsWith("/") &&
+      !search.next.startsWith("//")
+        ? search.next
+        : undefined,
+  }),
   component: AuthCallbackPage,
 });
 
@@ -11,14 +19,7 @@ function AuthCallbackPage() {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
-  const nextFromSearch = Route.useSearch({
-    select: (s) => {
-      const raw = (s as { next?: unknown }).next;
-      return typeof raw === "string" && raw.startsWith("/") && !raw.startsWith("//")
-        ? raw
-        : null;
-    },
-  });
+  const nextFromSearch = Route.useSearch({ select: (s) => s.next ?? null });
 
   useEffect(() => {
     let cancelled = false;
@@ -150,11 +151,21 @@ function AuthCallbackPage() {
       }
     };
 
-    const listener = App.addListener("appUrlOpen", ({ url }) => {
-      if (url.includes("auth/callback") || url.startsWith("com.seek.bible://")) {
-        void handleCallbackUrl(url);
+    let capHandle: { remove: () => Promise<void> } | null = null;
+
+    void (async () => {
+      try {
+        const { Capacitor } = await import("@capacitor/core");
+        if (!Capacitor.isNativePlatform()) return;
+        capHandle = await App.addListener("appUrlOpen", ({ url }) => {
+          if (url.includes("auth/callback") || url.startsWith("com.seek.bible://")) {
+            void handleCallbackUrl(url);
+          }
+        });
+      } catch {
+        /* web */
       }
-    });
+    })();
 
     void handleCallbackUrl(window.location.href);
 
@@ -169,7 +180,7 @@ function AuthCallbackPage() {
     return () => {
       cancelled = true;
       window.clearTimeout(timeout);
-      void listener.then((handle) => handle.remove());
+      void capHandle?.remove();
     };
   }, [navigate, nextFromSearch]);
 
