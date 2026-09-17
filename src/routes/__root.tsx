@@ -89,7 +89,7 @@ function RootComponent() {
 
     const listener = App.addListener("appUrlOpen", ({ url }) => {
       void handleAuthCallback(url);
-    };
+    });
 
     void App.getLaunchUrl().then((result) => {
       if (result?.url) {
