@@ -28,11 +28,15 @@ export function systemTheme(): Theme {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
-function setMeta(name: string, content: string) {
-  let el = document.querySelector(`meta[name="${name}"]`);
+function setMeta(name: string, content: string, media?: string) {
+  const selector = media
+    ? `meta[name="${name}"][media="${media}"]`
+    : `meta[name="${name}"]:not([media])`;
+  let el = document.querySelector(selector);
   if (!el) {
     el = document.createElement("meta");
     el.setAttribute("name", name);
+    if (media) el.setAttribute("media", media);
     document.head.appendChild(el);
   }
   el.setAttribute("content", content);
@@ -40,8 +44,8 @@ function setMeta(name: string, content: string) {
 
 /**
  * Status bar / theme-color chrome.
- * Home hero is always a dark forest photo — force light icons there even in light mode,
- * so time / battery stay visible.
+ * Home hero is always a dark forest — force a dark system bar so the top
+ * strip (time / battery / quick settings) matches the photo, even in light mode.
  */
 export function applyChrome(theme: Theme, opts?: { darkSurface?: boolean }) {
   const darkSurface = opts?.darkSurface ?? theme === "dark";
@@ -49,6 +53,9 @@ export function applyChrome(theme: Theme, opts?: { darkSurface?: boolean }) {
   const statusStyle = darkSurface ? STATUS_BAR_STYLES.dark : STATUS_BAR_STYLES.light;
 
   setMeta("theme-color", themeColor);
+  // Cover both system schemes so Android/iOS don’t flash the cream bar
+  setMeta("theme-color", themeColor, "(prefers-color-scheme: light)");
+  setMeta("theme-color", themeColor, "(prefers-color-scheme: dark)");
   setMeta("apple-mobile-web-app-status-bar-style", statusStyle);
 }
 
