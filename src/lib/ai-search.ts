@@ -16,18 +16,71 @@ export type MeaningResponse =
 const BOOK_NAMES = BOOKS.map((b) => b.name).join(", ");
 
 /**
- * Gemini model fallback chain (display order keeps the workhorse model first).
- * The meaning search is a small JSON task, so the chain starts at Flash and
- * only climbs or drops to an alias when a model is unavailable or rate-limited.
+ * Static model fallback chain, in preference order, used only when the key's
+ * available models can't be listed. The meaning search is a small JSON task,
+ * so the workhorse Lite models are preferred over Pro.
  */
-const GEMINI_MODELS = [
-  { label: "Gemini 2.5 Flash", id: "gemini-2.5-flash" },
-  { label: "Gemini 2.5 Flash Lite", id: "gemini-2.5-flash-lite" },
-  { label: "Gemini 2.0 Flash", id: "gemini-2.0-flash" },
-  { label: "Gemini 2.0 Flash Lite", id: "gemini-2.0-flash-lite" },
-  { label: "Gemini 2.5 Pro", id: "gemini-2.5-pro" },
-  { label: "Gemini 1.5 Flash", id: "gemini-1.5-flash" },
+const STATIC_MODELS = [
+  "gemini-2.5-flash-lite",
+  "gemini-2.0-flash-lite",
+  "gemini-2.5-flash",
+  "gemini-2.0-flash",
+  "gemini-2.5-pro",
+  "gemini-1.5-flash",
+  "gemini-1.5-pro",
+  "gemini-flash-latest",
+  "gemini-pro",
 ] as const;
+
+const PREFERRED_ORDER: string[] = [...STATIC_MODELS];
+
+/** Cached model list per key, so discovery isn't repeated on every search. */
+const modelListCache = new Map<string, { at: number; models: string[] }>();
+
+/**
+ * Ask the API which generative text models this key can actually call, and
+ * order them most-likely-useful first. Versioned ids like
+ * `gemini-2.0-flash-001` are kept, so a key whose project only exposes dated
+ * models still works. Returns `null` when the list request itself fails, so
+ * the caller can fall back to the static chain.
+ */
+async function resolveModelChain(apiKey: string): Promise<string[] | null> {
+  const cached = modelListCache.get(apiKey);
+  if (cached && Date.now() - cached.at < 10 * 60 * 1000) return cached.models;
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}&pageSize=300`,
+    );
+    if (!res.ok) return null;
+    const body = (await res.json()) as {
+      models?: { name?: string; supportedGenerationMethods?: string[] }[];
+    };
+    const skip = (name: string) =>
+      name.includes("embedding") ||
+      name.includes("imagen") ||
+      name.includes("veo") ||
+      name.includes("tts") ||
+      name.includes("aqa") ||
+      name.includes("search") ||
+      name.includes("thinking");
+    const available = new Set<string>();
+    for (const model of body.models ?? []) {
+      const name = (model.name ?? "").replace(/^models\//, "");
+      if (!/^gemini/.test(name)) continue;
+      if (skip(name)) continue;
+      if (!(model.supportedGenerationMethods ?? []).includes("generateContent")) continue;
+      available.add(name);
+    }
+    const ordered = [
+      ...PREFERRED_ORDER.filter((p) => available.has(p)),
+      ...[...available].filter((a) => !PREFERRED_ORDER.includes(a)),
+    ];
+    modelListCache.set(apiKey, { at: Date.now(), models: ordered });
+    return ordered;
+  } catch {
+    return null;
+  }
+}
 
 const cache = new Map<string, MeaningResponse>();
 
@@ -95,25 +148,34 @@ Rules:
 }
 
 /**
- * Call Gemini with a model fallback chain. Every model is tried twice — first
- * through the OpenAI-compatible endpoint, then through the native
- * `generateContent` REST endpoint — because a key can reject the compat route
- * while the REST route works. Moves on whenever a call bills nothing (network
- * failure, 400/404 model missing, 429 rate limit, 5xx). A 2xx that can't be
- * parsed is a stop condition: the call was billed, so we don't keep spending
- * across the chain. Returns `null` only when every model failed without
- * billing anything, so the caller can fall back to xAI.
+ * Call Gemini across its full model fallback chain. The chain comes from
+ * `resolveModelChain` (every generative model this key can use, preferred
+ * first) and only falls back to the static list when discovery fails. Every
+ * model is tried twice — first through the OpenAI-compatible endpoint, then
+ * through the native `generateContent` REST endpoint — because a key can
+ * reject the compat route while the REST route works. Moves on whenever a call
+ * bills nothing (network failure, 400/404 model missing, 429 rate limit, 5xx).
+ * A 2xx that can't be parsed is a stop condition: the call was billed, so we
+ * don't keep spending across the chain. Returns `null` only when every model
+ * failed without billing anything.
  */
 async function askGemini(prompt: string, apiKey: string): Promise<MeaningResponse | null> {
-  for (const model of GEMINI_MODELS) {
-    const compat = await callGeminiCompat(prompt, apiKey, model.id);
+  const discovered = await resolveModelChain(apiKey);
+  const models: string[] =
+    discovered && discovered.length ? discovered : [...STATIC_MODELS];
+  const failures: string[] = [];
+  for (const model of models) {
+    const compat = await callGeminiCompat(prompt, apiKey, model);
     if (compat.kind === "ok") return compat.response;
     if (compat.kind === "stop") return { ok: false, error: compat.message };
+    failures.push(`compat:${compat.reason}`);
 
-    const rest = await callGeminiRest(prompt, apiKey, model.id);
+    const rest = await callGeminiRest(prompt, apiKey, model);
     if (rest.kind === "ok") return rest.response;
     if (rest.kind === "stop") return { ok: false, error: rest.message };
+    failures.push(`rest:${rest.reason}`);
   }
+  console.info("[meaning-search] all models failed:", failures.join(" | "));
   return null;
 }
 
@@ -177,7 +239,23 @@ async function classifyGeminiResponse(
   res: Response,
   model: string,
 ): Promise<GeminiCallResult> {
-  if (res.status === 400 || res.status === 404) {
+  if (res.status === 401 || res.status === 403) {
+    return {
+      kind: "stop",
+      message: "The Gemini API key is invalid or has no access. Please update it and try again.",
+    };
+  }
+  if (res.status === 400) {
+    const detail = await res.text().catch(() => "");
+    if (/api key not valid|API_KEY_INVALID/i.test(detail)) {
+      return {
+        kind: "stop",
+        message: "The Gemini API key is invalid or expired. Please update it and try again.",
+      };
+    }
+    return { kind: "next", reason: `${model} is unavailable` };
+  }
+  if (res.status === 404) {
     return { kind: "next", reason: `${model} is unavailable` };
   }
   if (res.status === 429) {
