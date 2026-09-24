@@ -6,12 +6,69 @@ import { useBible } from "@/components/bible-provider";
 import { bookBySlug } from "@/lib/bible/meta";
 import { getChapter, normalize } from "@/lib/bible/load";
 import { useSeekStore } from "@/lib/store";
+import { CANONICAL_ORIGIN } from "@/lib/seo";
 
 export const Route = createFileRoute("/read/$book/$chapter")({
   validateSearch: (search: Record<string, unknown>) => ({
     q: typeof search.q === "string" ? search.q : undefined,
   }),
   component: ReadPage,
+  head: ({ params }) => {
+    const book = bookBySlug(params.book);
+    const chapter = Number(params.chapter);
+    const valid = !!book && Number.isFinite(chapter) && chapter >= 1 && chapter <= book.chapters.length;
+    const title = valid
+      ? `${book.name} ${chapter} — Read the KJV Bible | Seek`
+      : "Seek — Read & Search the King James Bible";
+    const description = valid
+      ? `${book.name} ${chapter} of the King James Bible. Read the full chapter online and search by meaning.`
+      : "The whole King James Bible. Search by a half-remembered word, a fragment, or the meaning you meant.";
+    const href = valid ? `${CANONICAL_ORIGIN}/read/${book.slug}/${chapter}` : `${CANONICAL_ORIGIN}/`;
+
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:url", content: href },
+        { property: "og:type", content: "article" },
+        ...(valid
+          ? ([
+              {
+                "script:ld+json": {
+                  "@context": "https://schema.org",
+                  "@type": "BreadcrumbList",
+                  itemListElement: [
+                    { "@type": "ListItem", position: 1, name: "Seek", item: `${CANONICAL_ORIGIN}/` },
+                    {
+                      "@type": "ListItem",
+                      position: 2,
+                      name: book.name,
+                      item: `${CANONICAL_ORIGIN}/read/${book.slug}/1`,
+                    },
+                    { "@type": "ListItem", position: 3, name: `Chapter ${chapter}`, item: href },
+                  ],
+                },
+              },
+              {
+                "script:ld+json": {
+                  "@context": "https://schema.org",
+                  "@type": "Chapter",
+                  name: `${book.name} ${chapter}`,
+                  isPartOf: {
+                    "@type": "Book",
+                    name: `${book.name} (King James Bible)`,
+                  },
+                  url: href,
+                },
+              },
+            ] as Array<Record<string, unknown>>)
+          : []),
+      ],
+      links: [{ rel: "canonical", href }],
+    };
+  },
 });
 
 function ReadPage() {

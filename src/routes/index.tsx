@@ -14,6 +14,7 @@ import {
   Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CANONICAL_ORIGIN } from "@/lib/seo";
 
 const CONTACT_EMAIL = "vijay.peddenti434@gmail.com";
 
@@ -65,7 +66,37 @@ const STEPS = [
   { n: "03", title: "Abide", body: "Save the verses that hold you. Return to them when you need grace again." },
 ];
 
-export const Route = createFileRoute("/")({ component: Home });
+export const Route = createFileRoute("/")({
+  component: Home,
+  head: () => ({
+    meta: [
+      {
+        title: "Seek — Read & Search the King James Bible by Meaning",
+      },
+      {
+        name: "description",
+        content:
+          "The whole King James Bible. Search by a half-remembered word, a fragment, or the meaning you meant — love, mercy, grace, sacrifice. All 66 books, 1,189 chapters.",
+      },
+      {
+        "script:ld+json": {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Seek",
+          url: CANONICAL_ORIGIN,
+          description:
+            "Read and search the King James Bible by meaning — a verse, a fragment, or the longing behind the word.",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: { "@type": "EntryPoint", urlTemplate: `${CANONICAL_ORIGIN}/search?q={search_term_string}` },
+            "query-input": "required name=search_term_string",
+          },
+        },
+      },
+    ],
+    links: [{ rel: "canonical", href: `${CANONICAL_ORIGIN}/` }],
+  }),
+});
 
 function LeafMark({ className }: { className?: string }) {
   return (

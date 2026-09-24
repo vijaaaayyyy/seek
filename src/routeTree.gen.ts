@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as BooksRouteImport } from './routes/books'
 import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as DemoRouteImport } from './routes/demo'
+import { Route as DownloadRouteImport } from './routes/download'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as LoginRouteImport } from './routes/login'
@@ -45,6 +46,11 @@ const ChangelogRoute = ChangelogRouteImport.update({
 const DemoRoute = DemoRouteImport.update({
   id: '/demo',
   path: '/demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadRoute = DownloadRouteImport.update({
+  id: '/download',
+  path: '/download',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreRoute = ExploreRouteImport.update({
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/books': typeof BooksRoute
   '/changelog': typeof ChangelogRoute
   '/demo': typeof DemoRoute
+  '/download': typeof DownloadRoute
   '/explore': typeof ExploreRoute
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/books': typeof BooksRoute
   '/changelog': typeof ChangelogRoute
   '/demo': typeof DemoRoute
+  '/download': typeof DownloadRoute
   '/explore': typeof ExploreRoute
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/books': typeof BooksRoute
   '/changelog': typeof ChangelogRoute
   '/demo': typeof DemoRoute
+  '/download': typeof DownloadRoute
   '/explore': typeof ExploreRoute
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
@@ -178,6 +187,7 @@ export interface FileRouteTypes {
     | '/books'
     | '/changelog'
     | '/demo'
+    | '/download'
     | '/explore'
     | '/faq'
     | '/login'
@@ -197,6 +207,7 @@ export interface FileRouteTypes {
     | '/books'
     | '/changelog'
     | '/demo'
+    | '/download'
     | '/explore'
     | '/faq'
     | '/login'
@@ -216,6 +227,7 @@ export interface FileRouteTypes {
     | '/books'
     | '/changelog'
     | '/demo'
+    | '/download'
     | '/explore'
     | '/faq'
     | '/login'
@@ -236,6 +248,7 @@ export interface RootRouteChildren {
   BooksRoute: typeof BooksRoute
   ChangelogRoute: typeof ChangelogRoute
   DemoRoute: typeof DemoRoute
+  DownloadRoute: typeof DownloadRoute
   ExploreRoute: typeof ExploreRoute
   FaqRoute: typeof FaqRoute
   LoginRoute: typeof LoginRoute
@@ -279,6 +292,13 @@ declare module '@tanstack/react-router' {
       path: '/demo'
       fullPath: '/demo'
       preLoaderRoute: typeof DemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/download': {
+      id: '/download'
+      path: '/download'
+      fullPath: '/download'
+      preLoaderRoute: typeof DownloadRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore': {
@@ -380,6 +400,7 @@ const rootRouteChildren: RootRouteChildren = {
   BooksRoute: BooksRoute,
   ChangelogRoute: ChangelogRoute,
   DemoRoute: DemoRoute,
+  DownloadRoute: DownloadRoute,
   ExploreRoute: ExploreRoute,
   FaqRoute: FaqRoute,
   LoginRoute: LoginRoute,

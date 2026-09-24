@@ -20,6 +20,12 @@ export const Route = createFileRoute("/search")({
     q: typeof search.q === "string" ? search.q : "",
   }),
   component: SearchPage,
+  head: () => ({
+    meta: [
+      { title: "Search | Seek" },
+      { name: "robots", content: "noindex, follow" },
+    ],
+  }),
 });
 
 function SearchPage() {

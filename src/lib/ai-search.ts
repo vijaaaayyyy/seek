@@ -16,16 +16,17 @@ export type MeaningResponse =
 const BOOK_NAMES = BOOKS.map((b) => b.name).join(", ");
 
 /**
- * Gemini model fallback chain (display order keeps the newest, most
- * cost-efficient model first). The meaning search is a small JSON task, so the
- * chain starts at the workhorse Flash-Lite and only climbs when a model is
- * unavailable or rate-limited.
+ * Gemini model fallback chain (display order keeps the workhorse model first).
+ * The meaning search is a small JSON task, so the chain starts at Flash and
+ * only climbs or drops to an alias when a model is unavailable or rate-limited.
  */
 const GEMINI_MODELS = [
-  { label: "Gemini 3.1 Flash Lite", id: "gemini-3.1-flash-lite" },
   { label: "Gemini 2.5 Flash", id: "gemini-2.5-flash" },
-  { label: "Gemini 2.5 Pro", id: "gemini-2.5-pro" },
   { label: "Gemini 2.5 Flash Lite", id: "gemini-2.5-flash-lite" },
+  { label: "Gemini 2.0 Flash", id: "gemini-2.0-flash" },
+  { label: "Gemini 2.0 Flash Lite", id: "gemini-2.0-flash-lite" },
+  { label: "Gemini 2.5 Pro", id: "gemini-2.5-pro" },
+  { label: "Gemini 1.5 Flash", id: "gemini-1.5-flash" },
 ] as const;
 
 const cache = new Map<string, MeaningResponse>();
@@ -47,20 +48,12 @@ export const searchByMeaning = createServerFn({ method: "POST" })
 
     const prompt = buildPrompt(query);
     const geminiKey = process.env.GEMINI_API_KEY?.trim();
-    const xaiKey = process.env.XAI_API_KEY?.trim();
-    if (!geminiKey && !xaiKey) {
+    if (!geminiKey) {
       return { ok: false, error: "Meaning search is unavailable right now." };
     }
 
-    // Gemini first (you gave your own key), then xAI as the last resort.
-    let result: MeaningResponse | null = null;
-    if (geminiKey) {
-      result = await askGemini(prompt, geminiKey);
-    }
-    if (!result && xaiKey) {
-      result = await askXai(prompt, xaiKey);
-    }
-    if (result) {
+    const result = await askGemini(prompt, geminiKey);
+    if (result?.ok) {
       if (cache.size > 80) cache.clear();
       cache.set(key, result);
     }
@@ -102,103 +95,117 @@ Rules:
 }
 
 /**
- * Call Gemini via its OpenAI-compatible endpoint with the model fallback chain.
- * Moves to the next model on HTTP failures (404 model missing, 429 rate limit,
- * 5xx server trouble) — those bill nothing. A 2xx response that can't be parsed
- * is a stop condition: the call was billed, so we don't keep spending across
- * the chain.
+ * Call Gemini with a model fallback chain. Every model is tried twice — first
+ * through the OpenAI-compatible endpoint, then through the native
+ * `generateContent` REST endpoint — because a key can reject the compat route
+ * while the REST route works. Moves on whenever a call bills nothing (network
+ * failure, 400/404 model missing, 429 rate limit, 5xx). A 2xx that can't be
+ * parsed is a stop condition: the call was billed, so we don't keep spending
+ * across the chain. Returns `null` only when every model failed without
+ * billing anything, so the caller can fall back to xAI.
  */
 async function askGemini(prompt: string, apiKey: string): Promise<MeaningResponse | null> {
-  let lastError: string | null = null;
   for (const model of GEMINI_MODELS) {
-    try {
-      const res = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify({
-            model: model.id,
-            temperature: 0.2,
-            max_tokens: 900,
-            messages: [{ role: "user", content: prompt }],
-          }),
-        },
-      );
+    const compat = await callGeminiCompat(prompt, apiKey, model.id);
+    if (compat.kind === "ok") return compat.response;
+    if (compat.kind === "stop") return { ok: false, error: compat.message };
 
-      if (res.status === 400 || res.status === 404) {
-        lastError = `${model.label} is unavailable`;
-        continue;
-      }
-      if (res.status === 429) {
-        lastError = "Rate limit reached";
-        continue;
-      }
-      if (res.status >= 500) {
-        lastError = `${model.label} had a server error`;
-        continue;
-      }
-      if (!res.ok) {
-        lastError = `${model.label} returned ${res.status}`;
-        continue;
-      }
-
-      const body = (await res.json()) as {
-        choices?: { message?: { content?: string } }[];
-      };
-      const text = body.choices?.[0]?.message?.content ?? "";
-      const parsed = parseModelJson(text);
-      if (!parsed) {
-        return {
-          ok: false,
-          error: `Meaning search returned an unexpected answer (${model.label}).`,
-        };
-      }
-      return normalizeResults(parsed);
-    } catch {
-      lastError = "Gemini could not be reached";
-      continue;
-    }
+    const rest = await callGeminiRest(prompt, apiKey, model.id);
+    if (rest.kind === "ok") return rest.response;
+    if (rest.kind === "stop") return { ok: false, error: rest.message };
   }
-  return lastError ? { ok: false, error: `Meaning search could not finish (${lastError}).` } : null;
+  return null;
 }
 
-/** Legacy xAI fallback — used only when no Gemini key is configured. */
-async function askXai(prompt: string, apiKey: string): Promise<MeaningResponse | null> {
+type GeminiCallResult =
+  | { kind: "ok"; response: MeaningResponse }
+  | { kind: "stop"; message: string }
+  | { kind: "next"; reason: string };
+
+async function callGeminiCompat(
+  prompt: string,
+  apiKey: string,
+  model: string,
+): Promise<GeminiCallResult> {
   try {
-    const res = await fetch("https://api.x.ai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
+    const res = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          temperature: 0.2,
+          max_tokens: 900,
+          messages: [{ role: "user", content: prompt }],
+        }),
       },
-      body: JSON.stringify({
-        model: "grok-4.5",
-        temperature: 0.2,
-        max_tokens: 900,
-        messages: [{ role: "user", content: prompt }],
-      }),
-    });
-
-    if (!res.ok) {
-      return { ok: false, error: "Meaning search could not finish. Word matches still work." };
-    }
-
-    const body = (await res.json()) as {
-      choices?: { message?: { content?: string } }[];
-    };
-    const text = body.choices?.[0]?.message?.content ?? "";
-    const parsed = parseModelJson(text);
-    if (!parsed) {
-      return { ok: false, error: "Meaning search returned an unexpected answer." };
-    }
-    return normalizeResults(parsed);
+    );
+    return classifyGeminiResponse(res, model);
   } catch {
-    return { ok: false, error: "Meaning search could not reach the network." };
+    return { kind: "next", reason: `${model} could not be reached` };
   }
+}
+
+async function callGeminiRest(
+  prompt: string,
+  apiKey: string,
+  model: string,
+): Promise<GeminiCallResult> {
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.2, maxOutputTokens: 900 },
+        }),
+      },
+    );
+    return classifyGeminiResponse(res, model);
+  } catch {
+    return { kind: "next", reason: `${model} could not be reached` };
+  }
+}
+
+async function classifyGeminiResponse(
+  res: Response,
+  model: string,
+): Promise<GeminiCallResult> {
+  if (res.status === 400 || res.status === 404) {
+    return { kind: "next", reason: `${model} is unavailable` };
+  }
+  if (res.status === 429) {
+    return { kind: "next", reason: "rate limit reached" };
+  }
+  if (res.status >= 500) {
+    return { kind: "next", reason: `${model} had a server error` };
+  }
+  if (!res.ok) {
+    return { kind: "next", reason: `${model} returned ${res.status}` };
+  }
+
+  const body = (await res.json()) as {
+    choices?: { message?: { content?: string } }[];
+    candidates?: { content?: { parts?: { text?: string }[] } }[];
+  };
+  const text =
+    body.choices?.[0]?.message?.content ??
+    body.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ??
+    "";
+  if (!text.trim()) {
+    return { kind: "stop", message: `Meaning search returned an empty answer (${model}).` };
+  }
+  const parsed = parseModelJson(text);
+  if (!parsed) {
+    return { kind: "stop", message: `Meaning search returned an unexpected answer (${model}).` };
+  }
+  return { kind: "ok", response: normalizeResults(parsed) };
 }
 
 /** Shape-check, clamp and dedupe the model's JSON into the response contract. */

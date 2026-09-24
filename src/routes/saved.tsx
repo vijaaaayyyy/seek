@@ -7,7 +7,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useCurrentUserState } from "@/lib/supa/use-current-user";
 import { formatRef } from "@/lib/bible/meta";
 
-export const Route = createFileRoute("/saved")({ component: SavedPage });
+export const Route = createFileRoute("/saved")({
+  component: SavedPage,
+  head: () => ({
+    meta: [
+      { title: "Saved Verses | Seek" },
+      { name: "robots", content: "noindex, follow" },
+    ],
+  }),
+});
 
 function SavedPage() {
   const { saved, status, toggleSaved } = useSaved();
