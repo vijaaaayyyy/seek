@@ -27,11 +27,16 @@ type SessionUser = {
  *   - Auth disabled -> `DEV_USER`, never pending.
  */
 export function useCurrentUserState(): CurrentUserState {
-  if (!authEnabled) return { user: DEV_USER, isPending: false };
-
-  const [state, setState] = useState<CurrentUserState>({ user: null, isPending: true });
+  // Hooks must run in the same order on every render, so the `authEnabled`
+  // check cannot short-circuit above them — it decides the *initial* state and
+  // gates the subscription, and only then do we pick which state to return.
+  const [state, setState] = useState<CurrentUserState>(() =>
+    authEnabled ? { user: null, isPending: true } : { user: DEV_USER, isPending: false },
+  );
 
   useEffect(() => {
+    if (!authEnabled) return;
+
     let active = true;
     const match = (session: { user?: SessionUser } | null): CurrentUserState => ({
       user: session?.user ? appUserFrom(session.user) : null,
@@ -52,6 +57,7 @@ export function useCurrentUserState(): CurrentUserState {
     };
   }, []);
 
+  if (!authEnabled) return { user: DEV_USER, isPending: false };
   return state;
 }
 

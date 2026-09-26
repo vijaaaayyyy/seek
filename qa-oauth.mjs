@@ -26,7 +26,7 @@ const gbtn = page.getByRole("button", { name: /Continue with Google/i });
 if (await gbtn.count()) {
   await page.waitForTimeout(500);
   await gbtn.first().click();
-  await page.waitForTimeout(9000 crescent");
+  await page.waitForTimeout(9000);
   console.log("URL NOW:", page.url().slice(0, 220));
   console.log("BODY NOW:", (await page.evaluate(() => document.body.innerText)).replace(/\s+/g, " ").slice(0, 220));
 } else {

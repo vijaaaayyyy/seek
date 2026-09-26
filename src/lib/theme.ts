@@ -44,9 +44,11 @@ export function applyChrome(theme: Theme, opts?: { darkSurface?: boolean }) {
   const root = document.documentElement;
   root.style.colorScheme = darkSurface ? "dark" : "light";
   try {
-    document.body && (document.body.style.colorScheme = darkSurface ? "dark" : "light");
+    if (document.body) {
+      document.body.style.colorScheme = darkSurface ? "dark" : "light";
+    }
   } catch {
-    /* */
+    /* private mode */
   }
 
   // Remove every existing theme-color so stale media queries can’t win

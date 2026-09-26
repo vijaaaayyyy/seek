@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import { BookmarkCheck } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { signIn, type AppUser } from "@/lib/supa/client";
+import { signIn } from "@/lib/supa/client";
 import { useCurrentUserState } from "@/lib/supa/use-current-user";
 import { useSaved } from "@/components/saved-provider";
 import { saveVerse } from "@/lib/saved-verses";
 import { formatRef } from "@/lib/bible/meta";
-import type { SaveVerseInput } from "@/lib/saved-verses";
 
 export function SavePrompt() {
   const { pendingSave, clearPendingSave } = useSaved();

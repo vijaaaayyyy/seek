@@ -1,6 +1,6 @@
 import { chromium } from "playwright";
 
-const base = process.env.TARGET_URL || "https://seek-bib");
+const base = process.env.TARGET_URL || "https://seek-bible.vercel.app";
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
