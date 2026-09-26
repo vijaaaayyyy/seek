@@ -4,6 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BookPicker } from "@/components/book-picker";
 import { Highlighted } from "@/components/highlighted";
 import { ReadingModeToggle } from "@/components/reading-mode-toggle";
+import {
+  VERSE_ACTIONS_CLASS,
+  VerseShareButton,
+} from "@/components/verse-share-button";
 import { BOOKS, type BookMeta } from "@/lib/bible/meta";
 import type { IndexedVerse } from "@/lib/bible/load";
 import { cn } from "@/lib/utils";
@@ -242,7 +246,10 @@ export function BookReader({
               highlight={highlight}
               focusVerse={focusVerse}
               className="absolute inset-0"
-              aria-hidden={flip ? false : true}
+              // This sheet is the page at rest, so it is what a screen reader
+              // must be able to read. Only the *outgoing* page needs hiding,
+              // and only while it is mid-turn — the incoming leaf renders on top.
+              aria-hidden={flip === null ? undefined : true}
             />
 
             {flip && (
@@ -396,7 +403,7 @@ function PageSheet({
             key={v.verse}
             id={`c${chapter}-v${v.verse}`}
             className={cn(
-              "scroll-mt-24 rounded-lg px-1.5 py-0.5 font-serif text-[17px] leading-[1.7]",
+              "group scroll-mt-24 rounded-lg px-1.5 py-0.5 font-serif text-[17px] leading-[1.7]",
               i > 0 && "mt-1.5",
               focusVerse === v.verse &&
                 "bg-mark/55 ring-1 ring-forest/25 dark:bg-mark/40",
@@ -411,6 +418,17 @@ function PageSheet({
               {v.verse}
             </sup>
             <Highlighted text={v.text} needles={highlight} />
+            <VerseShareButton
+              book={book}
+              chapter={chapter}
+              verse={v.verse}
+              text={v.text}
+              className={cn(
+                "ml-1 inline-flex translate-y-0.5 align-baseline text-faint",
+                VERSE_ACTIONS_CLASS,
+              )}
+              iconClassName="size-3"
+            />
           </p>
         ))}
       </div>

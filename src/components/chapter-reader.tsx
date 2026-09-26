@@ -12,6 +12,10 @@ import { Highlighted } from "@/components/highlighted";
 import { ReadingModeToggle } from "@/components/reading-mode-toggle";
 import { useSaved } from "@/components/saved-provider";
 import { useBible } from "@/components/bible-provider";
+import {
+  VERSE_ACTIONS_CLASS,
+  VerseShareButton,
+} from "@/components/verse-share-button";
 import { BOOKS, type BookMeta } from "@/lib/bible/meta";
 import { getChapter, type IndexedVerse } from "@/lib/bible/load";
 import { cn } from "@/lib/utils";
@@ -312,7 +316,10 @@ export function ChapterReader({
                           });
                           toast.success(saved ? "Removed from saved" : "Saved");
                         }}
-                        className="ml-1.5 inline-flex translate-y-0.5 align-baseline text-muted opacity-0 transition-opacity group-hover:opacity-100"
+                        className={cn(
+                          "ml-1.5 translate-y-0.5 align-baseline text-muted",
+                          VERSE_ACTIONS_CLASS,
+                        )}
                       >
                         {saved ? (
                           <BookmarkCheck className="size-3.5 text-forest" strokeWidth={2} />
@@ -320,6 +327,16 @@ export function ChapterReader({
                           <Bookmark className="size-3.5" strokeWidth={1.8} />
                         )}
                       </button>
+                      <VerseShareButton
+                        book={book}
+                        chapter={v.chapter}
+                        verse={v.verse}
+                        text={v.text}
+                        className={cn(
+                          "ml-1.5 translate-y-0.5 align-baseline text-muted",
+                          VERSE_ACTIONS_CLASS,
+                        )}
+                      />
                     </p>
                   </div>
                 );

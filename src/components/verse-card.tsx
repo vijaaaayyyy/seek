@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Highlighted } from "@/components/highlighted";
 import { useSaved } from "@/components/saved-provider";
+import { VerseShareButton } from "@/components/verse-share-button";
 import { BOOKS, formatRef } from "@/lib/bible/meta";
 import type { IndexedVerse } from "@/lib/bible/load";
 
@@ -61,6 +62,14 @@ export function VerseCard({
           <Button variant="ghost" size="icon-sm" aria-label="Copy verse" onClick={copyVerse}>
             <Copy />
           </Button>
+          <VerseShareButton
+            book={book}
+            chapter={verse.chapter}
+            verse={verse.verse}
+            text={verse.text}
+            className="inline-flex size-8 items-center justify-center rounded-md text-muted transition-colors hover:bg-ink/5 hover:text-ink dark:hover:bg-white/10"
+            iconClassName="size-4"
+          />
           <Button
             variant="ghost"
             size="icon-sm"
