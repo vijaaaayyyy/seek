@@ -1,14 +1,19 @@
 /**
- * A real Google AI Studio key is `AIza` + 35 url-safe base64 characters. Anything
- * else is a placeholder or a truncated paste.
+ * Google AI Studio keys are normally `AIza` + 35 url-safe base64 characters
+ * (39 total), and that is what a 400 `INVALID_ARGUMENT` most often means: the
+ * value in `GEMINI_API_KEY` is a placeholder or a truncated paste rather than a
+ * real key. The old classifier could not tell that apart from a bad model id,
+ * so it told every visitor the key was "invalid or expired" - blaming them for
+ * a server misconfiguration.
  *
- * This matters because Google answers a malformed key with a bare
- * `400 INVALID_ARGUMENT` whose body reads like a bad model id rather than a bad
- * key. A classifier that only knows `API_KEY_INVALID` cannot attribute that, so
- * the failure used to surface to every visitor as "The Gemini API key is invalid
- * or expired. Please update it and try again." — pointing them at a key that was
- * never valid in the first place. Checking the shape up front turns that
- * misdiagnosis into a named, logged server fault.
+ * The shape check here is therefore **advisory only**. An earlier version
+ * hard-rejected anything that did not match, which was actively dangerous: a
+ * provider key, a proxy key, or any future key format would have been silently
+ * refused before a single request went out, and meaning search would look
+ * "unconfigured" on a deployment that was otherwise fine. A wrong guess costs
+ * one wasted request, which the response classifier can then name exactly; a
+ * false rejection costs the whole feature in production. So: never block a
+ * non-empty key, but say so in the logs when it looks off.
  *
  * Kept free of runtime imports so it can be unit-tested directly.
  */
@@ -19,19 +24,19 @@ export const MEANING_UNAVAILABLE_MESSAGE =
 
 const GEMINI_KEY_SHAPE = /^AIza[0-9A-Za-z_-]{35}$/;
 
-export type GeminiKeyResult = { ok: true; key: string } | { ok: false; reason: string };
+export type GeminiKeyResult =
+  | { ok: true; key: string; warning?: string }
+  | { ok: false; reason: string };
 
 export function readGeminiKey(env: NodeJS.ProcessEnv = process.env): GeminiKeyResult {
   const key = env.GEMINI_API_KEY?.trim() ?? "";
   if (!key) return { ok: false, reason: "GEMINI_API_KEY is not set" };
-  if (key.length < 30) {
-    return {
-      ok: false,
-      reason: `GEMINI_API_KEY looks like a ${key.length}-character placeholder, not a Google AI Studio key`,
-    };
-  }
   if (!GEMINI_KEY_SHAPE.test(key)) {
-    return { ok: false, reason: "GEMINI_API_KEY is not a well-formed Google AI Studio key" };
+    return {
+      ok: true,
+      key,
+      warning: `GEMINI_API_KEY does not look like a standard 39-character Google AI Studio key (${key.length} chars) - trying anyway`,
+    };
   }
   return { ok: true, key };
 }
