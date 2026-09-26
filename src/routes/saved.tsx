@@ -6,15 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCurrentUserState } from "@/lib/supa/use-current-user";
 import { formatRef } from "@/lib/bible/meta";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/saved")({
   component: SavedPage,
-  head: () => ({
-    meta: [
-      { title: "Saved Verses | Seek" },
-      { name: "robots", content: "noindex, follow" },
-    ],
-  }),
+  head: () =>
+    pageSeo({
+      // Per-account content. Must never be indexed, and must never be reachable
+      // from the sitemap — but it stays crawlable so crawl equity flows onward.
+      title: "Saved Verses | SEEK",
+      description: "The King James Bible verses you have saved, ready to read again.",
+      path: "/saved",
+      noindex: true,
+    }),
 });
 
 function SavedPage() {

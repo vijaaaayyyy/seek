@@ -30,10 +30,32 @@ function buildRobots() {
 }
 
 function buildSitemap() {
-  const urls = [
-    `<url><loc>${BASE}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>`,
-    `<url><loc>${BASE}/books</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>`,
+  // Human-facing pages that should rank. Keep this list in sync with the
+  // `noindex` flags in src/lib/seo.ts — anything marked noindex here (search,
+  // saved, explore, login, profile, auth/callback) must NOT appear below, or
+  // you hand Google a canonical to a page it is told not to index.
+  //
+  // Priority order mirrors intent: the landing page, then the Bible itself,
+  // then the pages that explain the product and earn trust.
+  const STATIC_PAGES = [
+    { path: "/", priority: "1.0", changefreq: "weekly" },
+    { path: "/books", priority: "0.9", changefreq: "monthly" },
+    { path: "/about", priority: "0.7", changefreq: "monthly" },
+    { path: "/faq", priority: "0.6", changefreq: "monthly" },
+    { path: "/groups", priority: "0.6", changefreq: "monthly" },
+    { path: "/download", priority: "0.6", changefreq: "monthly" },
+    { path: "/pricing", priority: "0.5", changefreq: "yearly" },
+    { path: "/changelog", priority: "0.4", changefreq: "weekly" },
+    { path: "/privacy", priority: "0.3", changefreq: "yearly" },
+    { path: "/terms", priority: "0.3", changefreq: "yearly" },
+    { path: "/report-bug", priority: "0.2", changefreq: "yearly" },
   ];
+
+  const urls = STATIC_PAGES.map(
+    (p) =>
+      `<url><loc>${BASE}${p.path}</loc><changefreq>${p.changefreq}</changefreq><priority>${p.priority}</priority></url>`,
+  );
+
   for (const book of BOOKS) {
     for (let chapter = 1; chapter <= book.chapters.length; chapter++) {
       urls.push(

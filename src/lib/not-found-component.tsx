@@ -15,7 +15,7 @@ export function NotFoundComponent() {
         to="/"
         className="glass glass-strong mt-2 rounded-full px-5 py-2.5 font-sans text-[13px] font-medium text-ink transition-transform duration-150 active:scale-[0.96]"
       >
-        Back to Seek
+        Back to SEEK
       </Link>
     </div>
   );

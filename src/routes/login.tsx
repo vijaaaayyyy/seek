@@ -8,6 +8,7 @@ import { signIn, signInEmail, signUpEmail } from "@/lib/supa/client";
 import { useCurrentUserState } from "@/lib/supa/use-current-user";
 import { cn } from "@/lib/utils";
 import { Capacitor } from "@capacitor/core";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -19,6 +20,15 @@ export const Route = createFileRoute("/login")({
         : "/",
   }),
   component: LoginPage,
+  head: () =>
+    pageSeo({
+      // Sign-in is a private flow: noindex, and kept out of the sitemap.
+      title: "Sign In | SEEK",
+      description:
+        "Sign in to SEEK to sync your saved King James Bible verses across your devices.",
+      path: "/login",
+      noindex: true,
+    }),
 });
 
 type Mode = "signin" | "create";

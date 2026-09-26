@@ -2,9 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Apple, Download, Monitor, Smartphone } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppInstallButton, useInstall } from "@/components/install-provider";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/download")({
   component: DownloadPage,
+  head: () =>
+    pageSeo({
+      title: "Download SEEK — Install the Bible App | SEEK",
+      description:
+        "Install SEEK as an app on Windows, Android, iPhone or iPad — a real app window with its own icon for searching and reading the King James Bible.",
+      path: "/download",
+    }),
 });
 
 function usePlatform() {

@@ -11,6 +11,7 @@ import { bookByName, formatRef } from "@/lib/bible/meta";
 import { getVerse, type IndexedVerse } from "@/lib/bible/load";
 import { useSeekStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
+import { pageSeo } from "@/lib/seo";
 import { Compass } from "lucide-react";
 
 type Tab = "all" | "wording" | "meaning";
@@ -20,12 +21,25 @@ export const Route = createFileRoute("/search")({
     q: typeof search.q === "string" ? search.q : "",
   }),
   component: SearchPage,
-  head: () => ({
-    meta: [
-      { title: "Search | Seek" },
-      { name: "robots", content: "noindex, follow" },
-    ],
-  }),
+  head: ({ match }) => {
+    // Search results are generated from a query string, so there are effectively
+    // unbounded URLs (?q=love, ?q=love&page=2, typo variants…). They are transient
+    // user states with no standalone value, so they are `noindex` but still
+    // `follow` and canonical to the bare /search endpoint — the query is never
+    // canonicalised, which would otherwise create one indexable URL per query.
+    const raw = (match.search as { q?: unknown } | undefined)?.q;
+    const term = typeof raw === "string" ? raw.trim().slice(0, 60) : "";
+    return pageSeo({
+      title: term
+        ? `“${term}” — Search the King James Bible | SEEK`
+        : "Search the King James Bible | SEEK",
+      description: term
+        ? `King James Bible verses matching “${term}” — searched by exact wording and by meaning.`
+        : "Search the King James Bible (KJV) by exact wording or by meaning — find the verse you half-remember.",
+      path: "/search",
+      noindex: true,
+    });
+  },
 });
 
 function SearchPage() {

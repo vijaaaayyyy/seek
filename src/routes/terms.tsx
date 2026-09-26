@@ -1,7 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { InfoPage } from "@/components/info-page";
+import { pageSeo } from "@/lib/seo";
 
-export const Route = createFileRoute("/terms")({ component: Terms });
+export const Route = createFileRoute("/terms")({
+  component: Terms,
+  head: () =>
+    pageSeo({
+      title: "Terms of Use | SEEK",
+      description:
+        "The terms for using SEEK, the free King James Bible search and reading website. Plain language, no warranty, and how to get in touch.",
+      path: "/terms",
+    }),
+});
 
 function Terms() {
   return (

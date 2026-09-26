@@ -3,21 +3,17 @@ import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { BookWall } from "@/components/book-grid";
 import { NT_BOOKS, OT_BOOKS, type BookMeta } from "@/lib/bible/meta";
-import { CANONICAL_ORIGIN } from "@/lib/seo";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/books")({
   component: BooksPage,
-  head: () => ({
-    meta: [
-      { title: "Books — All 66 Books of the King James Bible | Seek" },
-      {
-        name: "description",
-        content:
-          "Browse all 66 books of the King James Bible — Genesis to Revelation. Straight to Genesis, Psalms, John, Romans, and more.",
-      },
-    ],
-    links: [{ rel: "canonical", href: `${CANONICAL_ORIGIN}/books` }],
-  }),
+  head: () =>
+    pageSeo({
+      title: "All 66 Books of the King James Bible | SEEK",
+      description:
+        "Browse all 66 books of the King James Bible (KJV) — Genesis to Revelation. Open any book and read every chapter free, online.",
+      path: "/books",
+    }),
 });
 
 function BooksPage() {

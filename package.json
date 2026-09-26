@@ -1,5 +1,5 @@
 {
-  "name": "app-builder-workspace",
+  "name": "seek",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -100,5 +100,6 @@
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.56.1",
     "vite": "^8.2.0"
-  }
+  },
+  "version": "14.5.6"
 }

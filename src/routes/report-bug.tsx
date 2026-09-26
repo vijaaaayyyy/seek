@@ -1,8 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Bug, Mail } from "lucide-react";
 import { InfoPage } from "@/components/info-page";
+import { pageSeo } from "@/lib/seo";
 
-export const Route = createFileRoute("/report-bug")({ component: ReportBug });
+export const Route = createFileRoute("/report-bug")({
+  component: ReportBug,
+  head: () =>
+    pageSeo({
+      title: "Report a Bug | SEEK",
+      description:
+        "Found a problem with SEEK? Tell us what happened and which device and browser you were using, and we will fix it.",
+      path: "/report-bug",
+    }),
+});
 
 const EMAIL = "vijay.peddenti434@gmail.com";
 

@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supa/client";
 import { App } from "@capacitor/app";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/auth/callback")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -13,6 +14,14 @@ export const Route = createFileRoute("/auth/callback")({
         : undefined,
   }),
   component: AuthCallbackPage,
+  head: () =>
+    pageSeo({
+      // Transient OAuth hand-off — must never be indexed or linked.
+      title: "Signing In | SEEK",
+      description: "Completing sign-in to SEEK.",
+      path: "/auth/callback",
+      noindex: true,
+    }),
 });
 
 function AuthCallbackPage() {

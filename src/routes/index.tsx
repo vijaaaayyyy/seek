@@ -4,17 +4,14 @@ import { useSeekStore } from "@/lib/store";
 import { useCurrentUserState } from "@/lib/supa/use-current-user";
 import {
   ArrowRight,
-  BookOpen,
-  Bookmark,
   ChevronRight,
   Clock,
   Heart,
-  Moon,
   Search,
-  Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CANONICAL_ORIGIN } from "@/lib/seo";
+import { canonical, siteStructuredData } from "@/lib/seo";
+import { APP_VERSION_LABEL } from "@/lib/version";
 
 const CONTACT_EMAIL = "vijay.peddenti434@gmail.com";
 
@@ -70,31 +67,16 @@ export const Route = createFileRoute("/")({
   component: Home,
   head: () => ({
     meta: [
-      {
-        title: "Seek — Read & Search the King James Bible by Meaning",
-      },
+      { title: "SEEK — Bible Search & Scripture Discovery" },
       {
         name: "description",
         content:
-          "The whole King James Bible. Search by a half-remembered word, a fragment, or the meaning you meant — love, mercy, grace, sacrifice. All 66 books, 1,189 chapters.",
+          "Search and read the King James Bible on SEEK. Find a verse by a half-remembered word, a fragment, or the meaning you meant — all 66 books, 1,189 chapters, free.",
       },
-      {
-        "script:ld+json": {
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: "Seek",
-          url: CANONICAL_ORIGIN,
-          description:
-            "Read and search the King James Bible by meaning — a verse, a fragment, or the longing behind the word.",
-          potentialAction: {
-            "@type": "SearchAction",
-            target: { "@type": "EntryPoint", urlTemplate: `${CANONICAL_ORIGIN}/search?q={search_term_string}` },
-            "query-input": "required name=search_term_string",
-          },
-        },
-      },
+      { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
+      { "script:ld+json": siteStructuredData() },
     ],
-    links: [{ rel: "canonical", href: `${CANONICAL_ORIGIN}/` }],
+    links: [{ rel: "canonical", href: canonical("/") }],
   }),
 });
 
@@ -107,8 +89,6 @@ function LeafMark({ className }: { className?: string }) {
   );
 }
 
-const tile =
-  "rounded-3xl bg-surface p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:bg-white/[0.03]";
 const linkTile =
   "rounded-3xl bg-surface p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_28px_rgba(0,0,0,0.09)] dark:bg-white/[0.03] dark:hover:bg-white/5";
 
@@ -244,7 +224,7 @@ function Home() {
             <section className="mt-28">
               <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
                 <div className="lg:col-span-5">
-                  <span className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest">01 · Seek by the heart</span>
+                  <span className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest">01 · SEEK by the heart</span>
                   <h2 className="mt-4 font-serif text-[2.1rem] leading-[1.12] font-medium text-ink sm:text-[2.6rem]">What's on your heart?</h2>
                   <p className="mt-3 font-sans text-[14px] leading-relaxed text-muted">
                     Mercy, grace, hope — or the longing beneath them. SEEK finds the verses that answer the feeling behind the word.
@@ -324,7 +304,7 @@ function Home() {
             )}
 
             <section className="mt-16 rounded-3xl bg-surface px-8 py-10 text-center dark:bg-white/[0.03]">
-              <h2 className="font-serif text-[1.8rem] font-medium">Come and see</h2>
+              <h2 className="font-serif text-[1.8rem] font-medium">COME & SEE</h2>
               <p className="mx-auto mt-2 max-w-md font-sans text-[14px] text-muted">Open the King James Bible. Search the love of God, His mercy, and the sacrifice of Christ.</p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
                 <Link to="/books" className="inline-flex h-10 items-center rounded-full bg-ink px-6 font-sans text-[13px] font-medium text-paper dark:bg-[#f5f0e8] dark:text-[#0c0d12]">Browse books</Link>
@@ -334,41 +314,171 @@ function Home() {
               </div>
             </section>
 
-            <footer id="about" className="relative mt-20 overflow-hidden border-t border-line/60 pt-16 pb-28 sm:pb-32">
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-x-0 bottom-0 z-0 flex h-[7.5rem] items-end justify-center overflow-hidden sm:h-[9.5rem]"
-              >
-                <span className="max-w-[100vw] translate-y-[48%] font-serif text-[clamp(6.5rem,28vw,12rem)] leading-none font-medium tracking-[0.02em] text-ink/15 dark:text-[#f5f0e8]/35">
-                  SEEK
-                </span>
-              </div>
-
-              <div className="relative z-10 mx-auto flex max-w-lg flex-col items-center pb-6 text-center">
-                <div className="flex items-center gap-2 text-forest">
-                  <LeafMark className="size-4" />
+            <footer id="about" className="relative mt-20 border-t border-line/60 pt-16">
+              <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center px-5 text-center sm:px-6">
+                <Link to="/" className="inline-flex items-center gap-2">
+                  <LeafMark className="size-4 text-forest" />
                   <span className="font-serif text-[1.15rem] tracking-[0.06em] text-ink">SEEK</span>
+                </Link>
+
+                <p className="mt-5 max-w-md font-sans text-[14px] leading-relaxed text-muted">
+                  A quiet place to search and read the King James Bible — the love of
+                  God, His mercy, the sacrifice of Christ, and agape.
+                </p>
+
+                <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 font-sans text-[12.5px] text-muted">
+                  <li>King James Version (KJV), 1611</li>
+                  <li aria-hidden className="text-muted/50">·</li>
+                  <li>66 books · 1,189 chapters · 31,102 verses</li>
+                  <li aria-hidden className="text-muted/50">·</li>
+                  <li>Free — no ads, no trackers, no paywall</li>
+                </ul>
+
+                <p className="mt-3 font-sans text-[13px] text-muted">
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="text-ink/80 underline-offset-4 hover:underline"
+                  >
+                    {CONTACT_EMAIL}
+                  </a>
+                </p>
+
+                <div className="mt-12 grid w-full gap-9 sm:grid-cols-3 sm:gap-6">
+                  <div>
+                    <h2 className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest uppercase">
+                      Read
+                    </h2>
+                    <ul className="mt-4 space-y-2.5 font-sans text-[13px] text-muted">
+                      <li>
+                        <Link to="/books" className="transition-colors hover:text-ink">
+                          All 66 books
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/read/$book/$chapter" params={{ book: "genesis", chapter: "1" }} search={{ q: undefined }} className="transition-colors hover:text-ink">
+                          Genesis
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/read/$book/$chapter" params={{ book: "psalms", chapter: "1" }} search={{ q: undefined }} className="transition-colors hover:text-ink">
+                          Psalms
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/read/$book/$chapter" params={{ book: "john", chapter: "3" }} search={{ q: undefined }} className="transition-colors hover:text-ink">
+                          John
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/read/$book/$chapter" params={{ book: "romans", chapter: "8" }} search={{ q: undefined }} className="transition-colors hover:text-ink">
+                          Romans
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/read/$book/$chapter" params={{ book: "revelation", chapter: "1" }} search={{ q: undefined }} className="transition-colors hover:text-ink">
+                          Revelation
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h2 className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest uppercase">
+                      SEEK
+                    </h2>
+                    <ul className="mt-4 space-y-2.5 font-sans text-[13px] text-muted">
+                      <li>
+                        <Link to="/search" search={{ q: "" }} className="transition-colors hover:text-ink">
+                          Search the Bible
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/explore" className="transition-colors hover:text-ink">
+                          Explore topics
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/saved" className="transition-colors hover:text-ink">
+                          Saved verses
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/download" className="transition-colors hover:text-ink">
+                          Download the app
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h2 className="font-sans text-[11px] font-semibold tracking-[0.18em] text-forest uppercase">
+                      About
+                    </h2>
+                    <ul className="mt-4 space-y-2.5 font-sans text-[13px] text-muted">
+                      <li>
+                        <Link to="/about" className="transition-colors hover:text-ink">
+                          About SEEK
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/pricing" className="transition-colors hover:text-ink">
+                          Pricing
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/faq" className="transition-colors hover:text-ink">
+                          FAQ
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/changelog" className="transition-colors hover:text-ink">
+                          Changelog
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/privacy" className="transition-colors hover:text-ink">
+                          Privacy
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/terms" className="transition-colors hover:text-ink">
+                          Terms
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
 
-                <p className="mt-5 max-w-sm font-sans text-[14px] leading-relaxed text-muted">
-                  A quiet place to search and read the King James Bible — the love of God, His mercy, the sacrifice of Christ, and agape.
-                </p>
+                <div className="mt-12 w-full border-t border-line/60 pt-6">
+                  <p className="font-sans text-[11.5px] tracking-[0.04em] text-muted/80">
+                    © {new Date().getFullYear()} SEEK · King James Version (1611) is
+                    public domain
+                  </p>
+                  <p className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 font-sans text-[12.5px] text-muted">
+                    <Link to="/report-bug" className="transition-colors hover:text-ink">
+                      Report a bug
+                    </Link>
+                    <Link to="/groups" className="transition-colors hover:text-ink">
+                      Groups &amp; classes
+                    </Link>
+                    <Link
+                      to="/changelog"
+                      className="transition-colors hover:text-ink"
+                      aria-label={`SEEK ${APP_VERSION_LABEL} — what changed`}
+                    >
+                      {APP_VERSION_LABEL}
+                    </Link>
+                  </p>
+                </div>
+              </div>
 
-                <nav className="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-sans text-[13px] text-ink/80">
-                  <Link to="/books" className="transition-colors hover:text-forest">Bible</Link>
-                  <Link to="/saved" className="transition-colors hover:text-forest">Saved</Link>
-                  <Link to="/download" className="transition-colors hover:text-forest">Download</Link>
-                  <a href={`mailto:${CONTACT_EMAIL}`} className="transition-colors hover:text-forest">Contact</a>
-                  <a href={`mailto:${CONTACT_EMAIL}?subject=SEEK%20bug%20report`} className="transition-colors hover:text-forest">Report a bug</a>
-                </nav>
-
-                <p className="mt-4 font-sans text-[13px] text-muted">
-                  <a href={`mailto:${CONTACT_EMAIL}`} className="underline-offset-4 hover:underline">{CONTACT_EMAIL}</a>
-                </p>
-
-                <p className="mt-8 font-sans text-[11.5px] tracking-[0.04em] text-muted/80">
-                  © {new Date().getFullYear()} SEEK · KJV public domain
-                </p>
+              <div
+                aria-hidden
+                className="relative z-0 mt-14 flex w-full justify-center overflow-hidden px-2 pb-28 lg:pb-0"
+              >
+                <span className="seek-wordmark-fade select-none font-serif text-[clamp(3.5rem,34vw,24rem)] leading-[0.85] font-medium tracking-[0.01em] text-ink/25 dark:text-[#f5f0e8]/45">
+                  SEEK
+                </span>
               </div>
             </footer>
           </div>

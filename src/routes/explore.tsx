@@ -12,9 +12,20 @@ import {
 } from "lucide-react";
 import { useSeekStore } from "@/lib/store";
 import { useSaved } from "@/components/saved-provider";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/explore")({
   component: ExplorePage,
+  head: () =>
+    pageSeo({
+      // Personalised from the visitor's own recent searches, so it is never a
+      // distinct indexable document — but it stays crawlable and canonical.
+      title: "Explore | SEEK",
+      description:
+        "Pick up where you left off in the King James Bible: your recent searches, suggested passages, and saved verses.",
+      path: "/explore",
+      noindex: true,
+    }),
 });
 
 const RELATED: Record<string, string[]> = {

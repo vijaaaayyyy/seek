@@ -13,7 +13,8 @@ import { SavePrompt } from "@/components/save-prompt";
 import { InstallProvider } from "@/components/install-provider";
 import appCss from "../styles.css?url";
 
-const APP_NAME = "Seek";
+const APP_NAME = "SEEK";
+const DEFAULT_TITLE = "SEEK — Bible Search & Scripture Discovery";
 const THEME_BOOT = `(function(){try{var k="seek-theme";var t=localStorage.getItem(k);if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}var r=document.documentElement;r.classList.toggle("dark",t==="dark");var home=location.pathname==="/"||location.pathname==="";var darkSurface=home||t==="dark";r.style.colorScheme=darkSurface?"dark":"light";if(document.body)document.body.style.colorScheme=darkSurface?"dark":"light";var color=darkSurface?"#0c0d12":"#f7f5f0";document.querySelectorAll('meta[name="theme-color"]').forEach(function(el){el.remove()});function add(c,m){var el=document.createElement("meta");el.setAttribute("name","theme-color");el.setAttribute("content",c);if(m)el.setAttribute("media",m);document.head.appendChild(el)}add(color);add(color,"(prefers-color-scheme: light)");add(color,"(prefers-color-scheme: dark)");var s=document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');if(s)s.setAttribute("content",darkSurface?"black-translucent":"default");if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){})}}catch(e){}})();`;
 
 export const Route = createRootRoute({
@@ -24,7 +25,7 @@ export const Route = createRootRoute({
         name: "viewport",
         content: "width=device-width, initial-scale=1, viewport-fit=cover",
       },
-      { title: APP_NAME },
+      { title: DEFAULT_TITLE },
       {
         name: "description",
         content:

@@ -15,8 +15,19 @@ import { useTheme } from "@/components/theme-provider";
 import { authEnabled, signOut } from "@/lib/supa/client";
 import { useCurrentUserState } from "@/lib/supa/use-current-user";
 import { cn } from "@/lib/utils";
+import { pageSeo } from "@/lib/seo";
 
-export const Route = createFileRoute("/profile")({ component: ProfilePage });
+export const Route = createFileRoute("/profile")({
+  component: ProfilePage,
+  head: () =>
+    pageSeo({
+      // Private account page — never indexed.
+      title: "Your Profile | SEEK",
+      description: "Your SEEK account, saved verses, and reading preferences.",
+      path: "/profile",
+      noindex: true,
+    }),
+});
 
 type Row = {
   label: string;

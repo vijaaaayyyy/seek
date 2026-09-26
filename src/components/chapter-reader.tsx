@@ -12,7 +12,7 @@ import { Highlighted } from "@/components/highlighted";
 import { ReadingModeToggle } from "@/components/reading-mode-toggle";
 import { useSaved } from "@/components/saved-provider";
 import { useBible } from "@/components/bible-provider";
-import { BOOKS, formatRef, type BookMeta } from "@/lib/bible/meta";
+import { BOOKS, type BookMeta } from "@/lib/bible/meta";
 import { getChapter, type IndexedVerse } from "@/lib/bible/load";
 import { cn } from "@/lib/utils";
 
@@ -177,6 +177,16 @@ export function ChapterReader({
 
   return (
     <div className="relative pb-8">
+      {/*
+        The reader is one continuous scroll, so each chapter label is a plain
+        <p> and no visible element can own the page heading. This is that
+        heading: hidden visually, present for screen readers, crawlers and
+        anyone reading the page as plain text.
+      */}
+      <h1 className="sr-only">
+        {book.name} {chapter} — King James Bible
+      </h1>
+
       <div className="sticky top-0 z-20 -mx-1 mt-0.5 mb-1 px-1 pb-2 pt-1 sm:px-1.5">
         <div className="glass glass-strong flex items-center justify-between gap-2 rounded-[22px] py-1.5 pr-1.5 pl-1 shadow-sm">
           <div className="min-w-0">

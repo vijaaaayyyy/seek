@@ -239,9 +239,12 @@ export function AppShell({ children }: { children: ReactNode }) {
 
           <main
             className={cn(
-              "hide-scrollbar min-h-0 w-full flex-1 overflow-x-hidden overflow-y-auto px-4 pt-16 pb-28",
-              isRead && "px-0 pt-16",
-              isHome && "px-0 pt-0 pb-28",
+              "hide-scrollbar min-h-0 w-full flex-1 overflow-x-hidden overflow-y-auto px-4 pt-16",
+              isRead ? "px-0 pt-16 pb-28" : null,
+              // Home ends on the opaque paper footer, which carries its own bottom
+              // clearance for the fixed nav. A transparent pb-28 here would let the
+              // fixed `.forest-melt` hero image show through the gap at page bottom.
+              isHome ? "px-0 pt-0 pb-0" : "pb-28",
             )}
           >
             {children}

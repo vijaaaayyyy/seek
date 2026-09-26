@@ -10,12 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as BooksRouteImport } from './routes/books'
 import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as DownloadRouteImport } from './routes/download'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as GroupsRouteImport } from './routes/groups'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -31,6 +33,11 @@ import { Route as ReadBookChapterRouteImport } from './routes/read.$book.$chapte
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BooksRoute = BooksRouteImport.update({
@@ -61,6 +68,11 @@ const ExploreRoute = ExploreRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GroupsRoute = GroupsRouteImport.update({
+  id: '/groups',
+  path: '/groups',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -121,12 +133,14 @@ const ReadBookChapterRoute = ReadBookChapterRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/books': typeof BooksRoute
   '/changelog': typeof ChangelogRoute
   '/demo': typeof DemoRoute
   '/download': typeof DownloadRoute
   '/explore': typeof ExploreRoute
   '/faq': typeof FaqRoute
+  '/groups': typeof GroupsRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
@@ -141,12 +155,14 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/books': typeof BooksRoute
   '/changelog': typeof ChangelogRoute
   '/demo': typeof DemoRoute
   '/download': typeof DownloadRoute
   '/explore': typeof ExploreRoute
   '/faq': typeof FaqRoute
+  '/groups': typeof GroupsRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
@@ -162,12 +178,14 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/books': typeof BooksRoute
   '/changelog': typeof ChangelogRoute
   '/demo': typeof DemoRoute
   '/download': typeof DownloadRoute
   '/explore': typeof ExploreRoute
   '/faq': typeof FaqRoute
+  '/groups': typeof GroupsRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
@@ -184,12 +202,14 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/books'
     | '/changelog'
     | '/demo'
     | '/download'
     | '/explore'
     | '/faq'
+    | '/groups'
     | '/login'
     | '/pricing'
     | '/privacy'
@@ -204,12 +224,14 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/books'
     | '/changelog'
     | '/demo'
     | '/download'
     | '/explore'
     | '/faq'
+    | '/groups'
     | '/login'
     | '/pricing'
     | '/privacy'
@@ -224,12 +246,14 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/books'
     | '/changelog'
     | '/demo'
     | '/download'
     | '/explore'
     | '/faq'
+    | '/groups'
     | '/login'
     | '/pricing'
     | '/privacy'
@@ -245,12 +269,14 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   BooksRoute: typeof BooksRoute
   ChangelogRoute: typeof ChangelogRoute
   DemoRoute: typeof DemoRoute
   DownloadRoute: typeof DownloadRoute
   ExploreRoute: typeof ExploreRoute
   FaqRoute: typeof FaqRoute
+  GroupsRoute: typeof GroupsRoute
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -271,6 +297,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/books': {
@@ -313,6 +346,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/groups': {
+      id: '/groups'
+      path: '/groups'
+      fullPath: '/groups'
+      preLoaderRoute: typeof GroupsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -397,12 +437,14 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   BooksRoute: BooksRoute,
   ChangelogRoute: ChangelogRoute,
   DemoRoute: DemoRoute,
   DownloadRoute: DownloadRoute,
   ExploreRoute: ExploreRoute,
   FaqRoute: FaqRoute,
+  GroupsRoute: GroupsRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,

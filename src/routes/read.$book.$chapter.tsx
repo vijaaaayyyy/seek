@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, notFound, useRouterState } from "@tanstack/react-router";
 import { BookReader } from "@/components/book-reader";
 import { ChapterReader } from "@/components/chapter-reader";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -6,66 +6,100 @@ import { useBible } from "@/components/bible-provider";
 import { bookBySlug } from "@/lib/bible/meta";
 import { getChapter, normalize } from "@/lib/bible/load";
 import { useSeekStore } from "@/lib/store";
-import { CANONICAL_ORIGIN } from "@/lib/seo";
+import { CANONICAL_ORIGIN, canonical } from "@/lib/seo";
 
 export const Route = createFileRoute("/read/$book/$chapter")({
   validateSearch: (search: Record<string, unknown>) => ({
     q: typeof search.q === "string" ? search.q : undefined,
   }),
+  // Validation lives in a loader, not in the component. Throwing `notFound()`
+  // during render makes the server abandon SSR and stream a 200 with an empty
+  // body — a soft-404 that crawlers index and visitors see as a blank page. From
+  // a loader, the router renders the NotFound route *and* the response status is
+  // a real 404, with the not-found page fully server-rendered.
+  loader: ({ params }) => {
+    const book = bookBySlug(params.book);
+    const chapter = Number(params.chapter);
+    if (
+      !book ||
+      !Number.isInteger(chapter) ||
+      chapter < 1 ||
+      chapter > book.chapters.length
+    ) {
+      throw notFound();
+    }
+  },
   component: ReadPage,
   head: ({ params }) => {
     const book = bookBySlug(params.book);
     const chapter = Number(params.chapter);
-    const valid = !!book && Number.isFinite(chapter) && chapter >= 1 && chapter <= book.chapters.length;
-    const title = valid
-      ? `${book.name} ${chapter} — Read the KJV Bible | Seek`
-      : "Seek — Read & Search the King James Bible";
-    const description = valid
-      ? `${book.name} ${chapter} of the King James Bible. Read the full chapter online and search by meaning.`
-      : "The whole King James Bible. Search by a half-remembered word, a fragment, or the meaning you meant.";
-    const href = valid ? `${CANONICAL_ORIGIN}/read/${book.slug}/${chapter}` : `${CANONICAL_ORIGIN}/`;
+    const valid = !!book && Number.isInteger(chapter) && chapter >= 1 && chapter <= book.chapters.length;
+
+    // A reference that is not in the Bible gets a real 404 from the loader, so
+    // it must never be indexed and must not canonicalise anywhere — least of
+    // all to the homepage.
+    if (!valid || !book) {
+      return {
+        meta: [
+          { title: "Page Not Found | SEEK" },
+          { name: "robots", content: "noindex, follow" },
+        ],
+        links: [],
+      };
+    }
+
+    const title = `${book.name} ${chapter} — King James Bible | SEEK`;
+    const description = `Read ${book.name} ${chapter} of the King James Bible (KJV) online, free. All ${book.chapters.length} chapters of ${book.name} in the 1611 Authorized Version.`;
+    const href = canonical(`/read/${book.slug}/${chapter}`);
 
     return {
       meta: [
         { title },
         { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:url", content: href },
-        { property: "og:type", content: "article" },
-        ...(valid
-          ? ([
-              {
-                "script:ld+json": {
-                  "@context": "https://schema.org",
-                  "@type": "BreadcrumbList",
-                  itemListElement: [
-                    { "@type": "ListItem", position: 1, name: "Seek", item: `${CANONICAL_ORIGIN}/` },
-                    {
-                      "@type": "ListItem",
-                      position: 2,
-                      name: book.name,
-                      item: `${CANONICAL_ORIGIN}/read/${book.slug}/1`,
-                    },
-                    { "@type": "ListItem", position: 3, name: `Chapter ${chapter}`, item: href },
-                  ],
-                },
+        { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
+        // `Chapter` is not a schema.org type — using it produced markup no
+        // consumer could interpret. The page is a `WebPage`; the thing it is
+        // about is a `Book`, and the KJV itself is the containing `Book`.
+        {
+          "script:ld+json": {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            name: `${book.name} ${chapter} — King James Bible`,
+            url: href,
+            description,
+            inLanguage: "en",
+            isPartOf: { "@type": "WebSite", name: "SEEK", url: `${CANONICAL_ORIGIN}/` },
+            mainEntityOfPage: {
+              "@type": "Book",
+              name: `${book.name} (King James Bible)`,
+              url: href,
+              bookFormat: "https://schema.org/EBook",
+              inLanguage: "en",
+              isPartOf: {
+                "@type": "Book",
+                name: "King James Bible (KJV)",
+                url: `${CANONICAL_ORIGIN}/books`,
               },
+            },
+          },
+        },
+        {
+          "script:ld+json": {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "SEEK", item: `${CANONICAL_ORIGIN}/` },
+              { "@type": "ListItem", position: 2, name: "Books", item: `${CANONICAL_ORIGIN}/books` },
               {
-                "script:ld+json": {
-                  "@context": "https://schema.org",
-                  "@type": "Chapter",
-                  name: `${book.name} ${chapter}`,
-                  isPartOf: {
-                    "@type": "Book",
-                    name: `${book.name} (King James Bible)`,
-                  },
-                  url: href,
-                },
+                "@type": "ListItem",
+                position: 3,
+                name: `${book.name} ${chapter}`,
+                item: href,
               },
-            ] as Array<Record<string, unknown>>)
-          : []),
-      ],
+            ],
+          },
+        },
+      ] as Array<Record<string, unknown>>,
       links: [{ rel: "canonical", href }],
     };
   },
@@ -80,22 +114,10 @@ function ReadPage() {
   const book = bookBySlug(slug);
   const chapter = Number(chapterParam);
 
-  if (!book || !Number.isFinite(chapter) || chapter < 1 || chapter > book.chapters.length) {
-    return (
-      <div className="pt-10 text-center">
-        <h1 className="font-serif text-3xl">That place is not in this Bible</h1>
-        <p className="mt-2 font-sans text-sm text-muted">
-          Check the book name and chapter, or return to the list.
-        </p>
-        <Link
-          to="/books"
-          className="mt-6 inline-flex h-11 items-center rounded-full bg-ink px-5 font-sans text-sm text-paper"
-        >
-          Browse books
-        </Link>
-      </div>
-    );
-  }
+  // The loader above has already rejected invalid references with a real 404,
+  // so by the time we render, both of these are sound. The guard is kept as a
+  // type-narrowing assertion, not as a second source of truth.
+  if (!book) throw notFound();
 
   if (error) {
     return <p className="pt-16 text-center font-sans text-sm text-muted">{error}</p>;

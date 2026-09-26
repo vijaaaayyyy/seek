@@ -1,7 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { InfoPage } from "@/components/info-page";
+import { pageSeo } from "@/lib/seo";
 
-export const Route = createFileRoute("/privacy")({ component: Privacy });
+export const Route = createFileRoute("/privacy")({
+  component: Privacy,
+  head: () =>
+    pageSeo({
+      title: "Privacy Notice | SEEK",
+      description:
+        "What SEEK does and does not collect. No advertising, no tracking, no analytics. Your searches stay on your device; only a sign-in and the verses you save are stored.",
+      path: "/privacy",
+    }),
+});
 
 function Privacy() {
   return (
@@ -18,6 +28,7 @@ function Privacy() {
               <li>No tracking or analytics scripts on your device.</li>
               <li>No reading habits sold, shared, or studied.</li>
               <li>No accounts or emails required to simply read.</li>
+              <li>No advertising trackers, pixels, or third-party scripts.</li>
             </ul>
           ),
         },
@@ -25,8 +36,9 @@ function Privacy() {
           title: "What stays on your device",
           body: (
             <p>
-              Your searches, recent searches, and any verses you save locally remain on your device.
-              We never see them unless you choose to sign in and sync.
+              Your searches and recent searches stay on your device. We never receive
+              them, and we never see them — not even in aggregate, because we run no
+              analytics.
             </p>
           ),
         },
@@ -34,9 +46,12 @@ function Privacy() {
           title: "When you sign in",
           body: (
             <p>
-              Signing in lets your saved verses sync across your devices. We store only what makes that
-              possible: your sign-in identity and the verses you choose to save. You can delete your
-              saved verses at any time, and removing your sign-in erases them from our systems.
+              Reading never needs an account. Saving verses does: tapping save asks you
+              to sign in, and your saved verses are then stored in our database so they
+              can follow you to any device you sign in on. We store only what makes that
+              possible: your sign-in identity and the verses you choose to save — up to
+              200. You can delete a saved verse at any time, and deleting your account
+              erases your saved verses from our systems.
             </p>
           ),
         },
@@ -44,8 +59,8 @@ function Privacy() {
           title: "Email & contact",
           body: (
             <p>
-              If you contact us (reporting a bug, booking a demo, or writing to us), we use your message
-              only to respond. It is never shared.
+              If you contact us (reporting a bug, or writing to us about your group), we
+              use your message only to respond. It is never shared.
             </p>
           ),
         },
