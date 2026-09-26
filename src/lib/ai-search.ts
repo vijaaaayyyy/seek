@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { BOOKS } from "@/data/books";
+import { MEANING_UNAVAILABLE_MESSAGE, readGeminiKey } from "./gemini-key";
 
 export type MeaningHit = {
   book: string;
@@ -100,12 +101,15 @@ export const searchByMeaning = createServerFn({ method: "POST" })
     if (cached) return cached;
 
     const prompt = buildPrompt(query);
-    const geminiKey = process.env.GEMINI_API_KEY?.trim();
-    if (!geminiKey) {
-      return { ok: false, error: "Meaning search is unavailable right now." };
+    const geminiKey = readGeminiKey();
+    if (!geminiKey.ok) {
+      // A server misconfiguration is not the visitor's problem: keep the reason
+      // in the logs and let wording search carry the page.
+      console.info(`[meaning-search] gemini key unusable: ${geminiKey.reason}`);
+      return { ok: false, error: MEANING_UNAVAILABLE_MESSAGE };
     }
 
-    const result = await askGemini(prompt, geminiKey);
+    const result = await askGemini(prompt, geminiKey.key);
     if (result?.ok) {
       if (cache.size > 80) cache.clear();
       cache.set(key, result);
@@ -167,12 +171,18 @@ async function askGemini(prompt: string, apiKey: string): Promise<MeaningRespons
   for (const model of models) {
     const compat = await callGeminiCompat(prompt, apiKey, model);
     if (compat.kind === "ok") return compat.response;
-    if (compat.kind === "stop") return { ok: false, error: compat.message };
+    if (compat.kind === "stop") {
+      console.info(`[meaning-search] stopped on compat/${model}: ${compat.reason}`);
+      return { ok: false, error: compat.message };
+    }
     failures.push(`compat:${compat.reason}`);
 
     const rest = await callGeminiRest(prompt, apiKey, model);
     if (rest.kind === "ok") return rest.response;
-    if (rest.kind === "stop") return { ok: false, error: rest.message };
+    if (rest.kind === "stop") {
+      console.info(`[meaning-search] stopped on rest/${model}: ${rest.reason}`);
+      return { ok: false, error: rest.message };
+    }
     failures.push(`rest:${rest.reason}`);
   }
   console.info("[meaning-search] all models failed:", failures.join(" | "));
@@ -181,7 +191,7 @@ async function askGemini(prompt: string, apiKey: string): Promise<MeaningRespons
 
 type GeminiCallResult =
   | { kind: "ok"; response: MeaningResponse }
-  | { kind: "stop"; message: string }
+  | { kind: "stop"; message: string; reason: string }
   | { kind: "next"; reason: string };
 
 async function callGeminiCompat(
@@ -242,15 +252,26 @@ async function classifyGeminiResponse(
   if (res.status === 401 || res.status === 403) {
     return {
       kind: "stop",
-      message: "The Gemini API key is invalid or has no access. Please update it and try again.",
+      message: "Meaning search is unavailable right now. Word matches still work.",
+      reason: "gemini rejected the key (401/403 — revoked, expired, or no API access)",
     };
   }
   if (res.status === 400) {
     const detail = await res.text().catch(() => "");
+    // A key problem and a model problem both arrive as 400. Only the former
+    // should stop the chain, and neither should be blamed on the visitor.
     if (/api key not valid|API_KEY_INVALID/i.test(detail)) {
       return {
         kind: "stop",
-        message: "The Gemini API key is invalid or expired. Please update it and try again.",
+        message: "Meaning search is unavailable right now. Word matches still work.",
+        reason: "gemini reported the key as invalid (API_KEY_INVALID)",
+      };
+    }
+    if (/API key not valid|API_KEY_INVALID|API_KEY/i.test(detail)) {
+      return {
+        kind: "stop",
+        message: "Meaning search is unavailable right now. Word matches still work.",
+        reason: "gemini rejected the key on a 400",
       };
     }
     return { kind: "next", reason: `${model} is unavailable` };
@@ -277,11 +298,19 @@ async function classifyGeminiResponse(
     body.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ??
     "";
   if (!text.trim()) {
-    return { kind: "stop", message: `Meaning search returned an empty answer (${model}).` };
+    return {
+      kind: "stop",
+      message: MEANING_UNAVAILABLE_MESSAGE,
+      reason: `${model} returned an empty answer`,
+    };
   }
   const parsed = parseModelJson(text);
   if (!parsed) {
-    return { kind: "stop", message: `Meaning search returned an unexpected answer (${model}).` };
+    return {
+      kind: "stop",
+      message: MEANING_UNAVAILABLE_MESSAGE,
+      reason: `${model} returned an unparseable answer`,
+    };
   }
   return { kind: "ok", response: normalizeResults(parsed) };
 }

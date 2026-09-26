@@ -11,6 +11,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { SavePrompt } from "@/components/save-prompt";
 import { InstallProvider } from "@/components/install-provider";
+import { LenisProvider } from "@/components/lenis-provider";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "SEEK";
@@ -115,9 +116,11 @@ function RootComponent() {
             <BibleProvider>
               <SavedProvider>
                 <InstallProvider>
-                  <AppShell>
-                    <Outlet />
-                  </AppShell>
+                  <LenisProvider>
+                    <AppShell>
+                      <Outlet />
+                    </AppShell>
+                  </LenisProvider>
                   <Toaster />
                   <SavePrompt />
                 </InstallProvider>

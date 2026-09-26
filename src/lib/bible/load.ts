@@ -108,3 +108,31 @@ export function getChapter(
 ): IndexedVerse[] {
   return bible.verses.filter((v) => v.bookIndex === bookIndex && v.chapter === chapter);
 }
+
+/**
+ * Reader-shaped verses from raw chapter text, for the server-rendered first
+ * paint of a chapter URL.
+ *
+ * `i` is synthetic here because the global verse index only exists once the
+ * whole Bible has been indexed, and this path deliberately does not wait for
+ * that. It only has to be unique and stable: it is used as a React key and to
+ * dedupe search hits, never as a lookup into an array.
+ */
+export function toIndexedVerses(
+  bookIndex: number,
+  chapter: number,
+  texts: string[],
+): IndexedVerse[] {
+  return texts.map((text, vi) => {
+    const norm = normalize(text);
+    return {
+      i: bookIndex * 1_000_000 + chapter * 1_000 + (vi + 1),
+      bookIndex,
+      chapter,
+      verse: vi + 1,
+      text,
+      norm,
+      words: norm.split(" ").filter(Boolean),
+    };
+  });
+}

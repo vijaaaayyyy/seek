@@ -1,10 +1,12 @@
 import { createFileRoute, notFound, useRouterState } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { BookReader } from "@/components/book-reader";
 import { ChapterReader } from "@/components/chapter-reader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useBible } from "@/components/bible-provider";
 import { bookBySlug } from "@/lib/bible/meta";
-import { getChapter, normalize } from "@/lib/bible/load";
+import { getChapter, normalize, toIndexedVerses } from "@/lib/bible/load";
+import { loadChapterText } from "@/lib/bible/load-chapter";
 import { useSeekStore } from "@/lib/store";
 import { CANONICAL_ORIGIN, canonical } from "@/lib/seo";
 
@@ -17,7 +19,7 @@ export const Route = createFileRoute("/read/$book/$chapter")({
   // body — a soft-404 that crawlers index and visitors see as a blank page. From
   // a loader, the router renders the NotFound route *and* the response status is
   // a real 404, with the not-found page fully server-rendered.
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const book = bookBySlug(params.book);
     const chapter = Number(params.chapter);
     if (
@@ -28,6 +30,17 @@ export const Route = createFileRoute("/read/$book/$chapter")({
     ) {
       throw notFound();
     }
+
+    // Put this chapter's words in the server-rendered HTML. Without them a
+    // chapter URL is an empty shell until the browser finishes a 4.2 MB
+    // download, which means every chapter page reaches a crawler as a page with
+    // no text. `null` is a valid answer: the reader then falls back to loading
+    // on the client, which is how this behaved before.
+    const ssrVerses = await loadChapterText({
+      data: { bookIndex: book.index, chapter },
+    });
+
+    return { ssrVerses };
   },
   component: ReadPage,
   head: ({ params }) => {
@@ -108,11 +121,20 @@ export const Route = createFileRoute("/read/$book/$chapter")({
 function ReadPage() {
   const { book: slug, chapter: chapterParam } = Route.useParams();
   const { q } = Route.useSearch();
+  const { ssrVerses } = Route.useLoaderData();
   const hash = useRouterState({ select: (s) => s.location.hash });
   const { bible, ready, error } = useBible();
   const readerView = useSeekStore((s) => s.readerView);
   const book = bookBySlug(slug);
   const chapter = Number(chapterParam);
+
+  // Text the server already sent, shaped for the reader. Available on the very
+  // first paint, before the 4.2 MB Bible download is anywhere near finished.
+  const ssrIndexed = useMemo(
+    () =>
+      ssrVerses && book ? toIndexedVerses(book.index, chapter, ssrVerses) : [],
+    [ssrVerses, book, chapter],
+  );
 
   // The loader above has already rejected invalid references with a real 404,
   // so by the time we render, both of these are sound. The guard is kept as a
@@ -123,7 +145,7 @@ function ReadPage() {
     return <p className="pt-16 text-center font-sans text-sm text-muted">{error}</p>;
   }
 
-  if (!ready || !bible) {
+  if ((!ready || !bible) && ssrIndexed.length === 0) {
     return (
       <div className="pt-4">
         <Skeleton className="h-14 w-full rounded-[22px]" />
@@ -137,7 +159,9 @@ function ReadPage() {
     );
   }
 
-  const verses = getChapter(bible, book.index, chapter);
+  // The client Bible supersedes the server text once it lands, because only it
+  // knows about the other chapters the reader may scroll on to.
+  const verses = bible ? getChapter(bible, book.index, chapter) : ssrIndexed;
   const rawHash = hash.replace(/^#/, "");
   const parsed = rawHash.startsWith("v") ? Number(rawHash.slice(1)) : Number.NaN;
   const highlight = q ? normalize(q).split(" ").filter((t) => t.length > 2) : [];

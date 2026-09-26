@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { BookOpen, Bookmark, Download, Home, UserRound } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { SwapText } from "@/components/swap-text";
 import { UserMenu } from "@/components/user-menu";
 import { useHideOnScroll } from "@/hooks/use-hide-on-scroll";
 import { useInstall } from "@/components/install-provider";
@@ -138,13 +139,13 @@ export function AppShell({ children }: { children: ReactNode }) {
                     key={link.to}
                     to={link.to}
                     className={cn(
-                      "rounded-full px-3 py-1.5 font-sans text-[12.5px] font-medium transition-colors",
+                      "group flex items-center rounded-full px-3 py-1.5 font-sans text-[12.5px] font-medium transition-colors",
                       pathname.startsWith(link.to)
                         ? "bg-ink/8 text-ink"
                         : "text-muted hover:text-ink",
                     )}
                   >
-                    {link.label}
+                    <SwapText>{link.label}</SwapText>
                   </Link>
                 ))}
               </nav>

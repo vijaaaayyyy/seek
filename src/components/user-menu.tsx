@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { authEnabled, signOut } from "@/lib/supa/client";
 import { useCurrentUserState } from "@/lib/supa/use-current-user";
+import { SwapText } from "@/components/swap-text";
 import { cn } from "@/lib/utils";
 
 /**
@@ -27,10 +28,10 @@ export function UserMenu() {
         asChild
         variant="outline"
         size="sm"
-        className="shrink-0 rounded-full border-line bg-surface px-3.5 text-ink"
+        className="group shrink-0 rounded-full border-line bg-surface px-3.5 text-ink"
       >
         <Link to="/login" search={{ redirect: "/" }}>
-          Sign in
+          <SwapText>Sign in</SwapText>
         </Link>
       </Button>
     );
