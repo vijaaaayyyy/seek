@@ -70,7 +70,6 @@ export function Home() {
   const [docH, setDocH] = useState(1);
   const [vh, setVh] = useState(1);
   const finaleRef = useRef<HTMLElement | null>(null);
-  const [finaleInView, setFinaleInView] = useState(false);
 
   useEffect(() => {
     const measure = () => {
@@ -92,23 +91,20 @@ export function Home() {
     };
   }, []);
 
-  useEffect(() => {
-    const el = finaleRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => setFinaleInView(!!e?.isIntersecting), { threshold: 0.35 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
   const merge = useMemo(() => {
     const max = Math.max(1, docH - vh);
-    const t = Math.min(1, Math.max(0, (scrollY - max * 0.5) / (max * 0.35)));
+    // Start joining in the lower third; fully together by the end
+    const t = Math.min(1, Math.max(0, (scrollY - max * 0.45) / (max * 0.5)));
     return t * t * (3 - 2 * t);
   }, [scrollY, docH, vh]);
 
-  const sideOpacity = finaleInView ? 0 : Math.max(0.08, 0.14 * (1 - merge * 0.85));
-  const leftPct = 4 + merge * 42;
-  const rightPct = 4 + merge * 42;
+  // Side words slide toward center and stop as one phrase "seek bible"
+  const sideOpacity = 0.14 + merge * 0.5;
+  const sideScale = 1 + merge * 0.12;
+  // horizontal offset from viewport center (shrinks as they meet)
+  const fromCenter = 42 * (1 - merge); // vw; 0 when fully together
+  // small gap between the two words when joined
+  const halfGap = 0.8;
 
   function submit(e: FormEvent) {
     e.preventDefault();
@@ -134,8 +130,34 @@ export function Home() {
         <div className="absolute left-[12%] top-[8%] h-[12vmin] w-[10vmin] bg-black/90 dark:bg-white/90" />
       </div>
 
-      <span className="pointer-events-none fixed bottom-6 z-20 select-none font-sans text-[clamp(2rem,7vw,4rem)] font-medium tracking-tight text-black transition-opacity duration-500 dark:text-white" style={{ left: `calc(${leftPct}vw)`, opacity: sideOpacity }} aria-hidden>seek</span>
-      <span className="pointer-events-none fixed bottom-6 z-20 select-none font-sans text-[clamp(2rem,7vw,4rem)] font-medium tracking-tight text-black transition-opacity duration-500 dark:text-white" style={{ right: `calc(${rightPct}vw)`, opacity: sideOpacity }} aria-hidden>bible</span>
+      {/* seek ← → bible : meet in the middle and stop as "seek bible" */}
+      <div
+        className="pointer-events-none fixed inset-x-0 bottom-6 z-20 h-[clamp(2.5rem,8vw,4.5rem)]"
+        aria-hidden
+      >
+        <span
+          className="absolute bottom-0 select-none font-sans text-[clamp(2rem,7vw,4rem)] font-medium tracking-tight text-white/90 will-change-transform"
+          style={{
+            left: "50%",
+            opacity: sideOpacity,
+            transform: `translateX(calc(-100% - ${halfGap}rem - ${fromCenter}vw)) scale(${sideScale})`,
+            transformOrigin: "right bottom",
+          }}
+        >
+          seek
+        </span>
+        <span
+          className="absolute bottom-0 select-none font-sans text-[clamp(2rem,7vw,4rem)] font-medium tracking-tight text-white/90 will-change-transform"
+          style={{
+            left: "50%",
+            opacity: sideOpacity,
+            transform: `translateX(calc(${halfGap}rem + ${fromCenter}vw)) scale(${sideScale})`,
+            transformOrigin: "left bottom",
+          }}
+        >
+          bible
+        </span>
+      </div>
 
       {/* Dark cinematic search hero */}
       <section className="relative z-10 flex min-h-[100dvh] flex-col bg-[#0c0d12] px-5 pt-20 pb-12 text-[#f5f0e8] sm:px-10 lg:px-16">
@@ -329,18 +351,12 @@ export function Home() {
         </div>
       </section>
 
-      <section ref={finaleRef} className="relative z-10 flex min-h-[70dvh] flex-col items-center justify-center border-t border-black/10 bg-[#f4f4f4] px-5 py-24 dark:border-white/10 dark:bg-[#0c0d12] sm:px-10">
-        <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">Until the end</p>
-        <p
-          className={cn(
-            "mt-8 text-center font-sans font-medium leading-[0.92] tracking-[-0.04em] transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]",
-            finaleInView ? "translate-y-0 scale-100 opacity-100" : "translate-y-8 scale-95 opacity-0",
-          )}
-          style={{ fontSize: "clamp(2.75rem, 12vw, 7.5rem)" }}
-        >
-          seek bible
-        </p>
-        <p className={cn("mt-6 max-w-xs text-center font-sans text-[14px] leading-relaxed text-black/45 transition-all duration-700 delay-200 dark:text-white/45", finaleInView ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0")}>
+      {/* Space for side labels to finish meeting — no second "seek bible" text */}
+      <section
+        ref={finaleRef}
+        className="relative z-10 flex min-h-[45dvh] flex-col items-center justify-end border-t border-black/10 bg-[#f4f4f4] px-5 pb-28 pt-20 dark:border-white/10 dark:bg-[#0c0d12] sm:px-10"
+      >
+        <p className="max-w-xs text-center font-sans text-[14px] leading-relaxed text-black/45 dark:text-white/45">
           Keep seeking. The Word is near.
         </p>
       </section>
