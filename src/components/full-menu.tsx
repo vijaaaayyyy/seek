@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 
 const CONTACT_EMAIL = "vijay.peddenti434@gmail.com";
@@ -37,20 +38,23 @@ export function FullMenu() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className={cn(
-          "fixed top-4 right-4 z-[70] flex h-9 items-center rounded-full px-4 font-sans text-[13px] font-medium tracking-wide shadow-sm ring-1 transition-colors",
-          open
-            ? "bg-ink text-paper ring-ink"
-            : "bg-white/90 text-ink ring-black/10 backdrop-blur-md hover:bg-white dark:bg-black/60 dark:text-ink dark:ring-white/15",
-        )}
-        aria-expanded={open}
-        aria-controls="seek-full-menu"
-      >
-        {open ? "Close" : "Menu"}
-      </button>
+      <div className="fixed top-4 right-4 z-[70] flex items-center gap-2">
+        <ThemeToggle className="bg-white/90 shadow-sm backdrop-blur-md dark:bg-black/60" />
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className={cn(
+            "flex h-9 items-center rounded-full px-4 font-sans text-[13px] font-medium tracking-wide shadow-sm ring-1 transition-colors",
+            open
+              ? "bg-ink text-paper ring-ink"
+              : "bg-white/90 text-ink ring-black/10 backdrop-blur-md hover:bg-white dark:bg-black/60 dark:text-ink dark:ring-white/15",
+          )}
+          aria-expanded={open}
+          aria-controls="seek-full-menu"
+        >
+          {open ? "Close" : "Menu"}
+        </button>
+      </div>
 
       <div
         id="seek-full-menu"
@@ -62,29 +66,8 @@ export function FullMenu() {
           open ? "visible opacity-100" : "invisible opacity-0 pointer-events-none",
         )}
       >
-        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-          <div
-            className={cn(
-              "absolute top-[8%] right-[6%] h-[42vmin] w-[36vmin] rounded-sm bg-[#e8e8e8] transition-transform duration-700 ease-out dark:bg-[#1a1c26]",
-              open ? "translate-x-0 opacity-100" : "translate-x-16 opacity-0",
-            )}
-          />
-          <div
-            className={cn(
-              "absolute top-[28%] right-[28%] h-[28vmin] w-[24vmin] rounded-sm bg-[#dcdcdc] transition-transform duration-700 delay-75 ease-out dark:bg-[#222636]",
-              open ? "translate-x-0 opacity-100" : "translate-x-12 opacity-0",
-            )}
-          />
-          <div
-            className={cn(
-              "absolute bottom-[18%] left-[8%] h-[22vmin] w-[32vmin] rounded-sm bg-[#e0e0e0]/blur-[2px] transition-all duration-700 delay-100 ease-out dark:bg-[#181a22]",
-              open ? "translate-y-0 opacity-70" : "translate-y-8 opacity-0",
-            )}
-          />
-        </div>
-
-        <div className="relative z-10 flex flex-1 flex-col justify-between px-6 pb-10 pt-20 sm:px-12 lg:px-16">
-          <nav className="flex flex-col gap-1 sm:gap-2">
+        <div className="flex flex-1 flex-col justify-between px-6 pt-24 pb-10 sm:px-12 lg:px-20">
+          <nav className="flex flex-col gap-1 sm:gap-2" aria-label="Main">
             {LINKS.map((link, i) => {
               const active = link.match(pathname);
               return (
@@ -93,7 +76,7 @@ export function FullMenu() {
                   to={link.to}
                   onClick={() => setOpen(false)}
                   className={cn(
-                    "group flex items-baseline gap-4 sm:gap-6 transition-transform duration-500 ease-out",
+                    "group flex items-center gap-4 transition-all duration-500 ease-out",
                     open ? "translate-x-0 opacity-100" : "-translate-x-6 opacity-0",
                   )}
                   style={{ transitionDelay: open ? `${80 + i * 55}ms` : "0ms" }}
@@ -137,7 +120,7 @@ export function FullMenu() {
               {CONTACT_EMAIL}
             </a>
             <p className="mt-4 max-w-xs font-sans text-[13px] leading-relaxed text-ink/55">
-              Available for selected projects & feedback on SEEK.
+              Available for feedback on SEEK. Toggle light / dark next to Menu.
             </p>
           </div>
         </div>
