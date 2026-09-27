@@ -111,10 +111,6 @@ export function SavePrompt() {
                 <GithubIcon /> Continue with GitHub
               </Button>
             </div>
-
-            <p className="mt-4 font-sans text-[12.5px] text-ink/55 dark:text-[var(--ink)]/70">
-              Free · Takes 10 seconds
-            </p>
           </>
         )}
       </SheetContent>
