@@ -4,7 +4,13 @@ import { useSeekStore } from "@/lib/store";
 import { ArrowUpRight, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const EXAMPLES = ["God so loved the world", "mercy", "Psalm 23", "be not afraid", "love one another"];
+const EXAMPLES = [
+  { q: "God so loved the world", label: "God so loved the world" },
+  { q: "mercy", label: "Mercy" },
+  { q: "love one another", label: "Love one another" },
+  { q: "sacrifice", label: "Sacrifice" },
+  { q: "Psalm 23", label: "Psalm 23" },
+];
 
 const BOOKS = [
   { slug: "john", name: "John", chapters: 21 },
@@ -100,7 +106,6 @@ export function Home() {
     return t * t * (3 - 2 * t);
   }, [scrollY, docH, vh]);
 
-  // Side labels only before finale — never stack with center text
   const sideOpacity = finaleInView ? 0 : Math.max(0.08, 0.14 * (1 - merge * 0.85));
   const leftPct = 4 + merge * 42;
   const rightPct = 4 + merge * 42;
@@ -132,24 +137,31 @@ export function Home() {
       <span className="pointer-events-none fixed bottom-6 z-20 select-none font-sans text-[clamp(2rem,7vw,4rem)] font-medium tracking-tight text-black transition-opacity duration-500 dark:text-white" style={{ left: `calc(${leftPct}vw)`, opacity: sideOpacity }} aria-hidden>seek</span>
       <span className="pointer-events-none fixed bottom-6 z-20 select-none font-sans text-[clamp(2rem,7vw,4rem)] font-medium tracking-tight text-black transition-opacity duration-500 dark:text-white" style={{ right: `calc(${rightPct}vw)`, opacity: sideOpacity }} aria-hidden>bible</span>
 
-      <section className="relative z-10 flex min-h-[100dvh] flex-col px-5 pt-20 pb-12 sm:px-10 lg:px-16">
+      {/* Dark cinematic search hero */}
+      <section className="relative z-10 flex min-h-[100dvh] flex-col bg-[#0c0d12] px-5 pt-20 pb-12 text-[#f5f0e8] sm:px-10 lg:px-16">
         <div className="flex items-start justify-between gap-6">
           <div className="flex gap-6">
-            <div className="hidden h-14 w-11 bg-black dark:bg-white sm:block" aria-hidden />
-            <div className="border-l border-black/20 pl-4 dark:border-white/20">
-              <p className="font-sans text-[12px] leading-snug text-black/70 dark:text-white/70">Free · KJV<br />66 books</p>
+            <div className="hidden h-14 w-11 bg-white/90 sm:block" aria-hidden />
+            <div className="border-l border-white/25 pl-4">
+              <p className="font-sans text-[12px] leading-snug text-white/70">Free · KJV<br />66 books</p>
             </div>
           </div>
-          <p className="max-w-[11rem] text-right font-sans text-[12px] leading-snug text-black/55 dark:text-white/55">Search a half-<br />remembered word</p>
+          <p className="max-w-[11rem] text-right font-sans text-[12px] leading-snug text-white/55">Search a half-<br />remembered word</p>
         </div>
 
-        <div className="relative flex flex-1 flex-col items-center justify-center py-16">
-          <h1 className="pointer-events-none absolute left-1/2 top-[32%] z-0 -translate-x-1/2 -translate-y-1/2 select-none text-center font-sans text-[clamp(4rem,16vw,11rem)] font-medium leading-[0.85] tracking-[-0.04em]">SEEK</h1>
+        <div className="relative flex flex-1 flex-col items-center justify-center py-20">
+          <h1
+            className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-[55%] select-none text-center font-serif text-[clamp(5.5rem,22vw,14rem)] font-medium leading-none tracking-[-0.04em] text-white/[0.09]"
+            aria-hidden
+          >
+            SEEK
+          </h1>
+          <span className="sr-only">SEEK</span>
 
-          <form onSubmit={submit} className="relative z-10 mt-[22vh] w-full max-w-lg">
+          <form onSubmit={submit} className="relative z-10 w-full max-w-xl px-2">
             <label htmlFor="home-search" className="sr-only">Search the Bible</label>
-            <div className="flex items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 shadow-lg shadow-black/5 dark:border-white/10 dark:bg-[#16181f] dark:shadow-black/40 sm:px-5 sm:py-4">
-              <Search className="size-5 shrink-0 text-black/40 dark:text-white/40" strokeWidth={1.6} />
+            <div className="flex items-center gap-3 border-b border-white/20 pb-3">
+              <Search className="size-[18px] shrink-0 text-white/40" strokeWidth={1.5} />
               <input
                 id="home-search"
                 value={value}
@@ -157,28 +169,39 @@ export function Home() {
                 autoComplete="off"
                 spellCheck={false}
                 enterKeyHint="search"
-                placeholder="Search a verse, word, or topic…"
-                className="h-10 min-w-0 flex-1 bg-transparent font-sans text-[1.05rem] text-black outline-none placeholder:text-black/35 dark:text-white dark:placeholder:text-white/35 sm:text-[1.15rem]"
+                placeholder="Search love, mercy, a verse..."
+                className="h-11 min-w-0 flex-1 bg-transparent font-serif text-[1.15rem] text-white outline-none placeholder:text-white/40 sm:text-[1.25rem]"
               />
-              <button type="submit" aria-label="Search" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-black text-white transition hover:opacity-90 active:scale-95 dark:bg-white dark:text-black">
-                <ArrowUpRight className="size-4" strokeWidth={2} />
+              <button
+                type="submit"
+                aria-label="Search"
+                className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/25 text-white/70 transition hover:border-white hover:text-white"
+              >
+                <ArrowUpRight className="size-4" strokeWidth={1.75} />
               </button>
             </div>
-            <div className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2">
-              {EXAMPLES.map((q) => (
-                <button key={q} type="button" onClick={() => run(q)} className="font-sans text-[12px] text-black/45 underline-offset-2 transition hover:text-black hover:underline dark:text-white/45 dark:hover:text-white">{q}</button>
+            <div className="mt-5 flex flex-wrap justify-center gap-x-5 gap-y-2">
+              {EXAMPLES.map((item) => (
+                <button
+                  key={item.q}
+                  type="button"
+                  onClick={() => run(item.q)}
+                  className="font-sans text-[10px] tracking-[0.14em] text-white/40 uppercase transition hover:text-white sm:text-[11px]"
+                >
+                  {item.label}
+                </button>
               ))}
             </div>
           </form>
         </div>
 
         <div className="mt-auto flex items-end justify-between pt-8">
-          <p className="font-sans text-[12px] text-black/45 dark:text-white/45">Scroll</p>
-          <a href="#work" className="font-sans text-[12px] tracking-[0.16em] text-black/45 uppercase dark:text-white/45">↓</a>
+          <p className="font-sans text-[12px] text-white/40">Scroll</p>
+          <a href="#work" className="font-sans text-[12px] tracking-[0.16em] text-white/40 uppercase">↓</a>
         </div>
       </section>
 
-      <section id="work" className="relative z-10 border-t border-black/10 px-5 py-28 dark:border-white/10 sm:px-10 lg:px-16">
+      <section id="work" className="relative z-10 border-t border-black/10 bg-[#f4f4f4] px-5 py-28 dark:border-white/10 dark:bg-[#0c0d12] sm:px-10 lg:px-16">
         <div className="mx-auto flex max-w-6xl flex-col gap-16 lg:flex-row lg:items-end lg:justify-between">
           <Reveal>
             <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">Corpus</p>
@@ -195,7 +218,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-28 sm:px-10 lg:px-16">
+      <section className="relative z-10 bg-[#f4f4f4] px-5 py-28 dark:bg-[#0c0d12] sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <Reveal>
             <p className="font-sans text-[clamp(2rem,6vw,4.25rem)] font-medium leading-[1.08] tracking-[-0.03em]">the best ideas<br />deserve <span className="text-black/30 dark:text-white/30">the Word.</span></p>
@@ -210,7 +233,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 border-t border-black/10 px-5 py-28 dark:border-white/10 sm:px-10 lg:px-16">
+      <section className="relative z-10 border-t border-black/10 bg-[#f4f4f4] px-5 py-28 dark:border-white/10 dark:bg-[#0c0d12] sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <Reveal>
             <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">Seek by meaning</p>
@@ -231,7 +254,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 border-t border-black/10 px-5 py-28 dark:border-white/10 sm:px-10 lg:px-16">
+      <section className="relative z-10 border-t border-black/10 bg-[#f4f4f4] px-5 py-28 dark:border-white/10 dark:bg-[#0c0d12] sm:px-10 lg:px-16">
         <div className="mx-auto max-w-4xl">
           <Reveal>
             <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">John 3:16</p>
@@ -241,7 +264,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 border-t border-black/10 px-5 py-28 dark:border-white/10 sm:px-10 lg:px-16">
+      <section className="relative z-10 border-t border-black/10 bg-[#f4f4f4] px-5 py-28 dark:border-white/10 dark:bg-[#0c0d12] sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <Reveal>
             <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">Start reading</p>
@@ -263,7 +286,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 border-t border-black/10 px-5 py-28 dark:border-white/10 sm:px-10 lg:px-16">
+      <section className="relative z-10 border-t border-black/10 bg-[#f4f4f4] px-5 py-28 dark:border-white/10 dark:bg-[#0c0d12] sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <Reveal>
             <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">How it works</p>
@@ -296,7 +319,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 border-t border-black/10 px-5 py-28 dark:border-white/10 sm:px-10 lg:px-16">
+      <section className="relative z-10 border-t border-black/10 bg-[#f4f4f4] px-5 py-28 dark:border-white/10 dark:bg-[#0c0d12] sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <Reveal>
             <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">Write directly</p>
@@ -306,7 +329,7 @@ export function Home() {
         </div>
       </section>
 
-      <section ref={finaleRef} className="relative z-10 flex min-h-[70dvh] flex-col items-center justify-center border-t border-black/10 px-5 py-24 dark:border-white/10 sm:px-10">
+      <section ref={finaleRef} className="relative z-10 flex min-h-[70dvh] flex-col items-center justify-center border-t border-black/10 bg-[#f4f4f4] px-5 py-24 dark:border-white/10 dark:bg-[#0c0d12] sm:px-10">
         <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">Until the end</p>
         <p
           className={cn(
@@ -322,7 +345,7 @@ export function Home() {
         </p>
       </section>
 
-      <footer className="relative z-10 border-t border-black/10 px-5 py-8 dark:border-white/10 sm:px-10 lg:px-16">
+      <footer className="relative z-10 border-t border-black/10 bg-[#f4f4f4] px-5 py-8 dark:border-white/10 dark:bg-[#0c0d12] sm:px-10 lg:px-16">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3">
           <p className="font-sans text-[12px] text-black/40 dark:text-white/40">© {new Date().getFullYear()} SEEK · KJV public domain</p>
           <p className="font-sans text-[12px] text-black/40 dark:text-white/40">Free · No ads · No paywall</p>
