@@ -180,56 +180,48 @@ export function ChapterReader({
     blocks.find((b) => b.chapter === activeChapter)?.verses.length ?? 0;
 
   return (
-    <div className="relative pb-8">
-      {/*
-        The reader is one continuous scroll, so each chapter label is a plain
-        <p> and no visible element can own the page heading. This is that
-        heading: hidden visually, present for screen readers, crawlers and
-        anyone reading the page as plain text.
-      */}
+    <div className="relative mx-auto w-full max-w-3xl px-4 pb-10 sm:px-6">
       <h1 className="sr-only">
         {book.name} {chapter} — King James Bible
       </h1>
 
-      <div className="sticky top-0 z-20 -mx-1 mt-0.5 mb-1 px-1 pb-2 pt-1 sm:px-1.5">
-        <div className="glass glass-strong flex items-center justify-between gap-2 rounded-[22px] py-1.5 pr-1.5 pl-1 shadow-sm">
-          <div className="min-w-0">
-            <BookPicker book={book} chapter={activeChapter} />
-            <p className="px-3 font-sans text-[11px] text-muted">
-              Chapter {activeChapter} of {book.chapters.length}
-              <span className="text-faint"> · </span>
-              {activeVerses} verses
-              <span className="text-faint"> · </span>
-              {book.testament === "OT" ? "OT" : "NT"}
-              {minChapter < maxUnlocked && (
-                <>
-                  <span className="text-faint"> · </span>
-                  Showing ch. {minChapter}–{maxUnlocked}
-                </>
-              )}
-            </p>
-          </div>
-          <div className="flex shrink-0 items-center gap-1">
-            <ReadingModeToggle />
-          </div>
+      <div className="flex items-start justify-between gap-4 border-b border-black/10 pb-4 dark:border-white/10">
+        <div className="min-w-0">
+          <BookPicker book={book} chapter={activeChapter} />
+          <p className="mt-1 font-sans text-[12px] tracking-wide text-black/45 dark:text-white/45">
+            Chapter {activeChapter} of {book.chapters.length}
+            <span className="mx-1.5 text-black/25 dark:text-white/25">·</span>
+            {activeVerses} verses
+            <span className="mx-1.5 text-black/25 dark:text-white/25">·</span>
+            {book.testament === "OT" ? "OT" : "NT"}
+            {minChapter < maxUnlocked && (
+              <>
+                <span className="mx-1.5 text-black/25 dark:text-white/25">·</span>
+                Showing ch. {minChapter}–{maxUnlocked}
+              </>
+            )}
+          </p>
         </div>
+        <ReadingModeToggle />
       </div>
 
-      <div className="mx-auto mt-1.5 flex max-w-2xl items-center gap-2 px-1 sm:px-1.5">
+      <div className="mt-5 flex items-center justify-between gap-4 font-sans text-[13px]">
         {prev ? (
           <Link
             to="/read/$book/$chapter"
             params={{ book: prev.book.slug, chapter: String(prev.chapter) }}
             search={{ q: undefined }}
-            className="flex min-w-0 flex-1 items-center gap-2 rounded-2xl border border-line bg-surface px-3 py-2.5 transition-colors hover:border-ink/20 hover:bg-white dark:hover:bg-white/5"
+            className="group flex min-w-0 items-center gap-1.5 text-black/50 transition hover:text-black dark:text-white/50 dark:hover:text-white"
           >
-            <ChevronLeft className="size-4 shrink-0 text-muted" />
-            <span className="min-w-0 truncate font-sans text-[12.5px] font-medium text-ink">
-              {prev.chapter <= maxUnlocked ? `${prev.book.name} ${prev.chapter}` : "Previous chapter"}
+            <ChevronLeft className="size-4 shrink-0 opacity-60" />
+            <span className="truncate group-hover:underline group-hover:underline-offset-4">
+              {prev.chapter <= maxUnlocked
+                ? `${prev.book.name} ${prev.chapter}`
+                : "Previous chapter"}
             </span>
           </Link>
         ) : (
-          <div className="flex-1" />
+          <span />
         )}
         {next ? (
           <button
@@ -252,19 +244,21 @@ export function ChapterReader({
                 });
               }
             }}
-            className="flex min-w-0 flex-1 items-center justify-end gap-2 rounded-2xl border border-line bg-surface px-3 py-2.5 transition-colors hover:border-ink/20 hover:bg-white dark:hover:bg-white/5"
+            className="group flex min-w-0 items-center gap-1.5 text-black/50 transition hover:text-black dark:text-white/50 dark:hover:text-white"
           >
-            <span className="min-w-0 truncate font-sans text-[12.5px] font-medium text-ink">
-              {next.chapter <= maxUnlocked ? `${next.book.name} ${next.chapter}` : `Chapter ${next.chapter} →`}
+            <span className="truncate group-hover:underline group-hover:underline-offset-4">
+              {next.chapter <= maxUnlocked
+                ? `${next.book.name} ${next.chapter}`
+                : `Chapter ${next.chapter} →`}
             </span>
-            <ChevronRight className="size-4 shrink-0 text-muted" />
+            <ChevronRight className="size-4 shrink-0 opacity-60" />
           </button>
         ) : (
-          <div className="flex-1" />
+          <span />
         )}
       </div>
 
-      <div className="mx-auto max-w-2xl pt-2">
+      <div className="mx-auto max-w-2xl pt-8">
         {blocks.map((block) => (
           <section
             key={block.chapter}
@@ -358,7 +352,7 @@ export function ChapterReader({
           aria-modal="true"
           aria-labelledby="next-chapter-title"
         >
-          <div className="w-full max-w-sm rounded-[24px] bg-paper p-5 shadow-2xl ring-1 ring-black/10 dark:ring-white/10">
+          <div className="w-full max-w-sm rounded-2xl bg-paper p-5 shadow-2xl ring-1 ring-black/10 dark:ring-white/10">
             <p
               id="next-chapter-title"
               className="font-serif text-[1.25rem] font-medium text-ink"
