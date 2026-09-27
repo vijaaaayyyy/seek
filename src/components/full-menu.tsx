@@ -10,8 +10,9 @@ const LINKS = [
   { n: "2", label: "Bible", to: "/books" as const, match: (p: string) => p.startsWith("/books") || p.startsWith("/read") },
   { n: "3", label: "Explore", to: "/explore" as const, match: (p: string) => p.startsWith("/explore") || p.startsWith("/search") },
   { n: "4", label: "Saved", to: "/saved" as const, match: (p: string) => p.startsWith("/saved") },
-  { n: "5", label: "About", to: "/about" as const, match: (p: string) => p.startsWith("/about") },
-  { n: "6", label: "Contact", to: "/contact" as const, match: (p: string) => p.startsWith("/contact") },
+  { n: "5", label: "Profile", to: "/profile" as const, match: (p: string) => p.startsWith("/profile") || p.startsWith("/login") },
+  { n: "6", label: "About", to: "/about" as const, match: (p: string) => p.startsWith("/about") },
+  { n: "7", label: "Contact", to: "/contact" as const, match: (p: string) => p.startsWith("/contact") },
 ] as const;
 
 export function FullMenu() {
@@ -79,7 +80,7 @@ export function FullMenu() {
                     "group flex items-center gap-4 transition-all duration-500 ease-out",
                     open ? "translate-x-0 opacity-100" : "-translate-x-6 opacity-0",
                   )}
-                  style={{ transitionDelay: open ? `${80 + i * 55}ms` : "0ms" }}
+                  style={{ transitionDelay: open ? `${80 + i * 45}ms` : "0ms" }}
                 >
                   <span
                     className={cn(
@@ -93,7 +94,7 @@ export function FullMenu() {
                   </span>
                   <span
                     className={cn(
-                      "font-sans text-[clamp(2.4rem,9vw,5.5rem)] font-medium leading-[0.95] tracking-[-0.03em]",
+                      "font-sans text-[clamp(2.2rem,8vw,5rem)] font-medium leading-[0.95] tracking-[-0.03em]",
                       active ? "text-ink" : "text-ink/35 group-hover:text-ink",
                     )}
                   >
@@ -110,31 +111,29 @@ export function FullMenu() {
               open ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
             )}
           >
-            <p className="font-sans text-[11px] uppercase tracking-[0.2em] text-ink/45">
-              Write directly
-            </p>
+            <p className="font-sans text-[11px] uppercase tracking-[0.2em] text-ink/45">Account</p>
+            <div className="mt-3 flex flex-wrap gap-4 font-sans text-[14px]">
+              <Link to="/login" onClick={() => setOpen(false)} className="underline underline-offset-4">
+                Log in
+              </Link>
+              <Link to="/profile" onClick={() => setOpen(false)} className="text-ink/55 hover:text-ink">
+                Profile
+              </Link>
+            </div>
+            <p className="mt-8 font-sans text-[11px] uppercase tracking-[0.2em] text-ink/45">Write directly</p>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
               className="mt-2 block font-serif text-[clamp(1.15rem,3.2vw,1.65rem)] leading-snug text-ink underline-offset-4 hover:underline"
             >
               {CONTACT_EMAIL}
             </a>
-            <p className="mt-4 max-w-xs font-sans text-[13px] leading-relaxed text-ink/55">
-              Available for feedback on SEEK. Toggle light / dark next to Menu.
-            </p>
           </div>
         </div>
 
-        <span
-          className="pointer-events-none absolute bottom-6 left-4 select-none font-sans text-[clamp(2rem,8vw,4rem)] font-medium tracking-tight text-ink/[0.06] sm:left-8"
-          aria-hidden
-        >
+        <span className="pointer-events-none absolute bottom-6 left-4 select-none font-sans text-[clamp(2rem,8vw,4rem)] font-medium tracking-tight text-ink/[0.06] sm:left-8" aria-hidden>
           seek
         </span>
-        <span
-          className="pointer-events-none absolute right-4 bottom-6 select-none font-sans text-[clamp(2rem,8vw,4rem)] font-medium tracking-tight text-ink/[0.06] sm:right-8"
-          aria-hidden
-        >
+        <span className="pointer-events-none absolute right-4 bottom-6 select-none font-sans text-[clamp(2rem,8vw,4rem)] font-medium tracking-tight text-ink/[0.06] sm:right-8" aria-hidden>
           bible
         </span>
       </div>
