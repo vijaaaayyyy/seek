@@ -11,6 +11,8 @@ const LINKS = [
   { n: "4", label: "Saved", to: "/saved" as const, match: (p: string) => p.startsWith("/saved") },
   { n: "5", label: "About", to: "/about" as const, match: (p: string) => p.startsWith("/about") },
   { n: "6", label: "Contact", to: "/contact" as const, match: (p: string) => p.startsWith("/contact") },
+  { n: "7", label: "Login", to: "/login" as const, search: { redirect: "/" } as const, match: (p: string) => p.startsWith("/login") },
+  { n: "8", label: "Account", to: "/profile" as const, match: (p: string) => p.startsWith("/profile") },
 ] as const;
 
 export function FullMenu() {
@@ -41,10 +43,8 @@ export function FullMenu() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "fixed top-4 right-4 z-[70] flex h-9 items-center rounded-full px-4 font-sans text-[13px] font-medium tracking-wide shadow-sm ring-1 transition-colors",
-          open
-            ? "bg-ink text-paper ring-ink"
-            : "bg-white/90 text-ink ring-black/10 backdrop-blur-md hover:bg-white dark:bg-black/60 dark:text-ink dark:ring-white/15",
+          "fixed top-4 right-6 z-[70] flex h-12 items-center gap-2 rounded-full bg-white/70 px-4 font-sans text-[13px] font-medium text-ink shadow-sm ring-1 ring-black/5 backdrop-blur-xl transition-all hover:opacity-90 active:scale-[0.98] dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/10",
+          open && "bg-ink text-paper ring-ink hover:opacity-100 dark:bg-ink dark:text-paper dark:ring-ink",
         )}
         aria-expanded={open}
         aria-controls="seek-full-menu"

@@ -11,7 +11,7 @@ import { useSeekStore } from "@/lib/store";
 import { CANONICAL_ORIGIN, canonical } from "@/lib/seo";
 
 export const Route = createFileRoute("/read/$book/$chapter")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { q?: string } => ({
     q: typeof search.q === "string" ? search.q : undefined,
   }),
   // Validation lives in a loader, not in the component. Throwing `notFound()`

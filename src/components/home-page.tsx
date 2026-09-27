@@ -111,17 +111,17 @@ export function Home() {
           <h1 className="pointer-events-none absolute left-1/2 top-[38%] z-0 -translate-x-1/2 -translate-y-1/2 select-none text-center font-sans text-[clamp(4.5rem,18vw,13rem)] font-medium leading-[0.85] tracking-[-0.04em] text-black dark:text-white">
             SEEK
           </h1>
-          <p className="pointer-events-none absolute left-1/2 top-[58%] z-0 -translate-x-1/2 select-none font-sans text-[clamp(2.5rem,10vw,7rem)] font-medium leading-none tracking-[-0.03em] text-black/15 dark:text-white/15">
+          <p className="pointer-events-none absolute left-1/2 top-[48%] z-0 -translate-x-1/2 select-none font-sans text-[clamp(2.5rem,10vw,7rem)] font-medium leading-none tracking-[-0.03em] text-black/15 dark:text-white/15">
             Scripture
           </p>
 
-          <div className="relative z-10 mt-[28vh] w-full max-w-md bg-black p-6 text-white shadow-2xl dark:bg-white dark:text-black sm:p-8">
+          <div className="relative z-10 mt-[34vh] w-full max-w-md border border-black/10 bg-white/25 px-6 py-6 backdrop-blur-md dark:border-white/15 dark:bg-white/5 sm:px-8">
             <form onSubmit={submit}>
               <label htmlFor="home-search" className="sr-only">
                 Search the Bible
               </label>
-              <div className="flex items-center gap-3 border-b border-white/30 pb-3 dark:border-black/30">
-                <Search className="size-4 shrink-0 opacity-60" strokeWidth={1.6} />
+              <div className="flex items-center gap-3 border-b border-black/20 pb-3 dark:border-white/25">
+                <Search className="size-4 shrink-0 opacity-50" strokeWidth={1.6} />
                 <input
                   id="home-search"
                   value={value}
@@ -130,7 +130,7 @@ export function Home() {
                   spellCheck={false}
                   enterKeyHint="search"
                   placeholder="A verse, a word, a longing…"
-                  className="w-full bg-transparent font-sans text-[1.05rem] outline-none placeholder:text-white/40 dark:placeholder:text-black/40"
+                  className="w-full bg-transparent font-sans text-[1.05rem] outline-none placeholder:text-black/35 dark:placeholder:text-white/35"
                 />
               </div>
             </form>
@@ -140,7 +140,7 @@ export function Home() {
                   key={q}
                   type="button"
                   onClick={() => run(q)}
-                  className="font-sans text-[11px] tracking-wide text-white/50 transition hover:text-white dark:text-black/50 dark:hover:text-black"
+                  className="font-sans text-[11px] tracking-wide text-black/45 transition hover:text-black dark:text-white/45 dark:hover:text-white"
                 >
                   {q}
                 </button>
@@ -165,7 +165,7 @@ export function Home() {
 
       <section
         id="work"
-        className="relative z-10 min-h-[80dvh] border-t border-black/10 px-5 py-28 dark:border-white/10 sm:px-10 lg:px-16"
+        className="relative z-10 min-h-[80dvh]px-5 py-28 dark:border-white/10 sm:px-10 lg:px-16"
       >
         <div className="mx-auto flex max-w-6xl flex-col gap-20 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -193,6 +193,152 @@ export function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="relative z-10 px-5 py-28 sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-5xl">
+          <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
+            Start somewhere
+          </p>
+          <h2 className="mt-4 font-sans text-[clamp(2.5rem,8vw,5.5rem)] font-medium leading-[0.95] tracking-[-0.03em]">
+            Begin a
+            <span className="block text-black/25 dark:text-white/25">chapter</span>
+          </h2>
+          <div className="mt-14 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { slug: "genesis", label: "Genesis", note: "Beginnings" },
+              { slug: "psalms", label: "Psalms", note: "Songs & laments" },
+              { slug: "proverbs", label: "Proverbs", note: "Wisdom" },
+              { slug: "isaiah", label: "Isaiah", note: "The great prophet" },
+              { slug: "matthew", label: "Matthew", note: "The Gospel" },
+              { slug: "hebrews", label: "Hebrews", note: "Faith" },
+            ].map((b) => (
+              <Link
+                key={b.slug}
+                to="/read/$book/$chapter"
+                params={{ book: b.slug, chapter: "1" }}
+                className="group flex items-baseline justify-between gap-4"
+              >
+                <span className="font-sans text-[clamp(1.35rem,3vw,1.9rem)] font-medium tracking-tight transition group-hover:opacity-60">
+                  {b.label}
+                </span>
+                <span className="shrink-0 font-sans text-[12px] text-black/35 dark:text-white/35">
+                  {b.note}
+                </span>
+              </Link>
+            ))}
+          </div>
+          <Link
+            to="/books"
+            className="mt-14 inline-block font-sans text-[12px] tracking-[0.16em] uppercase underline underline-offset-4"
+          >
+            All 66 books
+          </Link>
+        </div>
+      </section>
+
+      <section className="relative z-10 px-5 py-28 sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-5xl">
+          <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
+            <div>
+              <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
+                Two ways in
+              </p>
+              <h2 className="mt-4 font-sans text-[clamp(2rem,6vw,3.5rem)] font-medium leading-[1] tracking-[-0.03em]">
+                Search by meaning, or read by reference.
+              </h2>
+            </div>
+            <div className="flex flex-col gap-8">
+              <div>
+                <p className="font-sans text-[15px] leading-relaxed text-black/60 dark:text-white/60">
+                  Describe what you remember in your own words — a half-heard phrase,
+                  a feeling, a theme — and SEEK returns the passages that carry it.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => run("comfort in sorrow")}
+                  className="mt-4 font-sans text-[13px] tracking-[0.12em] uppercase underline underline-offset-4"
+                >
+                  Try “comfort in sorrow”
+                </button>
+              </div>
+              <div>
+                <p className="font-sans text-[15px] leading-relaxed text-black/60 dark:text-white/60">
+                  Already know where it is? Open any of the 1,189 chapters in the King
+                  James text and read it clean, without ads or interruption.
+                </p>
+                <Link
+                  to="/read/$book/$chapter"
+                  params={{ book: "john", chapter: "1" }}
+                  className="mt-4 inline-block font-sans text-[13px] tracking-[0.12em] uppercase underline underline-offset-4"
+                >
+                  Read John 1
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-10 px-5 py-32 dark:border-white/10 sm:px-10 lg:px-16">
+        <div className="mx-auto flex max-w-5xl flex-col gap-20 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
+              Still deciding
+            </p>
+            <h2 className="mt-4 font-sans text-[clamp(2.5rem,8vw,5rem)] font-medium leading-[0.95] tracking-[-0.03em]">
+              Take it
+              <span className="block text-black/25 dark:text-white/25">with you</span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 gap-10 sm:gap-16">
+            {[
+              { v: "Apps", l: "Download" },
+              { v: "KJV", l: "Public domain" },
+              { v: "0", l: "Trackers" },
+              { v: "∞", l: "Free reads" },
+            ].map((s) => (
+              <div key={s.l}>
+                <p className="font-sans text-[clamp(1.75rem,4vw,2.75rem)] font-medium tracking-tight">
+                  {s.v}
+                </p>
+                <p className="mt-1 font-sans text-[11px] tracking-[0.16em] text-black/40 uppercase dark:text-white/40">
+                  {s.l}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="mx-auto mt-14 flex max-w-5xl flex-wrap gap-x-8 gap-y-3">
+          <Link to="/download" className="font-sans text-[12px] tracking-[0.16em] uppercase underline underline-offset-4">
+            Download
+          </Link>
+          <Link to="/groups" className="font-sans text-[12px] tracking-[0.16em] uppercase text-black/45 dark:text-white/45">
+            Reading groups
+          </Link>
+          <Link to="/faq" className="font-sans text-[12px] tracking-[0.16em] uppercase text-black/45 dark:text-white/45">
+            FAQ
+          </Link>
+        </div>
+      </section>
+
+      <section className="relative z-10 px-5 py-32 dark:border-white/10 sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-4xl">
+          <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
+            Proverbs 3:5
+          </p>
+          <p className="mt-8 font-sans text-[clamp(1.35rem,3.5vw,2.25rem)] font-medium leading-[1.25] tracking-[-0.02em]">
+            Trust in the LORD with all thine heart; and lean not unto thine own
+            understanding.
+          </p>
+          <Link
+            to="/read/$book/$chapter"
+            params={{ book: "proverbs", chapter: "3" }}
+            className="mt-10 inline-block font-sans text-[12px] tracking-[0.16em] uppercase underline underline-offset-4"
+          >
+            Read the chapter
+          </Link>
         </div>
       </section>
 
@@ -233,7 +379,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 border-t border-black/10 px-5 py-28 dark:border-white/10 sm:px-10 lg:px-16">
+      <section className="relative z-10px-5 py-28 dark:border-white/10 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
             Seek by meaning
@@ -266,7 +412,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 border-t border-black/10 px-5 py-32 dark:border-white/10 sm:px-10 lg:px-16">
+      <section className="relative z-10px-5 py-32 dark:border-white/10 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-4xl">
           <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
             John 3:16
@@ -286,7 +432,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 border-t border-black/10 px-5 py-32 dark:border-white/10 sm:px-10 lg:px-16">
+      <section className="relative z-10px-5 py-32 dark:border-white/10 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
             Write directly
@@ -317,14 +463,48 @@ export function Home() {
         </div>
       </section>
 
-      <footer className="relative z-10 border-t border-black/10 px-5 py-10 dark:border-white/10 sm:px-10 lg:px-16">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
-          <p className="font-sans text-[12px] text-black/40 dark:text-white/40">
-            © {new Date().getFullYear()} SEEK · KJV public domain
-          </p>
-          <p className="font-sans text-[12px] text-black/40 dark:text-white/40">
-            Free · No ads · No paywall
-          </p>
+      <footer className="relative z-10 px-5 py-20 sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-5xl">
+          <div className="flex items-baseline justify-between gap-6">
+            <span className="font-sans text-[clamp(3rem,11vw,7.5rem)] font-medium leading-none tracking-[-0.04em]">
+              SEEK
+            </span>
+            <span className="font-sans text-[clamp(3rem,11vw,7.5rem)] font-medium leading-none tracking-[-0.04em]">
+              BIBLE
+            </span>
+          </div>
+
+          <div className="mt-12 flex flex-col items-center gap-2 text-center">
+            <p className="font-sans text-[12px] text-black/40 dark:text-white/40">
+              © {new Date().getFullYear()} SEEK · KJV public domain
+            </p>
+            <p className="font-sans text-[12px] text-black/40 dark:text-white/40">
+              Free · No ads · No paywall
+            </p>
+            <nav
+              aria-label="Footer"
+              className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-sans text-[12px] text-black/40 dark:text-white/40"
+            >
+              <Link to="/about" className="transition hover:text-black dark:hover:text-white">
+                About
+              </Link>
+              <Link to="/books" className="transition hover:text-black dark:hover:text-white">
+                Bible
+              </Link>
+              <Link to="/faq" className="transition hover:text-black dark:hover:text-white">
+                FAQ
+              </Link>
+              <Link to="/groups" className="transition hover:text-black dark:hover:text-white">
+                Groups
+              </Link>
+              <Link to="/contact" className="transition hover:text-black dark:hover:text-white">
+                Contact
+              </Link>
+              <Link to="/download" className="transition hover:text-black dark:hover:text-white">
+                Download
+              </Link>
+            </nav>
+          </div>
         </div>
       </footer>
     </div>
