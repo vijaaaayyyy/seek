@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useSeekStore } from "@/lib/store";
 import { Search } from "lucide-react";
 
@@ -21,16 +21,29 @@ export function Home() {
   const navigate = useNavigate();
   const [value, setValue] = useState("");
   const [scrollY, setScrollY] = useState(0);
+  const [docH, setDocH] = useState(1);
+  const [vh, setVh] = useState(1);
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const measure = () => {
+      setDocH(document.documentElement.scrollHeight || 1);
+      setVh(window.innerHeight || 1);
+    };
     const onScroll = () => setScrollY(window.scrollY || document.documentElement.scrollTop);
+    const onResize = () => {
+      measure();
+      onScroll();
+    };
+    measure();
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("scroll", onScroll, { capture: true, passive: true });
+    window.addEventListener("resize", onResize);
     return () => {
       window.removeEventListener("scroll", onScroll);
       document.removeEventListener("scroll", onScroll, { capture: true });
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
@@ -50,6 +63,19 @@ export function Home() {
   const p1 = scrollY * 0.12;
   const p2 = scrollY * 0.08;
   const p3 = scrollY * 0.15;
+
+  // Scroll-driven "seek bible" merge: the two side words travel toward the
+  // viewport centre over the back half of the page and stop as one phrase.
+  const merge = useMemo(() => {
+    const max = Math.max(1, docH - vh);
+    const t = Math.min(1, Math.max(0, (scrollY - max * 0.45) / (max * 0.5)));
+    return t * t * (3 - 2 * t); // smoothstep
+  }, [scrollY, docH, vh]);
+
+  const sideOpacity = 0.14 + merge * 0.5;
+  const sideScale = 1 + merge * 0.12;
+  const fromCenter = 42 * (1 - merge); // vw of remaining offset; 0 when joined
+  const halfGap = 0.8; // rem of breathing room between the words
 
   return (
     <div
@@ -75,18 +101,34 @@ export function Home() {
         />
       </div>
 
-      <span
-        className="pointer-events-none fixed bottom-6 left-4 z-20 select-none font-sans text-[clamp(2.5rem,9vw,5rem)] font-medium tracking-tight text-black/10 dark:text-white/10 sm:left-8"
+      {/* seek ←→ bible: slide in from the sides, meet as one phrase, stop */}
+      <div
+        className="pointer-events-none fixed inset-x-0 bottom-6 z-20 h-[clamp(2.5rem,9vw,5rem)]"
         aria-hidden
       >
-        seek
-      </span>
-      <span
-        className="pointer-events-none fixed right-4 bottom-6 z-20 select-none font-sans text-[clamp(2.5rem,9vw,5rem)] font-medium tracking-tight text-black/10 dark:text-white/10 sm:right-8"
-        aria-hidden
-      >
-        bible
-      </span>
+        <span
+          className="absolute bottom-0 select-none font-sans text-[clamp(2.5rem,9vw,5rem)] font-medium tracking-tight text-black dark:text-white will-change-transform"
+          style={{
+            left: "50%",
+            opacity: sideOpacity,
+            transform: `translateX(calc(-100% - ${halfGap}rem - ${fromCenter}vw)) scale(${sideScale})`,
+            transformOrigin: "right bottom",
+          }}
+        >
+          seek
+        </span>
+        <span
+          className="absolute bottom-0 select-none font-sans text-[clamp(2.5rem,9vw,5rem)] font-medium tracking-tight text-black dark:text-white will-change-transform"
+          style={{
+            left: "50%",
+            opacity: sideOpacity,
+            transform: `translateX(calc(${halfGap}rem + ${fromCenter}vw)) scale(${sideScale})`,
+            transformOrigin: "left bottom",
+          }}
+        >
+          bible
+        </span>
+      </div>
 
       <section className="relative z-10 flex min-h-[100dvh] flex-col px-5 pt-20 pb-10 sm:px-10 lg:px-16">
         <div className="flex items-start justify-between gap-6">
