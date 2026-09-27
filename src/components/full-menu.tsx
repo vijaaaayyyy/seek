@@ -10,6 +10,7 @@ const LINKS = [
   { n: "3", label: "Explore", to: "/explore" as const, match: (p: string) => p.startsWith("/explore") || p.startsWith("/search") },
   { n: "4", label: "Saved", to: "/saved" as const, match: (p: string) => p.startsWith("/saved") },
   { n: "5", label: "About", to: "/about" as const, match: (p: string) => p.startsWith("/about") },
+  { n: "6", label: "Contact", to: "/contact" as const, match: (p: string) => p.startsWith("/contact") },
 ] as const;
 
 export function FullMenu() {
@@ -36,7 +37,6 @@ export function FullMenu() {
 
   return (
     <>
-      {/* Fixed Menu / Close pill — bleibtgleich style */}
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -52,7 +52,6 @@ export function FullMenu() {
         {open ? "Close" : "Menu"}
       </button>
 
-      {/* Full-screen overlay */}
       <div
         id="seek-full-menu"
         role="dialog"
@@ -63,7 +62,6 @@ export function FullMenu() {
           open ? "visible opacity-100" : "invisible opacity-0 pointer-events-none",
         )}
       >
-        {/* Soft floating panels like the reference */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
           <div
             className={cn(
@@ -123,7 +121,6 @@ export function FullMenu() {
             })}
           </nav>
 
-          {/* Contact block — bleibtgleich style */}
           <div
             className={cn(
               "mt-10 max-w-md transition-all duration-500 delay-300 ease-out",
@@ -140,12 +137,11 @@ export function FullMenu() {
               {CONTACT_EMAIL}
             </a>
             <p className="mt-4 max-w-xs font-sans text-[13px] leading-relaxed text-ink/55">
-              Available for selected projects &amp; feedback on SEEK.
+              Available for selected projects & feedback on SEEK.
             </p>
           </div>
         </div>
 
-        {/* Side watermark labels */}
         <span
           className="pointer-events-none absolute bottom-6 left-4 select-none font-sans text-[clamp(2rem,8vw,4rem)] font-medium tracking-tight text-ink/[0.06] sm:left-8"
           aria-hidden
