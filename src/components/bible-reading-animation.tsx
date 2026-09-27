@@ -60,7 +60,7 @@ export function BibleReadingAnimation() {
           <p className="text-center font-sans text-[8px] font-medium tracking-[0.22em] uppercase" style={{ color: MUTED_BROWN }}>
             {leftRef}
           </p>
-          <p className="mt-1.5 text-center font-serif text-[11px] leading-[1.55] font-medium" style={{ color: "#1a1a1a" }}>
+          <p className="mt-1.5 text-center font-sans text-[11px] leading-[1.55] font-medium" style={{ color: "#1a1a1a" }}>
             {leftLine}
           </p>
           <div
@@ -74,7 +74,7 @@ export function BibleReadingAnimation() {
           <p className="text-center font-sans text-[8px] font-medium tracking-[0.22em] uppercase" style={{ color: MUTED_BROWN }}>
             {rightRef}
           </p>
-          <p className="mt-1.5 text-center font-serif text-[11px] leading-[1.55] font-medium" style={{ color: "#1a1a1a" }}>
+          <p className="mt-1.5 text-center font-sans text-[11px] leading-[1.55] font-medium" style={{ color: "#1a1a1a" }}>
             {rightLine}
           </p>
         </PageSurface>
@@ -90,7 +90,7 @@ export function BibleReadingAnimation() {
               <p className="text-center font-sans text-[8px] font-medium tracking-[0.22em] uppercase" style={{ color: MUTED_BROWN }}>
                 {REFS[pos]}
               </p>
-              <p className="mt-1.5 text-center font-serif text-[11px] leading-[1.55] font-medium" style={{ color: "#1a1a1a" }}>
+              <p className="mt-1.5 text-center font-sans text-[11px] leading-[1.55] font-medium" style={{ color: "#1a1a1a" }}>
                 {LINES[pos]}
               </p>
             </PageSurface>

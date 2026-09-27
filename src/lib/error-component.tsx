@@ -15,7 +15,7 @@ export function AppErrorComponent({ error }: ErrorComponentProps) {
       <span className="text-destructive" aria-hidden="true">
         <TriangleAlert className="size-10" strokeWidth={2} />
       </span>
-      <h1 className="font-serif text-lg font-medium">Something went wrong</h1>
+      <h1 className="font-sans text-lg font-medium">Something went wrong</h1>
       <p className="max-w-md font-sans text-sm break-words text-muted">
         {errorMessage(error)}
       </p>

@@ -7,7 +7,7 @@ export function NotFoundComponent() {
       <span className="glass grid size-14 place-items-center rounded-full" aria-hidden="true">
         <BookOpen className="size-6 text-forest" strokeWidth={1.8} />
       </span>
-      <h1 className="font-serif text-2xl font-medium text-ink">Page not found</h1>
+      <h1 className="font-sans text-2xl font-medium text-ink">Page not found</h1>
       <p className="max-w-xs font-sans text-sm leading-relaxed text-muted">
         This page isn&rsquo;t in the Bible. Let&rsquo;s get you back to the search.
       </p>

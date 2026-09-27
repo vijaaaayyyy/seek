@@ -11,6 +11,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { useState } from "react";
+import { Reveal } from "@/components/reveal";
 import { useTheme } from "@/components/theme-provider";
 import { authEnabled, signOut } from "@/lib/supa/client";
 import { useCurrentUserState } from "@/lib/supa/use-current-user";
@@ -125,9 +126,9 @@ function ProfilePage() {
 
   return (
     <div className="mx-auto w-full max-w-md pb-6">
-      <h1 className="text-center font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em] text-ink">
+      <Reveal as="h1" className="text-center font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em] text-ink">
         Profile
-      </h1>
+      </Reveal>
 
       <div className="mt-5 rounded-2xl border border-line bg-surface p-4 shadow-sm">
         <div className="flex items-center gap-3.5">

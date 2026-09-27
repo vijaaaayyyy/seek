@@ -6,6 +6,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Reveal } from "@/components/reveal";
 import { toast } from "sonner";
 import { BookPicker } from "@/components/book-picker";
 import { Highlighted } from "@/components/highlighted";
@@ -183,13 +184,18 @@ export function ChapterReader({
     <div className="relative pb-8">
       {/*
         The reader is one continuous scroll, so each chapter label is a plain
-        <p> and no visible element can own the page heading. This is that
-        heading: hidden visually, present for screen readers, crawlers and
-        anyone reading the page as plain text.
+        <p> and no inner element can own the page heading. This is that
+        heading, styled like every other page so the reader matches the rest.
       */}
-      <h1 className="sr-only">
-        {book.name} {chapter} — King James Bible
-      </h1>
+      <Reveal>
+        <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
+          King James Version
+        </p>
+        <h1 className="mt-3 font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em] text-ink">
+          {book.name} {chapter}
+        </h1>
+      </Reveal>
+
 
       <div className="sticky top-0 z-20 -mx-1 mt-0.5 mb-1 px-1 pb-2 pt-1 sm:px-1.5">
         <div className="glass glass-strong flex items-center justify-between gap-2 rounded-[22px] py-1.5 pr-1.5 pl-1 shadow-sm">
@@ -293,7 +299,7 @@ export function ChapterReader({
                         "bg-mark/55 ring-1 ring-forest/25 dark:bg-mark/40 dark:ring-forest/35",
                     )}
                   >
-                    <p className="font-serif text-[1.05rem] leading-[1.65] text-ink">
+                    <p className="font-sans text-[1.05rem] leading-[1.65] text-ink">
                       <sup
                         className={cn(
                           "mr-1.5 font-sans text-[11px] font-medium tabular-nums",
@@ -361,7 +367,7 @@ export function ChapterReader({
           <div className="w-full max-w-sm rounded-[24px] bg-paper p-5 shadow-2xl ring-1 ring-black/10 dark:ring-white/10">
             <p
               id="next-chapter-title"
-              className="font-serif text-[1.25rem] font-medium text-ink"
+              className="font-sans text-[1.25rem] font-medium text-ink"
             >
               Chapter {prompt.finished} finished
             </p>

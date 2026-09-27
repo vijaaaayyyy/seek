@@ -4,6 +4,7 @@ import { useEffect, type ReactNode } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { FullMenu } from "@/components/full-menu";
 import { BackdropField } from "@/components/backdrop-field";
+import { ScrollCurve } from "@/components/scroll-curve";
 import { SwapText } from "@/components/swap-text";
 import { UserMenu } from "@/components/user-menu";
 import { useHideOnScroll } from "@/hooks/use-hide-on-scroll";
@@ -109,6 +110,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     >
       {!isAuthCallback && <FullMenu />}
       {!isHome && <BackdropField base className="-z-10" />}
+      <ScrollCurve />
 
       <div className="relative z-10 hidden min-h-dvh flex-col lg:flex">
         {!isAuthCallback && (

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Reveal } from "@/components/reveal";
 import { BookPicker } from "@/components/book-picker";
 import { Highlighted } from "@/components/highlighted";
 import { ReadingModeToggle } from "@/components/reading-mode-toggle";
@@ -182,6 +183,15 @@ export function BookReader({
 
   return (
     <div className="pb-6">
+      <Reveal>
+        <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
+          King James Version
+        </p>
+        <h1 className="mt-3 font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em] text-ink">
+          {book.name} {chapter}
+        </h1>
+      </Reveal>
+
       <div className="sticky top-0 z-20 px-1 pb-1 pt-1 sm:px-1.5">
         <div className="glass glass-strong flex items-center justify-between gap-2 rounded-[22px] px-2 py-1.5">
           <div className="min-w-0 flex-1">
@@ -320,7 +330,7 @@ export function BookReader({
           aria-modal="true"
         >
           <div className="w-full max-w-sm rounded-[28px] bg-paper p-6 text-ink shadow-[0_24px_64px_rgba(0,0,0,0.35)] ring-1 ring-black/10 dark:bg-[#1a1c22] dark:ring-white/10">
-            <p className="font-serif text-[1.35rem] font-medium tracking-tight">
+            <p className="font-sans text-[1.35rem] font-medium tracking-tight">
               Chapter {chapter} finished
             </p>
             <p className="mt-2 font-sans text-[14px] leading-relaxed text-muted">
@@ -391,7 +401,7 @@ function PageSheet({
         <p className="font-sans text-[10px] font-medium tracking-[0.28em] text-muted uppercase">
           Holy Bible
         </p>
-        <p className="mt-0.5 font-serif text-[15px] leading-none font-medium tracking-tight">
+        <p className="mt-0.5 font-sans text-[15px] leading-none font-medium tracking-tight">
           {book.name} {chapter}
         </p>
         <span className="mx-auto mt-2 block h-px w-10 bg-line" />
@@ -403,7 +413,7 @@ function PageSheet({
             key={v.verse}
             id={`c${chapter}-v${v.verse}`}
             className={cn(
-              "group scroll-mt-24 rounded-lg px-1.5 py-0.5 font-serif text-[17px] leading-[1.7]",
+              "group scroll-mt-24 rounded-lg px-1.5 py-0.5 font-sans text-[17px] leading-[1.7]",
               i > 0 && "mt-1.5",
               focusVerse === v.verse &&
                 "bg-mark/55 ring-1 ring-forest/25 dark:bg-mark/40",

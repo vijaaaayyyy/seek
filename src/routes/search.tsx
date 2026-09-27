@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { SearchBox } from "@/components/search-box";
+import { Reveal } from "@/components/reveal";
 import { VerseCard } from "@/components/verse-card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -122,7 +123,16 @@ function SearchPage() {
 
   return (
     <div className="pb-28 lg:pb-16">
-      <div className="sticky top-0 z-20 -mx-1 mb-3 px-0.5 pb-2 pt-1">
+      <Reveal>
+        <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
+          Search
+        </p>
+        <h1 className="mt-3 font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em] text-ink">
+          {q.trim() ? <>Results for &ldquo;{q.trim()}&rdquo;</> : "Find the Word"}
+        </h1>
+      </Reveal>
+
+      <div className="sticky top-0 z-20 -mx-1 mb-3 px-0.5 pb-2 pt-6">
         <SearchBox initial={q} autoFocus={!q} />
       </div>
 

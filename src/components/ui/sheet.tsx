@@ -74,7 +74,7 @@ export function SheetTitle({
 }: ComponentPropsWithoutRef<typeof DialogPrimitive.Title>) {
   return (
     <DialogPrimitive.Title
-      className={cn("font-serif text-xl font-medium tracking-tight text-ink", className)}
+      className={cn("font-sans text-xl font-medium tracking-tight text-ink", className)}
       {...props}
     />
   );
