@@ -44,6 +44,24 @@ const DESKTOP_LINKS = [
   { to: "/profile", label: "Profile" },
 ] as const;
 
+const MARKETING = [
+  "/",
+  "/about",
+  "/contact",
+  "/pricing",
+  "/faq",
+  "/privacy",
+  "/terms",
+  "/changelog",
+  "/groups",
+  "/report-bug",
+  "/download",
+] as const;
+
+function isMarketingPath(pathname: string) {
+  return MARKETING.some((p) => pathname === p || (p !== "/" && pathname.startsWith(p)));
+}
+
 function LeafMark({ className }: { className?: string }) {
   return (
     <svg
@@ -65,6 +83,7 @@ function LeafMark({ className }: { className?: string }) {
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
+  const isMarketing = isMarketingPath(pathname);
   const isAuthCallback = pathname.startsWith("/auth/callback");
   const isRead = pathname.startsWith("/read");
   const isLogin = pathname.startsWith("/login");
@@ -78,12 +97,11 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const root = document.documentElement;
-    if (isHome) root.classList.add("home-canopy");
-    else root.classList.remove("home-canopy");
+    root.classList.remove("home-canopy");
 
     const syncChrome = () => {
       const theme = readStoredTheme() ?? systemTheme();
-      applyChrome(theme, { darkSurface: isHome || theme === "dark" });
+      applyChrome(theme, { darkSurface: theme === "dark" });
     };
 
     syncChrome();
@@ -110,7 +128,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {!isHome && <div className="app-atmosphere" aria-hidden />}
 
       <div className="relative z-10 hidden min-h-dvh flex-col lg:flex">
-        {!isAuthCallback && (
+        {!isAuthCallback && !isMarketing && (
           <header
             className={cn(
               "fixed top-0 right-0 left-0 z-40 flex items-center justify-center px-4 pt-4 pb-2 transition-transform duration-300 ease-out will-change-transform",
@@ -120,9 +138,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <div
               className={cn(
                 "flex h-12 w-fit max-w-[min(100%,40rem)] items-center gap-1 rounded-full px-2.5 shadow-sm ring-1 backdrop-blur-xl",
-                isHome
-                  ? "bg-white/85 ring-black/8 dark:bg-black/50 dark:ring-white/12"
-                  : "bg-white/55 ring-black/5 dark:bg-black/45 dark:ring-white/10",
+                "bg-white/55 ring-black/5 dark:bg-black/45 dark:ring-white/10",
               )}
             >
               <Link
@@ -160,12 +176,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 to="/download"
                 title="Download the app"
                 aria-label="Download the app"
-                className={cn(
-                  "absolute top-4 right-24 flex h-12 items-center gap-2 rounded-full px-4 font-sans text-[13px] font-medium shadow-sm ring-1 backdrop-blur-xl transition-all hover:opacity-90 active:scale-[0.98]",
-                  isHome
-                    ? "bg-white/85 text-ink ring-black/8 dark:bg-black/50 dark:text-[#f5f0e8] dark:ring-white/12"
-                    : "bg-white/55 text-ink ring-black/5 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/10",
-                )}
+                className="absolute top-4 right-24 flex h-12 items-center gap-2 rounded-full bg-white/55 px-4 font-sans text-[13px] font-medium text-ink shadow-sm ring-1 ring-black/5 backdrop-blur-xl transition-all hover:opacity-90 active:scale-[0.98] dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/10"
               >
                 <Download className="size-[18px]" strokeWidth={1.9} />
                 <span className="hidden sm:inline">Download</span>
@@ -176,7 +187,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         <main
           className={cn(
             "flex-1",
-            !isHome && "mx-auto w-full max-w-5xl px-6 pt-20 pb-16",
+            !isHome && !isMarketing && "mx-auto w-full max-w-5xl px-6 pt-20 pb-16",
+            isMarketing && !isHome && "mx-auto w-full max-w-5xl px-6 pt-16 pb-16",
             isHome && "pt-0",
             isAuthCallback && "flex items-center justify-center",
             isLogin && "pt-20",
@@ -190,10 +202,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div
           className={cn(
             "relative flex h-dvh w-full flex-col overflow-x-hidden overflow-y-hidden",
-            isHome ? "bg-transparent" : "app-device",
+            isHome || isMarketing ? "bg-transparent" : "app-device",
           )}
         >
-          {!isAuthCallback && (
+          {!isAuthCallback && !isMarketing && (
             <header
               className={cn(
                 "fixed top-0 right-0 left-0 z-30 w-full shrink-0 px-3 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 transition-transform duration-300 ease-out will-change-transform",
@@ -201,14 +213,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               )}
             >
               <div className="flex h-12 w-full items-center gap-2">
-                <div
-                  className={cn(
-                    "flex h-12 min-w-0 flex-1 items-center justify-between rounded-full pl-4 pr-1.5",
-                    isHome
-                      ? "bg-white/85 shadow-sm ring-1 ring-black/8 backdrop-blur-xl dark:bg-black/45 dark:ring-white/12"
-                      : "glass",
-                  )}
-                >
+                <div className="glass flex h-12 min-w-0 flex-1 items-center justify-between rounded-full pl-4 pr-1.5">
                   <Link to="/" className="flex min-h-10 items-center gap-1.5">
                     <LeafMark className="size-4 text-forest" />
                     <span className="font-serif text-[1.2rem] leading-none tracking-[0.04em] text-ink">
@@ -225,12 +230,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     to="/download"
                     title="Download the app"
                     aria-label="Download the app"
-                    className={cn(
-                      "flex size-12 shrink-0 items-center justify-center rounded-full shadow-sm ring-1 backdrop-blur-xl transition-all active:scale-95",
-                      isHome
-                        ? "bg-white/85 text-ink ring-black/8 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/12"
-                        : "bg-white/70 text-ink ring-black/8 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/12",
-                    )}
+                    className="flex size-12 shrink-0 items-center justify-center rounded-full bg-white/70 text-ink shadow-sm ring-1 ring-black/8 backdrop-blur-xl transition-all active:scale-95 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/12"
                   >
                     <Download className="size-[18px]" strokeWidth={1.9} />
                   </Link>
@@ -243,13 +243,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             className={cn(
               "hide-scrollbar min-h-0 w-full flex-1 overflow-x-hidden overflow-y-auto px-4 pt-16",
               isRead ? "px-0 pt-16 pb-28" : null,
-              isHome ? "px-0 pt-0 pb-0" : "pb-28",
+              isHome || isMarketing ? "px-0 pt-0 pb-0" : "pb-28",
             )}
           >
             {children}
           </main>
 
-          {!isAuthCallback && (
+          {!isAuthCallback && !isMarketing && (
             <nav
               className={cn(
                 "absolute inset-x-0 bottom-0 z-40 flex justify-center px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] transition-transform duration-300 ease-out",
