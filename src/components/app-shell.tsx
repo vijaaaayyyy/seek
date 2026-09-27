@@ -246,7 +246,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             className={cn(
               "hide-scrollbar min-h-0 w-full flex-1 overflow-x-hidden overflow-y-auto px-4 pt-16",
               isRead ? "px-0 pt-16 pb-28" : null,
-              isHome ? "px-0 pt-0 pb-0" : "pb-28",
+              isHome ? "px-0 pt-0 pb-20" : "pb-28",
             )}
           >
             {children}
@@ -255,15 +255,16 @@ export function AppShell({ children }: { children: ReactNode }) {
           {!isAuthCallback && (
             <nav
               className={cn(
-                "absolute inset-x-0 bottom-0 z-40 flex justify-center px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] transition-transform duration-300 ease-out",
+                "absolute inset-x-0 bottom-0 z-40 border-t border-line bg-paper/92 backdrop-blur-xl transition-transform duration-300 ease-out dark:border-white/10",
+                "pb-[env(safe-area-inset-bottom)]",
                 navHidden ? "translate-y-[140%]" : "translate-y-0",
               )}
               aria-label="Primary"
             >
-              <div className="glass glass-strong relative grid h-[4rem] w-full max-w-[min(100%,28rem)] grid-cols-4 rounded-full p-1.5">
+              <div className="relative grid h-16 w-full grid-cols-4 px-1.5">
                 <div
                   aria-hidden
-                  className="absolute top-1.5 bottom-1.5 left-1.5 w-[calc((100%-0.75rem)/4)] rounded-full bg-ink/10 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] dark:bg-paper/14"
+                  className="absolute top-2 bottom-2 left-1.5 w-[calc((100%-0.75rem)/4)] rounded-full bg-ink/10 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] dark:bg-paper/14"
                   style={{ transform: `translateX(${activeIndex * 100}%)` }}
                 />
                 {MOBILE_NAV.map((item) => {
