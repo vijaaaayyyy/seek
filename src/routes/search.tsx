@@ -269,7 +269,7 @@ function ResultSkeleton() {
 function EmptyState({ query }: { query: string }) {
   return (
     <div className="glass rounded-[22px] px-5 py-8 text-center">
-      <p className="font-serif text-xl text-ink">No wording match for “{query}”</p>
+      <p className="font-sans text-xl text-ink">No wording match for “{query}”</p>
       <p className="mt-2 font-sans text-sm text-muted">
         Meaning search still looks for the intention behind those words.
       </p>

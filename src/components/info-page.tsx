@@ -23,10 +23,7 @@ export function InfoPage({
 }) {
   return (
     <div className={cn("relative mx-auto w-full max-w-4xl pb-8", className)}>
-      <div className="pointer-events-none absolute inset-x-0 -top-24 -z-10 h-[40vh] overflow-hidden" aria-hidden>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,color-mix(in_oklab,var(--orb-a)_30%,transparent),transparent_55%)]" />
-        <div className="absolute right-[10%] top-8 h-[18vmin] w-[22vmin] rounded-sm bg-ink/[0.03] blur-sm dark:bg-ink/[0.06]" />
-      </div>
+
 
       <div className="mb-10 flex items-center justify-between gap-4">
         <Link
@@ -44,7 +41,7 @@ export function InfoPage({
         SEEK
       </Reveal>
       <Reveal delay={40} className="mt-3 max-w-3xl">
-        <h1 className="font-sans text-[clamp(2.4rem,7vw,4.25rem)] font-medium leading-[0.95] tracking-[-0.03em] text-ink">
+        <h1 className="font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em] text-ink">
           {title}
         </h1>
       </Reveal>
@@ -56,7 +53,7 @@ export function InfoPage({
         {sections.map((s, i) => (
           <Reveal key={i} delay={Math.min(i * 35, 200)} as="div" className="border-t border-ink/10 pt-8">
             {s.title && (
-              <h2 className="font-sans text-[clamp(1.25rem,3vw,1.65rem)] font-medium tracking-[-0.02em] text-ink">
+              <h2 className="font-sans text-[length:var(--type-lede)] font-medium tracking-[-0.02em] text-ink">
                 {s.title}
               </h2>
             )}

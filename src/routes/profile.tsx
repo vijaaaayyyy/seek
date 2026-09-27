@@ -125,7 +125,7 @@ function ProfilePage() {
 
   return (
     <div className="mx-auto w-full max-w-md pb-6">
-      <h1 className="text-center font-serif text-[1.4rem] font-medium tracking-tight text-ink">
+      <h1 className="text-center font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em] text-ink">
         Profile
       </h1>
 
@@ -140,7 +140,7 @@ function ProfilePage() {
               className="size-14 rounded-full object-cover ring-2 ring-line"
             />
           ) : (
-            <span className="grid size-14 place-items-center rounded-full bg-forest/20 font-serif text-xl font-medium text-forest">
+            <span className="grid size-14 place-items-center rounded-full bg-forest/20 font-sans text-xl font-medium text-forest">
               {initial}
             </span>
           )}

@@ -18,11 +18,6 @@ const EMAIL = "vijay.peddenti434@gmail.com";
 function Contact() {
   return (
     <div className="relative mx-auto w-full max-w-4xl pb-16">
-      <div className="pointer-events-none absolute inset-x-0 -top-24 -z-10 h-[50vh] overflow-hidden" aria-hidden>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_10%,color-mix(in_oklab,var(--orb-b)_32%,transparent),transparent_50%)]" />
-        <div className="absolute left-[8%] top-16 h-[24vmin] w-[30vmin] rounded-sm bg-ink/[0.03] blur-[1px] dark:bg-ink/[0.06]" />
-        <div className="absolute right-[12%] top-4 h-[18vmin] w-[20vmin] rounded-sm bg-ink/[0.04] blur-sm dark:bg-ink/[0.07]" />
-      </div>
 
       <Link
         to="/"
@@ -35,7 +30,7 @@ function Contact() {
         Contact
       </Reveal>
       <Reveal delay={40} className="mt-3">
-        <h1 className="max-w-2xl font-sans text-[clamp(2.6rem,8vw,4.5rem)] font-medium leading-[0.95] tracking-[-0.03em] text-ink">
+        <h1 className="max-w-2xl font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em] text-ink">
           Write
           <br />
           directly.
@@ -52,7 +47,7 @@ function Contact() {
         </p>
         <a
           href={`mailto:${EMAIL}`}
-          className="mt-3 block font-serif text-[clamp(1.25rem,3.5vw,1.85rem)] leading-snug text-ink underline-offset-4 hover:underline"
+          className="mt-3 block font-sans text-[clamp(1.25rem,3.5vw,1.85rem)] leading-snug text-ink underline-offset-4 hover:underline"
         >
           {EMAIL}
         </a>

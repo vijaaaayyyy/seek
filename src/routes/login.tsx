@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
+import { Reveal } from "@/components/reveal";
 import { BookOpen, LockKeyhole, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -135,9 +136,9 @@ function LoginPage() {
           King James Bible
         </span>
       </div>
-      <h1 className="font-serif text-[2rem] font-medium text-ink">
+      <Reveal as="h1" className="font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em] text-ink">
         {mode === "signin" ? "Welcome back" : "Create account"}
-      </h1>
+      </Reveal>
       <p className="mt-2 text-center font-sans text-[14px] text-muted">
         {mode === "signin"
           ? "Sign in to save verses and keep your place."

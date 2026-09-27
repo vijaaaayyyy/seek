@@ -7,29 +7,41 @@
 :root {
   color-scheme: light;
 
-  --paper: #f7f5f0;
+  --paper: #f4f4f4;
   --surface: #ffffff;
-  --ink: #1c1915;
-  --muted: #6d655c;
-  --faint: #9a9288;
+  --ink: #000000;
+  --muted: #666666;
+  --faint: #949494;
   --line: color-mix(in oklab, var(--ink) 10%, transparent);
-  --forest: #3f4a42;
-  --forest-fg: #f4efe4;
-  --mark: #e8d7a8;
+  --forest: #000000;
+  --forest-fg: #f4f4f4;
+  --mark: #dcdcdc;
   --wash: color-mix(in oklab, var(--ink) 6%, transparent);
-  --tint: #3f4a42;
+  --tint: #000000;
 
-  --glass-fill: color-mix(in oklab, #fffaf4 46%, transparent);
-  --glass-fill-strong: color-mix(in oklab, #fffaf4 68%, transparent);
+  --glass-fill: color-mix(in oklab, #ffffff 46%, transparent);
+  --glass-fill-strong: color-mix(in oklab, #ffffff 68%, transparent);
   --glass-stroke: color-mix(in oklab, #ffffff 70%, transparent);
   --glass-sheen: color-mix(in oklab, #ffffff 86%, transparent);
   --glass-inset: color-mix(in oklab, var(--ink) 7%, transparent);
   --glass-drop: color-mix(in oklab, var(--ink) 12%, transparent);
   --glass-blur: 32px;
 
-  --orb-a: #f0c49a;
-  --orb-b: #b7cbb8;
-  --orb-c: #e8c8bc;
+  --orb-a: #d0d0d0;
+
+  /* One type scale, shared by every page. Home's hero may use --type-display;
+     every page title uses --type-title so no two pages disagree. */
+  --type-display: clamp(4.5rem, 18vw, 13rem);
+  --type-title: clamp(2.5rem, 8vw, 5.5rem);
+  --type-subtitle: clamp(2rem, 6vw, 3.5rem);
+  --type-quote: clamp(1.35rem, 3.5vw, 2.25rem);
+  --type-stat: clamp(1.75rem, 4vw, 2.75rem);
+  --type-lede: clamp(1.15rem, 2.6vw, 1.5rem);
+  --type-body: 15px;
+  --type-label: 11px;
+  --type-meta: 12px;
+  --orb-b: #d0d0d0;
+  --orb-c: #d0d0d0;
 
   --banner: #fafaf5;
 
@@ -43,14 +55,14 @@
   --paper: #0c0d12;
   --surface: #1a1c26;
   --ink: #f5f0e8;
-  --muted: #c4bbb0;
-  --faint: #9a9085;
+    --muted: #b4b4b4;
+    --faint: #8a8a8a;
   --line: color-mix(in oklab, var(--ink) 18%, transparent);
-  --forest: #d2dfd4;
-  --forest-fg: #10140f;
-  --mark: #6b5a32;
+  --forest: #f5f0e8;
+  --forest-fg: #0c0d12;
+  --mark: #3a3a3a;
   --wash: color-mix(in oklab, var(--ink) 12%, transparent);
-  --tint: #d2dfd4;
+  --tint: #f5f0e8;
 
   --glass-fill: color-mix(in oklab, #222636 72%, transparent);
   --glass-fill-strong: color-mix(in oklab, #2a2f40 88%, transparent);
@@ -60,9 +72,9 @@
   --glass-drop: color-mix(in oklab, #000000 50%, transparent);
   --glass-blur: 36px;
 
-  --orb-a: #2a3558;
-  --orb-b: #3a2e1c;
-  --orb-c: #1a2238;
+  --orb-a: #3a3a44;
+  --orb-b: #3a3a44;
+  --orb-c: #3a3a44;
 
   --banner: #1a2030;
 }
@@ -159,19 +171,6 @@
 }
 
 @layer utilities {
-  .app-atmosphere {
-    pointer-events: none;
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    overflow: hidden;
-    background:
-      radial-gradient(ellipse 80% 50% at 50% -10%, var(--orb-a), transparent 55%),
-      radial-gradient(ellipse 70% 45% at 80% 100%, var(--orb-b), transparent 50%),
-      radial-gradient(ellipse 60% 40% at 10% 90%, var(--orb-c), transparent 50%),
-      var(--paper);
-  }
-
   .app-device {
     background: color-mix(in oklab, var(--paper) 28%, transparent);
   }

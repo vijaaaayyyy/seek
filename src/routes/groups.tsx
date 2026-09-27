@@ -80,7 +80,7 @@ function Groups() {
                       {s.n}
                     </span>
                     <span>
-                      <span className="block font-serif text-[1.05rem] font-medium text-ink">
+                      <span className="block font-sans text-[1.05rem] font-medium text-ink">
                         {s.title}
                       </span>
                       <span className="mt-1 block font-sans text-[13.5px] leading-relaxed text-muted">

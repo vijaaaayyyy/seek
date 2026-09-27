@@ -47,7 +47,7 @@ function BookPin({ book }: { book: BookMeta }) {
 
       <h2
         className={cn(
-          "mt-1.5 font-serif leading-[1.08] font-medium tracking-tight text-ink text-balance",
+          "mt-1.5 font-sans leading-[1.08] font-medium tracking-tight text-ink text-balance",
           tier === 0 ? "text-[1.35rem]" : tier === 1 ? "text-[1.5rem]" : "text-[1.65rem]",
         )}
       >

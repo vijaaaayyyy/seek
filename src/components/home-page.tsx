@@ -2,6 +2,9 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useSeekStore } from "@/lib/store";
 import { Search } from "lucide-react";
+import { Reveal } from "@/components/reveal";
+import { BackdropField } from "@/components/backdrop-field";
+import { BOOKS } from "@/data/books";
 
 const EXAMPLES = [
   "God so loved the world",
@@ -26,17 +29,24 @@ export function Home() {
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const measure = () => {
+    // The shell pins the document and lets an inner <main> scroll on small
+    // screens, so the offset has to come from whichever element actually
+    // scrolled — reading window.scrollY alone pins this to 0 on mobile.
+    const readScroll = (target?: EventTarget | null) => {
+      const node = target instanceof HTMLElement ? target : null;
+      if (node && node !== document.body && node !== document.documentElement) {
+        setScrollY(node.scrollTop);
+        setDocH(node.scrollHeight || 1);
+        setVh(node.clientHeight || window.innerHeight || 1);
+        return;
+      }
+      setScrollY(window.scrollY || document.documentElement.scrollTop);
       setDocH(document.documentElement.scrollHeight || 1);
       setVh(window.innerHeight || 1);
     };
-    const onScroll = () => setScrollY(window.scrollY || document.documentElement.scrollTop);
-    const onResize = () => {
-      measure();
-      onScroll();
-    };
-    measure();
-    onScroll();
+    const onScroll = (e: Event) => readScroll(e.target);
+    const onResize = () => readScroll(null);
+    readScroll(null);
     window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("scroll", onScroll, { capture: true, passive: true });
     window.addEventListener("resize", onResize);
@@ -72,34 +82,39 @@ export function Home() {
     return t * t * (3 - 2 * t); // smoothstep
   }, [scrollY, docH, vh]);
 
+  const halfGap = 0.8; // rem of breathing room between the words
   const sideOpacity = 0.14 + merge * 0.5;
   const sideScale = 1 + merge * 0.12;
-  const fromCenter = 42 * (1 - merge); // vw of remaining offset; 0 when joined
-  const halfGap = 0.8; // rem of breathing room between the words
+
+  // Travel is measured, not guessed: each word starts fully on-screen and only
+  // as far out as the viewport allows, so neither hangs past the edge.
+  const seekRef = useRef<HTMLSpanElement | null>(null);
+  const bibleRef = useRef<HTMLSpanElement | null>(null);
+  const [side, setSide] = useState({ wordPx: 0, vwPx: 1 });
+
+  useEffect(() => {
+    const measure = () => {
+      const a = seekRef.current?.offsetWidth ?? 0;
+      const b = bibleRef.current?.offsetWidth ?? 0;
+      setSide({ wordPx: Math.max(a, b), vwPx: window.innerWidth || 1 });
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  const roomPx = Math.max(
+    0,
+    side.vwPx / 2 - halfGap * 16 - side.wordPx * sideScale - 16,
+  );
+  const fromCenter = side.wordPx ? (roomPx / side.vwPx) * 100 * (1 - merge) : 0;
 
   return (
     <div
       ref={rootRef}
-      className="relative min-h-[100dvh] bg-[#f4f4f4] text-black dark:bg-[#0c0d12] dark:text-[#f5f0e8]"
+      className="relative min-h-[100dvh] bg-[var(--paper)] text-[var(--ink)]"
     >
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
-        <div
-          className="absolute left-[4%] top-[18%] h-[22vmin] w-[32vmin] rounded-sm bg-black/10 blur-[18px] dark:bg-white/8"
-          style={{ transform: `translate3d(0, ${p1 * 0.4}px, 0)` }}
-        />
-        <div
-          className="absolute right-[6%] top-[28%] h-[26vmin] w-[34vmin] rounded-sm bg-black/12 blur-[22px] dark:bg-white/10"
-          style={{ transform: `translate3d(0, ${-p2 * 0.5}px, 0)` }}
-        />
-        <div
-          className="absolute bottom-[12%] left-[18%] h-[18vmin] w-[28vmin] rounded-sm bg-black/8 blur-[16px] dark:bg-white/6"
-          style={{ transform: `translate3d(0, ${p3 * 0.3}px, 0)` }}
-        />
-        <div
-          className="absolute left-[12%] top-[8%] h-[14vmin] w-[11vmin] bg-black dark:bg-white"
-          style={{ transform: `translate3d(0, ${p2 * 0.25}px, 0)` }}
-        />
-      </div>
+      <BackdropField p1={p1} p2={p2} p3={p3} className="z-0" />
 
       {/* seek ←→ bible: slide in from the sides, meet as one phrase, stop */}
       <div
@@ -107,6 +122,7 @@ export function Home() {
         aria-hidden
       >
         <span
+          ref={seekRef}
           className="absolute bottom-0 select-none font-sans text-[clamp(2.5rem,9vw,5rem)] font-medium tracking-tight text-black dark:text-white will-change-transform"
           style={{
             left: "50%",
@@ -118,6 +134,7 @@ export function Home() {
           seek
         </span>
         <span
+          ref={bibleRef}
           className="absolute bottom-0 select-none font-sans text-[clamp(2.5rem,9vw,5rem)] font-medium tracking-tight text-black dark:text-white will-change-transform"
           style={{
             left: "50%",
@@ -157,13 +174,13 @@ export function Home() {
             Scripture
           </p>
 
-          <div className="relative z-10 mt-[34vh] w-full max-w-md border border-black/10 bg-white/25 px-6 py-6 backdrop-blur-md dark:border-white/15 dark:bg-white/5 sm:px-8">
+          <div className="relative z-10 mt-[34vh] w-full max-w-md">
             <form onSubmit={submit}>
               <label htmlFor="home-search" className="sr-only">
                 Search the Bible
               </label>
-              <div className="flex items-center gap-3 border-b border-black/20 pb-3 dark:border-white/25">
-                <Search className="size-4 shrink-0 opacity-50" strokeWidth={1.6} />
+              <div className="flex items-center gap-3 border-b border-black/15 pb-3 dark:border-white/20">
+                <Search className="size-4 shrink-0 opacity-40" strokeWidth={1.6} />
                 <input
                   id="home-search"
                   value={value}
@@ -421,7 +438,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10px-5 py-28 dark:border-white/10 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-28 dark:border-white/10 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
             Seek by meaning
@@ -454,7 +471,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10px-5 py-32 dark:border-white/10 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-32 dark:border-white/10 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-4xl">
           <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
             John 3:16
@@ -474,78 +491,330 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10px-5 py-32 dark:border-white/10 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-28 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
-          <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
-            Write directly
-          </p>
-          <h2 className="mt-4 font-sans text-[clamp(2.5rem,8vw,5.5rem)] font-medium leading-[0.95] tracking-[-0.03em]">
-            Contact
-          </h2>
-          <a
-            href="mailto:vijay.peddenti434@gmail.com"
-            className="mt-8 block font-sans text-[clamp(1rem,2.5vw,1.35rem)] underline-offset-4 hover:underline"
+          <Reveal
+            as="p"
+            className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40"
           >
-            vijay.peddenti434@gmail.com
-          </a>
-          <div className="mt-16 flex flex-wrap gap-x-8 gap-y-3 font-sans text-[13px] text-black/45 dark:text-white/45">
-            <Link to="/about" className="hover:text-black dark:hover:text-white">
-              About
+            What&rsquo;s inside
+          </Reveal>
+          <Reveal delay={60}>
+            <h2 className="mt-4 max-w-3xl font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em]">
+              Everything you need to read it properly.
+            </h2>
+          </Reveal>
+
+          <ul className="mt-16 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                n: "01",
+                t: "The whole Bible",
+                d: "All 66 books, 1,189 chapters, in the King James Version of 1906 — complete and in the public domain.",
+              },
+              {
+                n: "02",
+                t: "Search by meaning",
+                d: "Describe the idea in your own words and find the passages that carry it, not just the exact words.",
+              },
+              {
+                n: "03",
+                t: "Search by phrase",
+                d: "Half-remember a line and get there quickly. Every word of the KJV is indexed and searchable.",
+              },
+              {
+                n: "04",
+                t: "Read it anywhere",
+                d: "Install it on a phone or laptop and keep every chapter available without a connection.",
+              },
+              {
+                n: "05",
+                t: "Keep what matters",
+                d: "Save passages and chapters to your own list so you can come back to them at any time.",
+              },
+              {
+                n: "06",
+                t: "Share a passage",
+                d: "Send any verse or chapter straight to someone else, formatted and ready to read.",
+              },
+            ].map((f, i) => (
+              <Reveal as="li" key={f.n} delay={i * 60}>
+                <p className="font-sans text-[12px] tracking-[0.18em] text-black/35 dark:text-white/35">
+                  {f.n}
+                </p>
+                <h3 className="mt-3 font-sans text-[1.15rem] font-medium tracking-[-0.02em]">
+                  {f.t}
+                </h3>
+                <p className="mt-3 font-sans text-[14px] leading-relaxed text-black/55 dark:text-white/55">
+                  {f.d}
+                </p>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="relative z-10 px-5 py-28 sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-5xl">
+          <Reveal
+            as="p"
+            className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40"
+          >
+            How it works
+          </Reveal>
+          <ol className="mt-14 divide-y divide-black/10 dark:divide-white/10">
+            {[
+              {
+                n: "01",
+                t: "Ask for what you mean",
+                d: "Search a feeling, a theme, or a line you almost remember.",
+              },
+              {
+                n: "02",
+                t: "Open the chapter",
+                d: "Read it in full, in the KJV, laid out for study rather than skimming.",
+              },
+              {
+                n: "03",
+                t: "Keep or pass it on",
+                d: "Save it to your list, or share it with whoever you had in mind.",
+              },
+            ].map((s, i) => (
+              <Reveal as="li" key={s.n} delay={i * 70}>
+                <div className="flex flex-col gap-3 py-8 sm:flex-row sm:gap-10">
+                  <p className="font-sans text-[clamp(1.5rem,4vw,2.5rem)] font-medium tracking-tight sm:w-16">
+                    {s.n}
+                  </p>
+                  <h3 className="font-sans text-[clamp(1.15rem,2.5vw,1.5rem)] font-medium tracking-[-0.02em] sm:w-64">
+                    {s.t}
+                  </h3>
+                  <p className="max-w-md font-sans text-[14px] leading-relaxed text-black/55 sm:ml-auto dark:text-white/55">
+                    {s.d}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="relative z-10 px-5 py-28 sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-5xl">
+          <Reveal
+            as="p"
+            className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40"
+          >
+            Read by reference
+          </Reveal>
+          <Reveal delay={60}>
+            <h2 className="mt-4 font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em]">
+              Genesis to Revelation.
+            </h2>
+          </Reveal>
+          <Reveal delay={120}>
+            <ul className="mt-14 flex flex-wrap gap-x-3 gap-y-2">
+              {BOOKS.map((b) => (
+                <li key={b.slug}>
+                  <Link
+                    to="/read/$book/$chapter"
+                    params={{ book: b.slug, chapter: "1" }}
+                    className="inline-block border border-black/12 px-4 py-2 font-sans text-[13px] transition hover:border-black/40 hover:opacity-70 dark:border-white/15 dark:hover:border-white/45"
+                  >
+                    {b.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+          <Reveal delay={180}>
+            <Link
+              to="/books"
+              className="mt-12 inline-block font-sans text-[12px] tracking-[0.16em] uppercase underline underline-offset-4"
+            >
+              Browse all 66 books
             </Link>
-            <Link to="/books" className="hover:text-black dark:hover:text-white">
-              Bible
-            </Link>
-            <Link to="/faq" className="hover:text-black dark:hover:text-white">
-              FAQ
-            </Link>
-            <Link to="/contact" className="hover:text-black dark:hover:text-white">
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="relative z-10 px-5 py-32 sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-5xl">
+          <Reveal
+            as="p"
+            className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40"
+          >
+            Start anywhere
+          </Reveal>
+          <Reveal delay={60}>
+            <p className="mt-4 max-w-4xl font-sans text-[clamp(2.5rem,8vw,6rem)] font-medium leading-[0.95] tracking-[-0.03em]">
+              The Word is free.
+              <br />
+              <span className="text-black/30 dark:text-white/30">So is this.</span>
+            </p>
+          </Reveal>
+          <Reveal delay={120}>
+            <div className="mt-14 flex flex-wrap gap-4">
+              <Link
+                to="/books"
+                className="border border-black bg-black px-7 py-3.5 font-sans text-[12px] tracking-[0.16em] text-white uppercase transition hover:opacity-75 dark:border-white dark:bg-white dark:text-black"
+              >
+                Read now
+              </Link>
+              <Link
+                to="/download"
+                className="border border-black/20 px-7 py-3.5 font-sans text-[12px] tracking-[0.16em] uppercase transition hover:border-black/60 dark:border-white/25 dark:hover:border-white/60"
+              >
+                Install the app
+              </Link>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="relative z-10 px-5 py-32 sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-5xl">
+          <Reveal
+            as="p"
+            className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40"
+          >
+            Write directly
+          </Reveal>
+          <Reveal delay={60}>
+            <h2 className="mt-4 font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em]">
               Contact
-            </Link>
-          </div>
+            </h2>
+          </Reveal>
+          <Reveal delay={120}>
+            <a
+              href="mailto:vijay.peddenti434@gmail.com"
+              className="mt-8 block font-sans text-[clamp(1rem,2.5vw,1.35rem)] underline underline-offset-4"
+            >
+              vijay.peddenti434@gmail.com
+            </a>
+          </Reveal>
+          <Reveal delay={180}>
+            <div className="mt-16 flex flex-wrap gap-x-8 gap-y-3 font-sans text-[13px] text-black/45 dark:text-white/45">
+              <Link to="/about" className="hover:text-black dark:hover:text-white">
+                About
+              </Link>
+              <Link to="/books" className="hover:text-black dark:hover:text-white">
+                Bible
+              </Link>
+              <Link to="/faq" className="hover:text-black dark:hover:text-white">
+                FAQ
+              </Link>
+              <Link to="/contact" className="hover:text-black dark:hover:text-white">
+                Contact
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
 
       <footer className="relative z-10 px-5 py-20 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
-          <div className="flex items-baseline justify-between gap-6">
-            <span className="font-sans text-[clamp(3rem,11vw,7.5rem)] font-medium leading-none tracking-[-0.04em]">
-              SEEK
-            </span>
-            <span className="font-sans text-[clamp(3rem,11vw,7.5rem)] font-medium leading-none tracking-[-0.04em]">
-              BIBLE
-            </span>
+          <div className="flex flex-col gap-12 sm:flex-row sm:items-start sm:justify-between">
+            <div className="max-w-xs">
+              <p className="font-sans text-[clamp(1.5rem,4vw,2.25rem)] font-medium leading-[1.1] tracking-[-0.02em]">
+                The Word,
+                <span className="block text-black/30 dark:text-white/30">kept free.</span>
+              </p>
+              <p className="mt-5 font-sans text-[13px] leading-relaxed text-black/50 dark:text-white/50">
+                The King James Bible, complete and public domain. Search by meaning or
+                read by reference — no ads, no paywall, no account required.
+              </p>
+              <a
+                href="mailto:vijay.peddenti434@gmail.com"
+                className="mt-5 inline-block font-sans text-[13px] underline underline-offset-4"
+              >
+                vijay.peddenti434@gmail.com
+              </a>
+              <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4">
+                {[
+                  { t: "Books", v: "66" },
+                  { t: "Chapters", v: "1,189" },
+                  { t: "Version", v: "KJV 1906" },
+                  { t: "Cost", v: "Free" },
+                ].map((s) => (
+                  <div key={s.t}>
+                    <dt className="font-sans text-[11px] tracking-[0.18em] text-black/35 uppercase dark:text-white/35">
+                      {s.t}
+                    </dt>
+                    <dd className="mt-1 font-sans text-[15px] font-medium tracking-[-0.01em]">
+                      {s.v}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+
+            <nav aria-label="Footer" className="grid flex-1 grid-cols-2 gap-x-8 gap-y-10 sm:max-w-md sm:grid-cols-4">
+              {[
+                {
+                  h: "Read",
+                  items: [
+                    { l: "All books", to: "/books" },
+                    { l: "Explore", to: "/explore" },
+                    { l: "Saved", to: "/saved" },
+                    { l: "Groups", to: "/groups" },
+                  ],
+                },
+                {
+                  h: "Learn",
+                  items: [
+                    { l: "About", to: "/about" },
+                    { l: "FAQ", to: "/faq" },
+                    { l: "Pricing", to: "/pricing" },
+                    { l: "Changelog", to: "/changelog" },
+                  ],
+                },
+                {
+                  h: "Project",
+                  items: [
+                    { l: "Download", to: "/download" },
+                    { l: "Contact", to: "/contact" },
+                    { l: "Report a bug", to: "/report-bug" },
+                    { l: "Source text", to: "/privacy" },
+                  ],
+                },
+                {
+                  h: "Legal",
+                  items: [
+                    { l: "Terms", to: "/terms" },
+                    { l: "Privacy", to: "/privacy" },
+                    { l: "Log in", to: "/login" },
+                    { l: "Profile", to: "/profile" },
+                  ],
+                },
+              ].map((col) => (
+                <div key={col.h}>
+                  <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
+                    {col.h}
+                  </p>
+                  <ul className="mt-4 space-y-2">
+                    {col.items.map((it) => (
+                      <li key={it.to + it.l}>
+                        <Link
+                          to={it.to}
+                          className="font-sans text-[13px] text-black/60 transition hover:text-black dark:text-white/60 dark:hover:text-white"
+                        >
+                          {it.l}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </nav>
           </div>
 
-          <div className="mt-12 flex flex-col items-center gap-2 text-center">
+          <div className="mt-16 flex flex-col items-center gap-2 border-t border-black/10 pt-8 text-center dark:border-white/10">
             <p className="font-sans text-[12px] text-black/40 dark:text-white/40">
               © {new Date().getFullYear()} SEEK · KJV public domain
             </p>
             <p className="font-sans text-[12px] text-black/40 dark:text-white/40">
-              Free · No ads · No paywall
+              Free · No ads · No paywall · No tracking
             </p>
-            <nav
-              aria-label="Footer"
-              className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-sans text-[12px] text-black/40 dark:text-white/40"
-            >
-              <Link to="/about" className="transition hover:text-black dark:hover:text-white">
-                About
-              </Link>
-              <Link to="/books" className="transition hover:text-black dark:hover:text-white">
-                Bible
-              </Link>
-              <Link to="/faq" className="transition hover:text-black dark:hover:text-white">
-                FAQ
-              </Link>
-              <Link to="/groups" className="transition hover:text-black dark:hover:text-white">
-                Groups
-              </Link>
-              <Link to="/contact" className="transition hover:text-black dark:hover:text-white">
-                Contact
-              </Link>
-              <Link to="/download" className="transition hover:text-black dark:hover:text-white">
-                Download
-              </Link>
-            </nav>
           </div>
         </div>
       </footer>

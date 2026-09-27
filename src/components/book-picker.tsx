@@ -72,7 +72,7 @@ export function BookPicker({ book, chapter }: { book: BookMeta; chapter: number 
           type="button"
           className="inline-flex min-h-11 items-center gap-1.5 rounded-2xl px-3 text-left transition-colors hover:bg-ink/6 active:scale-[0.98]"
         >
-          <span className="font-serif text-xl font-medium tracking-tight">
+          <span className="font-sans text-xl font-medium tracking-tight">
             {book.name} {chapter}
           </span>
           <ChevronDown className="size-4 text-muted" />
@@ -110,7 +110,7 @@ export function BookPicker({ book, chapter }: { book: BookMeta; chapter: number 
                         type="button"
                         onClick={() => setPicking(b)}
                         className={cn(
-                          "w-full border-b border-line/40 px-4 py-3 text-left font-serif text-base transition-colors last:border-b-0",
+                          "w-full border-b border-line/40 px-4 py-3 text-left font-sans text-base transition-colors last:border-b-0",
                           active ? "bg-ink/10 text-ink" : "text-ink hover:bg-ink/5",
                         )}
                       >

@@ -304,7 +304,7 @@ export function BookReader({
               "flex h-12 min-w-[4.5rem] items-center justify-center gap-1.5 rounded-full border font-sans text-[13px] font-medium transition-all duration-150 active:scale-[0.96]",
               chapterPrompt
                 ? "border-line/50 text-faint opacity-35"
-                : "border-ink/20 bg-ink text-paper hover:bg-ink/90 dark:bg-[#f5f0e8] dark:text-ink dark:hover:bg-[#f5f0e8]/90",
+                : "border-ink/20 bg-ink text-paper hover:bg-ink/90 dark:bg-[var(--paper)] dark:text-ink dark:hover:bg-[var(--paper)]/90",
             )}
           >
             <span className="hidden sm:inline">{isLastPage ? "Next ch." : "Next"}</span>
@@ -340,7 +340,7 @@ export function BookReader({
                       search: { q: undefined },
                     });
                   }}
-                  className="flex h-12 items-center justify-center rounded-full bg-ink font-sans text-[14px] font-medium text-paper transition-transform active:scale-[0.98] dark:bg-[#f5f0e8] dark:text-ink"
+                  className="flex h-12 items-center justify-center rounded-full bg-ink font-sans text-[14px] font-medium text-paper transition-transform active:scale-[0.98] dark:bg-[var(--paper)] dark:text-ink"
                 >
                   Continue to {nextCh.name} {nextCh.chapter}
                 </button>

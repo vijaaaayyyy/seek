@@ -58,7 +58,7 @@ export function FullMenu() {
         aria-modal="true"
         aria-label="Site menu"
         className={cn(
-          "fixed inset-0 z-[60] flex flex-col bg-[#f5f5f5] transition-[opacity,visibility] duration-400 ease-out dark:bg-[#0c0d12]",
+          "fixed inset-0 z-[60] flex flex-col bg-[var(--paper)] transition-[opacity,visibility] duration-400 ease-out dark:bg-[var(--paper)]",
           open ? "visible opacity-100" : "invisible opacity-0 pointer-events-none",
         )}
       >
@@ -132,7 +132,7 @@ export function FullMenu() {
             </p>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
-              className="mt-2 block font-serif text-[clamp(1.15rem,3.2vw,1.65rem)] leading-snug text-ink underline-offset-4 hover:underline"
+              className="mt-2 block font-sans text-[clamp(1.15rem,3.2vw,1.65rem)] leading-snug text-ink underline-offset-4 hover:underline"
             >
               {CONTACT_EMAIL}
             </a>

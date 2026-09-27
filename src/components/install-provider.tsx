@@ -135,7 +135,7 @@ export function InstallProvider({ children }: { children: ReactNode }) {
           <span className="mx-auto grid size-12 place-items-center rounded-full bg-forest/15">
             <Download className="size-6 text-forest" strokeWidth={1.8} />
           </span>
-          <h2 className="mt-4 font-serif text-[1.3rem] font-medium leading-snug text-ink dark:text-paper">
+          <h2 className="mt-4 font-sans text-[1.3rem] font-medium leading-snug text-ink dark:text-paper">
             {isDesktop ? "Install SEEK on this PC" : "Add SEEK to Home Screen"}
           </h2>
           <p className="mx-auto mt-2 max-w-[280px] font-sans text-[13px] leading-relaxed text-muted">

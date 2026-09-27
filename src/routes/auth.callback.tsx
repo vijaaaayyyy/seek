@@ -207,7 +207,7 @@ function AuthCallbackPage() {
               onClick={() =>
                 void navigate({ to: "/login", search: { redirect: "/" }, replace: true })
               }
-              className="mt-4 block w-full rounded-2xl bg-ink py-2.5 font-medium text-paper hover:opacity-90 dark:bg-[#f5f0e8] dark:text-[#0c0d12]"
+              className="mt-4 block w-full rounded-2xl bg-ink py-2.5 font-medium text-paper hover:opacity-90 dark:bg-[var(--paper)] dark:text-[var(--ink)]"
             >
               Back to sign in
             </button>

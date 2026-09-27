@@ -3,6 +3,7 @@ import { BookOpen, Bookmark, Download, Home, UserRound } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { FullMenu } from "@/components/full-menu";
+import { BackdropField } from "@/components/backdrop-field";
 import { SwapText } from "@/components/swap-text";
 import { UserMenu } from "@/components/user-menu";
 import { useHideOnScroll } from "@/hooks/use-hide-on-scroll";
@@ -107,7 +108,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       )}
     >
       {!isAuthCallback && <FullMenu />}
-      {!isHome && <div className="app-atmosphere" aria-hidden />}
+      {!isHome && <BackdropField base className="-z-10" />}
 
       <div className="relative z-10 hidden min-h-dvh flex-col lg:flex">
         {!isAuthCallback && (
@@ -130,7 +131,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 className="flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5"
               >
                 <LeafMark className="size-4 text-forest" />
-                <span className="font-serif text-[1.05rem] tracking-[0.04em] text-ink">
+                <span className="font-sans text-[1.05rem] tracking-[0.04em] text-ink">
                   SEEK
                 </span>
               </Link>
@@ -163,8 +164,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                 className={cn(
                   "absolute top-4 right-24 flex h-12 items-center gap-2 rounded-full px-4 font-sans text-[13px] font-medium shadow-sm ring-1 backdrop-blur-xl transition-all hover:opacity-90 active:scale-[0.98]",
                   isHome
-                    ? "bg-white/85 text-ink ring-black/8 dark:bg-black/50 dark:text-[#f5f0e8] dark:ring-white/12"
-                    : "bg-white/55 text-ink ring-black/5 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/10",
+                    ? "bg-white/85 text-ink ring-black/8 dark:bg-black/50 dark:text-[var(--ink)] dark:ring-white/12"
+                    : "bg-white/55 text-ink ring-black/5 dark:bg-black/45 dark:text-[var(--ink)] dark:ring-white/10",
                 )}
               >
                 <Download className="size-[18px]" strokeWidth={1.9} />
@@ -211,7 +212,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 >
                   <Link to="/" className="flex min-h-10 items-center gap-1.5">
                     <LeafMark className="size-4 text-forest" />
-                    <span className="font-serif text-[1.2rem] leading-none tracking-[0.04em] text-ink">
+                    <span className="font-sans text-[1.2rem] leading-none tracking-[0.04em] text-ink">
                       SEEK
                     </span>
                   </Link>
@@ -228,8 +229,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                     className={cn(
                       "flex size-12 shrink-0 items-center justify-center rounded-full shadow-sm ring-1 backdrop-blur-xl transition-all active:scale-95",
                       isHome
-                        ? "bg-white/85 text-ink ring-black/8 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/12"
-                        : "bg-white/70 text-ink ring-black/8 dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/12",
+                        ? "bg-white/85 text-ink ring-black/8 dark:bg-black/45 dark:text-[var(--ink)] dark:ring-white/12"
+                        : "bg-white/70 text-ink ring-black/8 dark:bg-black/45 dark:text-[var(--ink)] dark:ring-white/12",
                     )}
                   >
                     <Download className="size-[18px]" strokeWidth={1.9} />

@@ -54,7 +54,7 @@ function Pricing() {
               {PLANS.map((p) => (
                 <div key={p.name} className="rounded-2xl border border-line bg-surface p-5 text-left">
                   <div className="flex items-baseline justify-between gap-3">
-                    <p className="font-serif text-[1.1rem] font-medium text-ink">{p.name}</p>
+                    <p className="font-sans text-[1.1rem] font-medium text-ink">{p.name}</p>
                     <p className="font-sans text-[12px] tracking-[0.12em] text-forest uppercase">{p.price}</p>
                   </div>
                   <p className="mt-2 font-sans text-[12.5px] leading-relaxed text-muted">{p.blurb}</p>

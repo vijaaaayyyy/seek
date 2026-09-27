@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Apple, Download, Monitor, Smartphone } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Reveal } from "@/components/reveal";
 import { AppInstallButton, useInstall } from "@/components/install-provider";
 import { pageSeo } from "@/lib/seo";
 
@@ -48,9 +49,9 @@ export function DownloadPage() {
             </span>
             <span className="h-px w-8 bg-forest/30" aria-hidden />
           </span>
-          <h1 className="mt-4 font-serif text-[2.1rem] leading-[1.12] font-medium tracking-tight text-balance text-ink sm:text-[2.6rem]">
+          <Reveal as="h1" className="mt-4 font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em] text-balance text-ink">
             {installed ? "SEEK is installed" : "Install SEEK as an app"}
-          </h1>
+          </Reveal>
           <p className="mx-auto mt-3 max-w-md font-sans text-[14px] leading-relaxed text-muted">
             {installed
               ? "You already have SEEK on this device. Open it from your home screen, Start menu, or taskbar."
@@ -65,7 +66,7 @@ export function DownloadPage() {
                 <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-[#0078d4]/12 text-[#0078d4]">
                   <Monitor className="size-7" strokeWidth={1.7} />
                 </span>
-                <h2 className="mt-4 font-serif text-[1.35rem] font-medium">Windows app</h2>
+                <h2 className="mt-4 font-sans text-[1.35rem] font-medium">Windows app</h2>
                 <p className="mx-auto mt-2 max-w-sm font-sans text-[13px] leading-relaxed text-muted">
                   Install SEEK on this PC. It opens full-screen like a desktop app and pins to Start and the taskbar.
                 </p>
@@ -87,7 +88,7 @@ export function DownloadPage() {
                 <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-ink/10 text-ink dark:bg-paper/10 dark:text-paper">
                   <Apple className="size-7" strokeWidth={1.7} />
                 </span>
-                <h2 className="mt-4 font-serif text-[1.35rem] font-medium">Add to Home Screen</h2>
+                <h2 className="mt-4 font-sans text-[1.35rem] font-medium">Add to Home Screen</h2>
                 <p className="mx-auto mt-2 max-w-sm font-sans text-[13px] leading-relaxed text-muted">
                   Put SEEK on your Home Screen. Tap the icon anytime — no Safari tab.
                 </p>
@@ -106,7 +107,7 @@ export function DownloadPage() {
                 <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-[#388e3c]/15 text-[#2e7d32]">
                   <Smartphone className="size-7" strokeWidth={1.7} />
                 </span>
-                <h2 className="mt-4 font-serif text-[1.35rem] font-medium">Android app</h2>
+                <h2 className="mt-4 font-sans text-[1.35rem] font-medium">Android app</h2>
                 <p className="mx-auto mt-2 max-w-sm font-sans text-[13px] leading-relaxed text-muted">
                   Download the APK, or install from Chrome for a Home Screen app.
                 </p>
@@ -130,7 +131,7 @@ export function DownloadPage() {
             )}
             {platform === "other" && (
               <>
-                <h2 className="font-serif text-[1.35rem] font-medium">Install SEEK</h2>
+                <h2 className="font-sans text-[1.35rem] font-medium">Install SEEK</h2>
                 <p className="mx-auto mt-2 max-w-sm font-sans text-[13px] leading-relaxed text-muted">
                   Install as an app on this device for a full-screen experience.
                 </p>
@@ -146,7 +147,7 @@ export function DownloadPage() {
         <div className="mt-10 grid gap-4 sm:grid-cols-3">
           <div className="flex flex-col rounded-3xl bg-surface p-5 text-center dark:bg-white/[0.03]">
             <Monitor className="mx-auto size-6 text-[#0078d4]" strokeWidth={1.7} />
-            <h3 className="mt-3 font-serif text-[1.05rem] font-medium">Windows</h3>
+            <h3 className="mt-3 font-sans text-[1.05rem] font-medium">Windows</h3>
             <p className="mt-1.5 font-sans text-[12.5px] text-muted">Install from Edge or Chrome</p>
             <AppInstallButton
               label="Install for Windows"
@@ -155,7 +156,7 @@ export function DownloadPage() {
           </div>
           <div className="flex flex-col rounded-3xl bg-surface p-5 text-center dark:bg-white/[0.03]">
             <Smartphone className="mx-auto size-6 text-[#2e7d32]" strokeWidth={1.7} />
-            <h3 className="mt-3 font-serif text-[1.05rem] font-medium">Android</h3>
+            <h3 className="mt-3 font-sans text-[1.05rem] font-medium">Android</h3>
             <p className="mt-1.5 font-sans text-[12.5px] text-muted">APK file download</p>
             <a
               href="/seek.apk"
@@ -167,7 +168,7 @@ export function DownloadPage() {
           </div>
           <div className="flex flex-col rounded-3xl bg-surface p-5 text-center dark:bg-white/[0.03]">
             <Apple className="mx-auto size-6 text-ink dark:text-paper" strokeWidth={1.7} />
-            <h3 className="mt-3 font-serif text-[1.05rem] font-medium">iPhone</h3>
+            <h3 className="mt-3 font-sans text-[1.05rem] font-medium">iPhone</h3>
             <p className="mt-1.5 font-sans text-[12.5px] text-muted">Home Screen app</p>
             <AppInstallButton
               label="Add to Home Screen"

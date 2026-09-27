@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState, type FormEvent } from "react";
+import { Reveal } from "@/components/reveal";
 import {
   ArrowRight,
   BookOpen,
@@ -114,7 +115,7 @@ function ExplorePage() {
             For you
           </span>
         </div>
-        <h1 className="mt-3 font-serif text-[1.85rem] font-medium tracking-tight text-ink">
+        <Reveal as="h1" className="mt-3 font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em] text-ink">
           {last ? (
             <>
               Continue from <span className="italic">“{last}”</span>
@@ -122,7 +123,7 @@ function ExplorePage() {
           ) : (
             "Pick up where you left off"
           )}
-        </h1>
+        </Reveal>
         <p className="mt-1.5 font-sans text-[14px] text-muted">
           Your recent searches, suggestions, and places to go next — not the
           generic home feed.
@@ -156,15 +157,15 @@ function ExplorePage() {
 
       <div className="mb-6 grid grid-cols-3 gap-2">
         <div className="rounded-[18px] bg-white px-3 py-3.5 text-center shadow-sm ring-1 ring-black/6 dark:bg-white/8 dark:ring-white/10">
-          <p className="font-serif text-[1.25rem] font-medium text-ink tabular-nums">{recent.length}</p>
+          <p className="font-sans text-[1.25rem] font-medium text-ink tabular-nums">{recent.length}</p>
           <p className="mt-0.5 font-sans text-[10px] tracking-wide text-muted uppercase">Recent</p>
         </div>
         <div className="rounded-[18px] bg-white px-3 py-3.5 text-center shadow-sm ring-1 ring-black/6 dark:bg-white/8 dark:ring-white/10">
-          <p className="font-serif text-[1.25rem] font-medium text-ink tabular-nums">{saved.length}</p>
+          <p className="font-sans text-[1.25rem] font-medium text-ink tabular-nums">{saved.length}</p>
           <p className="mt-0.5 font-sans text-[10px] tracking-wide text-muted uppercase">Saved</p>
         </div>
         <div className="rounded-[18px] bg-white px-3 py-3.5 text-center shadow-sm ring-1 ring-black/6 dark:bg-white/8 dark:ring-white/10">
-          <p className="font-serif text-[1.25rem] font-medium text-ink tabular-nums">{predicted.length}</p>
+          <p className="font-sans text-[1.25rem] font-medium text-ink tabular-nums">{predicted.length}</p>
           <p className="mt-0.5 font-sans text-[10px] tracking-wide text-muted uppercase">Suggested</p>
         </div>
       </div>
@@ -249,7 +250,7 @@ function ExplorePage() {
                 <p className="font-sans text-[12px] font-medium text-forest">
                   {v.book} {v.chapter}:{v.verse}
                 </p>
-                <p className="mt-1 line-clamp-2 font-serif text-[14px] leading-snug text-ink">{v.text}</p>
+                <p className="mt-1 line-clamp-2 font-sans text-[14px] leading-snug text-ink">{v.text}</p>
               </Link>
             ))}
           </div>
@@ -269,7 +270,7 @@ function ExplorePage() {
               onClick={() => run(d.q)}
               className="rounded-[18px] bg-white px-3.5 py-3.5 text-left shadow-sm ring-1 ring-black/6 transition-colors hover:bg-ink/[0.03] dark:bg-white/8 dark:ring-white/10"
             >
-              <p className="font-serif text-[15px] text-ink">{d.label}</p>
+              <p className="font-sans text-[15px] text-ink">{d.label}</p>
               <p className="mt-0.5 font-sans text-[12px] text-muted">{d.note}</p>
             </button>
           ))}

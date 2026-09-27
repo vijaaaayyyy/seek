@@ -86,7 +86,7 @@ export function HomeSections({
             00 — Gospel
           </Reveal>
           <Reveal delay={60}>
-            <p className="mt-8 max-w-4xl font-serif text-[clamp(1.75rem,4.8vw,3.6rem)] font-medium leading-[1.12] text-balance text-ink">
+            <p className="mt-8 max-w-4xl font-sans text-[clamp(1.75rem,4.8vw,3.6rem)] font-medium leading-[1.12] text-balance text-ink">
               “Beloved, let us love one another: for love is of God.”
             </p>
           </Reveal>
@@ -121,7 +121,7 @@ export function HomeSections({
                 <button type="button" onClick={() => runExample(t.q)} className="group flex h-full w-full flex-col items-start rounded-2xl border border-ink/10 bg-white/50 p-6 text-left transition hover:border-ink/25 hover:bg-white/80 dark:bg-white/[0.04] dark:hover:bg-white/[0.08]">
                   <t.Icon className="size-5 text-ink/40 transition group-hover:text-ink" strokeWidth={1.5} />
                   <span className="mt-5 font-sans text-[16px] font-medium text-ink">{t.label}</span>
-                  <span className="mt-1.5 font-serif text-[14px] italic leading-snug text-ink/50">{t.line}</span>
+                  <span className="mt-1.5 font-sans text-[14px] italic leading-snug text-ink/50">{t.line}</span>
                   <span className="mt-4 font-sans text-[11px] tracking-wide text-ink/35">{t.ref}</span>
                 </button>
               </Reveal>
@@ -135,7 +135,7 @@ export function HomeSections({
           <Reveal as="p" className="font-sans text-[11px] tracking-[0.22em] text-ink/45 uppercase">02 — Featured</Reveal>
           <Link to="/read/$book/$chapter" params={{ book: FEATURED.book, chapter: FEATURED.chapter }} className="group mt-8 block">
             <Reveal delay={40}>
-              <p className="max-w-4xl font-serif text-[clamp(1.5rem,3.8vw,2.75rem)] font-medium leading-[1.2] text-ink transition group-hover:text-ink/80">
+              <p className="max-w-4xl font-sans text-[clamp(1.5rem,3.8vw,2.75rem)] font-medium leading-[1.2] text-ink transition group-hover:text-ink/80">
                 “{FEATURED.text}”
               </p>
             </Reveal>
@@ -231,7 +231,7 @@ export function HomeSections({
             Questions, corrections, or something you would like SEEK to do better.
           </Reveal>
           <Reveal delay={120}>
-            <a href={`mailto:${CONTACT_EMAIL}`} className="mt-8 inline-block font-serif text-[clamp(1.2rem,3vw,1.75rem)] text-ink underline-offset-4 hover:underline">{CONTACT_EMAIL}</a>
+            <a href={`mailto:${CONTACT_EMAIL}`} className="mt-8 inline-block font-sans text-[clamp(1.2rem,3vw,1.75rem)] text-ink underline-offset-4 hover:underline">{CONTACT_EMAIL}</a>
           </Reveal>
           <Reveal delay={140} className="mt-6 flex flex-wrap gap-x-6 gap-y-2 font-sans text-[13px] text-ink/50">
             <Link to="/contact" className="hover:text-ink">Contact page</Link>
@@ -245,7 +245,7 @@ export function HomeSections({
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 sm:grid-cols-3">
             <div>
-              <p className="font-serif text-[1.35rem] tracking-tight text-ink">SEEK</p>
+              <p className="font-sans text-[1.35rem] tracking-tight text-ink">SEEK</p>
               <p className="mt-2 max-w-xs font-sans text-[13px] leading-relaxed text-ink/50">Bible search & scripture discovery. Free, ad-free, KJV.</p>
               {userEmail ? <p className="mt-3 font-sans text-[12px] text-ink/40">Signed in · {userEmail}</p> : null}
             </div>

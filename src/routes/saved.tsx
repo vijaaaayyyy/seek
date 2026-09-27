@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Bookmark } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Reveal } from "@/components/reveal";
 import { useSaved } from "@/components/saved-provider";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -31,7 +32,7 @@ function SavedPage() {
   if (!mounted || isPending) {
     return (
       <div className="pt-3">
-        <h1 className="font-serif text-[2rem] leading-tight font-medium tracking-tight">Saved</h1>
+        <Reveal as="h1" className="font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em]">Saved</Reveal>
         <div className="mt-6 space-y-3">
           <Skeleton className="h-36 w-full rounded-[22px]" />
           <Skeleton className="h-36 w-full rounded-[22px]" />
@@ -43,10 +44,10 @@ function SavedPage() {
   if (!user) {
     return (
       <div className="pt-3">
-        <h1 className="font-serif text-[2rem] leading-tight font-medium tracking-tight">Saved</h1>
+        <Reveal as="h1" className="font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em]">Saved</Reveal>
         <div className="glass mt-8 rounded-[28px] px-6 py-14 text-center">
           <Bookmark className="mx-auto size-6 text-faint" strokeWidth={1.6} />
-          <p className="mt-3 font-serif text-xl text-ink">Your saved verses live on your account</p>
+          <p className="mt-3 font-sans text-xl text-ink">Your saved verses live on your account</p>
           <p className="mt-2 font-sans text-sm text-muted">
             Sign in to view them on any device — nothing stays on this one.
           </p>
@@ -62,7 +63,7 @@ function SavedPage() {
 
   return (
     <div className="pt-3">
-      <h1 className="font-serif text-[2rem] leading-tight font-medium tracking-tight">Saved</h1>
+      <Reveal as="h1" className="font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em]">Saved</Reveal>
       <p className="mt-1.5 font-sans text-[15px] text-muted">
         {status === "loading" ? (
           "Loading your saved verses…"
@@ -85,7 +86,7 @@ function SavedPage() {
       ) : saved.length === 0 ? (
         <div className="glass mt-8 rounded-[28px] px-6 py-14 text-center">
           <Bookmark className="mx-auto size-6 text-faint" strokeWidth={1.6} />
-          <p className="mt-3 font-serif text-xl text-ink">No saved verses yet</p>
+          <p className="mt-3 font-sans text-xl text-ink">No saved verses yet</p>
           <p className="mt-2 font-sans text-sm text-muted">
             Tap the bookmark beside a verse while you read or search.
           </p>
@@ -106,7 +107,7 @@ function SavedPage() {
                   params={{ book: v.slug, chapter: String(v.chapter) }}
                   search={{ q: undefined }}
                   hash={`v${v.verse}`}
-                  className="font-serif text-[17px] font-medium text-ink underline-offset-4 hover:underline"
+                  className="font-sans text-[17px] font-medium text-ink underline-offset-4 hover:underline"
                 >
                   {formatRef(v.book, v.chapter, v.verse)}
                 </Link>
@@ -128,7 +129,7 @@ function SavedPage() {
                 params={{ book: v.slug, chapter: String(v.chapter) }}
                 search={{ q: undefined }}
                 hash={`v${v.verse}`}
-                className="mt-3 block font-serif text-[17px] leading-relaxed text-ink"
+                className="mt-3 block font-sans text-[17px] leading-relaxed text-ink"
               >
                 {v.text}
               </Link>
