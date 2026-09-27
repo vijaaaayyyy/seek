@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
  */
 export function ScrollCurve() {
   const [p, setP] = useState(0);
-  const [box, setBox] = useState({ w: 0, h: 0, cx: 0, meander: 0 });
+  const [box, setBox] = useState({ w: 0, h: 0, pad: 0, lo: 0, hi: 0, meander: 0 });
 
   useEffect(() => {
     // The shell pins the document and lets an inner <main> scroll on small
@@ -35,6 +35,7 @@ export function ScrollCurve() {
 
       // Right-hand edge of the reading column, so the thread can clear it.
       let right = 0;
+      let left = w;
       const main = [...document.querySelectorAll("main")].find(
         (el) => el.getBoundingClientRect().width > 0,
       );
@@ -43,16 +44,26 @@ export function ScrollCurve() {
           const b = el.getBoundingClientRect();
           if (b.height < 2 || b.width < 2) continue;
           if (b.right > right) right = b.right;
+          if (b.left < left) left = b.left;
         }
       }
 
-      // Sit in the margin beside the column. Centre of the free space when
-      // there is some; otherwise clamp inside the viewport.
-      const cx = wide
-        ? Math.min(w - 56, Math.max((right + w) / 2, w * 0.7))
-        : w - 7;
+      // How much open paper there is either side of the content. A page with
+      // real margins (the reader, saved, search) sweeps between them and passes
+      // behind the card in between; a full-bleed page sweeps the whole width.
+      const gutterL = Math.max(0, left);
+      const gutterR = Math.max(0, w - right);
+      const tight = Math.min(gutterL, gutterR) < 90;
+      const pad = wide ? 46 : 16;
 
-      setBox({ w, h, cx, meander: wide ? 26 : 5 });
+      setBox({
+        w,
+        h,
+        pad,
+        lo: tight ? pad : Math.max(pad, gutterL / 2),
+        hi: tight ? w - pad : Math.min(w - pad, w - gutterR / 2),
+        meander: wide ? 26 : 5,
+      });
       progress(null);
     };
 
@@ -72,8 +83,15 @@ export function ScrollCurve() {
     };
   }, []);
 
-  const { w, h, cx, meander } = box;
+  const { w, h, pad, lo, hi, meander } = box;
   if (!w || !h) return null;
+
+  // Where the thread sits across the page. It starts on the right, travels
+  // through the middle, crosses to the left, and settles back in the middle,
+  // so it occupies the centre on open pages and the margins on pages whose
+  // content is a solid card. The travel is clamped inside the viewport.
+  const lane = (Math.cos(p * Math.PI * 1.5) + 1) / 2;
+  const x = lo + lane * Math.max(0, hi - lo);
 
   // A meandering S that deepens as you descend: the swing travels half a cycle
   // and the bow grows, so the shape at the footer differs from the hero rather
@@ -81,11 +99,15 @@ export function ScrollCurve() {
   const swing = Math.sin(p * Math.PI * 1.5);
   const reach = meander * (0.55 + 0.45 * swing);
   const drift = swing * meander * 0.7;
+  // Never let the stroke or its halo leave the page.
+  const lo2 = Math.max(pad, lo);
+  const hi2 = Math.min(w - pad, hi);
+  const xc = Math.min(Math.max(x, lo2 + reach), Math.max(lo2 + reach, hi2 - reach));
   const d =
-    `M ${(cx - reach + drift).toFixed(1)} 0 ` +
-    `C ${(cx + reach * 1.7).toFixed(1)} ${(h * 0.34).toFixed(1)}, ` +
-    `${(cx - reach * 1.7).toFixed(1)} ${(h * 0.66).toFixed(1)}, ` +
-    `${(cx + reach + drift).toFixed(1)} ${h.toFixed(1)}`;
+    `M ${(xc - reach + drift).toFixed(1)} 0 ` +
+    `C ${(xc + reach * 1.7).toFixed(1)} ${(h * 0.34).toFixed(1)}, ` +
+    `${(xc - reach * 1.7).toFixed(1)} ${(h * 0.66).toFixed(1)}, ` +
+    `${(xc + reach + drift).toFixed(1)} ${h.toFixed(1)}`;
 
   // grey -> white source: under difference blending that walks the visible
   // stroke from a soft mid-tone to the bold inverse of the paper.
@@ -96,6 +118,10 @@ export function ScrollCurve() {
   return (
     <svg
       aria-hidden
+      // Above the page so it is visible everywhere, including the full-bleed
+      // home page whose wrapper paints an opaque background. mix-blend-difference
+      // means the thread inverts whatever it crosses instead of covering it, so
+      // words and cards stay readable through a 2px line.
       className="pointer-events-none fixed inset-0 z-30 h-full w-full mix-blend-difference"
       preserveAspectRatio="none"
       viewBox={`0 0 ${w} ${h}`}

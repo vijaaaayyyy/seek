@@ -14,3 +14,4 @@ android/.idea/
 .tmp-*
 preview-local.err
 .dev-server.log.err
+devlog.txt

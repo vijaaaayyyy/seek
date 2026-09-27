@@ -30,7 +30,12 @@ export function Reveal({
           }
         }
       },
-      { threshold: 0.18, rootMargin: "0px 0px -8% 0px" },
+      // A ratio threshold cannot work for a block taller than the viewport:
+      // the 66-book grid is ~6900px tall in an 844px window, so it can never
+      // reach 0.18 and stayed at opacity 0 forever. Fire on first intersection
+      // instead, with the bottom margin delaying it until the block has
+      // actually travelled into view.
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" },
     );
     io.observe(el);
     return () => io.disconnect();
