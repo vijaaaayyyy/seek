@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BookOpen, Bookmark, Download, Home, UserRound } from "lucide-react";
-import { useEffect, type ReactNode } from "react";
+import { Download, Menu, X } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { FullMenu } from "@/components/full-menu";
 import { BackdropField } from "@/components/backdrop-field";
@@ -11,34 +11,6 @@ import { useHideOnScroll } from "@/hooks/use-hide-on-scroll";
 import { useInstall } from "@/components/install-provider";
 import { applyChrome, readStoredTheme, systemTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
-
-const MOBILE_NAV = [
-  {
-    to: "/",
-    label: "Home",
-    icon: Home,
-    match: (p: string) =>
-      p === "/" || p.startsWith("/search") || p.startsWith("/explore"),
-  },
-  {
-    to: "/books",
-    label: "Bible",
-    icon: BookOpen,
-    match: (p: string) => p.startsWith("/books") || p.startsWith("/read"),
-  },
-  {
-    to: "/saved",
-    label: "Saved",
-    icon: Bookmark,
-    match: (p: string) => p.startsWith("/saved"),
-  },
-  {
-    to: "/profile",
-    label: "Profile",
-    icon: UserRound,
-    match: (p: string) => p.startsWith("/profile") || p.startsWith("/login"),
-  },
-] as const;
 
 const DESKTOP_LINKS = [
   { to: "/books", label: "Bible" },
@@ -73,10 +45,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const navHidden = useHideOnScroll(10);
   const { status: installStatus } = useInstall();
   const isInstalled = installStatus === "installed";
-  const activeIndex = Math.max(
-    0,
-    MOBILE_NAV.findIndex((item) => item.match(pathname)),
-  );
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -108,7 +77,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         isHome && "bg-transparent",
       )}
     >
-      {!isAuthCallback && <FullMenu />}
+      {!isAuthCallback && (
+        <FullMenu open={menuOpen} onOpenChange={setMenuOpen} />
+      )}
       {!isHome && <BackdropField base className="-z-10" />}
       <ScrollCurve />
 
@@ -204,6 +175,27 @@ export function AppShell({ children }: { children: ReactNode }) {
               )}
             >
               <div className="flex h-12 w-full items-center gap-2">
+                {!isAuthCallback && (
+                  <button
+                    type="button"
+                    onClick={() => setMenuOpen((v) => !v)}
+                    aria-label={menuOpen ? "Close menu" : "Open menu"}
+                    aria-expanded={menuOpen}
+                    aria-controls="seek-full-menu"
+                    className={cn(
+                      "flex size-12 shrink-0 items-center justify-center rounded-full shadow-sm ring-1 backdrop-blur-xl transition-all active:scale-95",
+                      isHome
+                        ? "bg-white/85 text-ink ring-black/8 dark:bg-black/45 dark:ring-white/12"
+                        : "bg-white/70 text-ink ring-black/8 dark:bg-black/45 dark:ring-white/12",
+                    )}
+                  >
+                    {menuOpen ? (
+                      <X className="size-[18px]" strokeWidth={1.9} />
+                    ) : (
+                      <Menu className="size-[18px]" strokeWidth={1.9} />
+                    )}
+                  </button>
+                )}
                 <div
                   className={cn(
                     "flex h-12 min-w-0 flex-1 items-center justify-between rounded-full pl-4 pr-1.5",
@@ -245,54 +237,13 @@ export function AppShell({ children }: { children: ReactNode }) {
           <main
             className={cn(
               "hide-scrollbar min-h-0 w-full flex-1 overflow-x-hidden overflow-y-auto px-4 pt-16",
-              isRead ? "px-0 pt-16 pb-28" : null,
-              isHome ? "px-0 pt-0 pb-20" : "pb-28",
+              isRead ? "px-0 pt-16 pb-6" : null,
+              isHome ? "px-0 pt-0 pb-6" : "pb-10",
             )}
           >
             {children}
           </main>
 
-          {!isAuthCallback && (
-            <nav
-              className={cn(
-                "absolute inset-x-0 bottom-0 z-40 border-t border-line bg-paper/92 backdrop-blur-xl transition-transform duration-300 ease-out dark:border-white/10",
-                "pb-[env(safe-area-inset-bottom)]",
-                navHidden ? "translate-y-[140%]" : "translate-y-0",
-              )}
-              aria-label="Primary"
-            >
-              <div className="relative grid h-16 w-full grid-cols-4 px-1.5">
-                <div
-                  aria-hidden
-                  className="absolute top-2 bottom-2 left-1.5 w-[calc((100%-0.75rem)/4)] rounded-full bg-ink/10 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] dark:bg-paper/14"
-                  style={{ transform: `translateX(${activeIndex * 100}%)` }}
-                />
-                {MOBILE_NAV.map((item) => {
-                  const Icon = item.icon;
-                  const active = item.match(pathname);
-                  return (
-                    <Link
-                      key={item.to}
-                      to={item.to}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(
-                        "relative z-10 flex min-h-11 flex-col items-center justify-center gap-0.5 rounded-full font-sans text-[10px] font-medium tracking-wide transition-colors duration-150",
-                        active ? "text-ink" : "text-muted",
-                      )}
-                    >
-                      <Icon
-                        className="size-5"
-                        strokeWidth={active ? 2.2 : 1.7}
-                        fill={active ? "currentColor" : "none"}
-                        fillOpacity={active ? 0.18 : 0}
-                      />
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </div>
-            </nav>
-          )}
         </div>
       </div>
     </div>

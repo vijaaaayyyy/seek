@@ -1,15 +1,20 @@
 import { useEffect, useState } from "react";
 
 /**
- * One thread that runs the whole page beside the content: it enters at the top
- * as a soft S and, as you scroll, swings further and resolves into the exact
- * opposite of the paper colour. The blend mode is what makes "opposite"
- * literal, so the line stays legible in either theme.
+ * One thread down the page. It is drawn as a single hairline that fades in
+ * below the header and back out before the footer, so it reads as a drawn
+ * line rather than a stroke that starts and stops.
  *
- * It is deliberately kept in the margin. The reading column is measured at
- * runtime and the thread is placed beyond it, so on a text page it runs beside
- * the words rather than across them. Pages with no margin (full-bleed home and
- * reader on a phone) fall back to hugging the outer edge.
+ * It travels one slow cycle over the length of the page: it rests in the
+ * right-hand margin, glides through the middle, rests in the left margin,
+ * glides back through the middle and settles in the right again. The lane is
+ * eased so it lingers in the margins and crosses the centre quickly, which
+ * keeps the line off the words instead of swinging across them.
+ *
+ * The reading column is measured at runtime and the travel is clamped to the
+ * open paper either side of it, so on a text page the line stays in the
+ * gutter. Pages with no gutter (full-bleed home and the phone reader) clamp
+ * it to the outer edge.
  */
 export function ScrollCurve() {
   const [p, setP] = useState(0);
@@ -33,7 +38,7 @@ export function ScrollCurve() {
       const h = window.innerHeight || 1;
       const wide = w >= 1024;
 
-      // Right-hand edge of the reading column, so the thread can clear it.
+      // Outer edges of the reading column, so the thread can clear it.
       let right = 0;
       let left = w;
       const main = [...document.querySelectorAll("main")].find(
@@ -48,9 +53,6 @@ export function ScrollCurve() {
         }
       }
 
-      // How much open paper there is either side of the content. A page with
-      // real margins (the reader, saved, search) sweeps between them and passes
-      // behind the card in between; a full-bleed page sweeps the whole width.
       const gutterL = Math.max(0, left);
       const gutterR = Math.max(0, w - right);
       const tight = Math.min(gutterL, gutterR) < 90;
@@ -62,7 +64,7 @@ export function ScrollCurve() {
         pad,
         lo: tight ? pad : Math.max(pad, gutterL / 2),
         hi: tight ? w - pad : Math.min(w - pad, w - gutterR / 2),
-        meander: wide ? 26 : 5,
+        meander: wide ? 22 : 5,
       });
       progress(null);
     };
@@ -86,48 +88,54 @@ export function ScrollCurve() {
   const { w, h, pad, lo, hi, meander } = box;
   if (!w || !h) return null;
 
-  // Where the thread sits across the page. It starts on the right, travels
-  // through the middle, crosses to the left, and settles back in the middle,
-  // so it occupies the centre on open pages and the margins on pages whose
-  // content is a solid card. The travel is clamped inside the viewport.
-  const lane = (Math.cos(p * Math.PI * 1.5) + 1) / 2;
+  // One full cycle down the page: right margin -> centre -> left margin ->
+  // centre -> right margin.
+  const raw = (Math.cos(p * Math.PI * 2) + 1) / 2;
+  // smoothstep on the lane makes it decelerate into each margin and accelerate
+  // through the centre, so the line rests beside the text instead of drifting
+  // across it.
+  const lane = raw * raw * (3 - 2 * raw);
   const x = lo + lane * Math.max(0, hi - lo);
 
-  // A meandering S that deepens as you descend: the swing travels half a cycle
-  // and the bow grows, so the shape at the footer differs from the hero rather
-  // than returning to where it started.
-  const swing = Math.sin(p * Math.PI * 1.5);
-  const reach = meander * (0.55 + 0.45 * swing);
-  const drift = swing * meander * 0.7;
-  // Never let the stroke or its halo leave the page.
+  // A gentle bow that breathes over the same cycle. Small, so the line stays
+  // legible as one continuous curve rather than folding back on itself.
+  const swing = Math.sin(p * Math.PI * 2);
+  const reach = meander * (0.62 + 0.38 * Math.abs(swing));
+  const drift = swing * meander * 0.5;
+
+  // Never let the stroke leave the page.
   const lo2 = Math.max(pad, lo);
   const hi2 = Math.min(w - pad, hi);
   const xc = Math.min(Math.max(x, lo2 + reach), Math.max(lo2 + reach, hi2 - reach));
   const d =
     `M ${(xc - reach + drift).toFixed(1)} 0 ` +
-    `C ${(xc + reach * 1.7).toFixed(1)} ${(h * 0.34).toFixed(1)}, ` +
-    `${(xc - reach * 1.7).toFixed(1)} ${(h * 0.66).toFixed(1)}, ` +
+    `C ${(xc + reach * 1.6).toFixed(1)} ${(h * 0.34).toFixed(1)}, ` +
+    `${(xc - reach * 1.6).toFixed(1)} ${(h * 0.66).toFixed(1)}, ` +
     `${(xc + reach + drift).toFixed(1)} ${h.toFixed(1)}`;
-
-  // grey -> white source: under difference blending that walks the visible
-  // stroke from a soft mid-tone to the bold inverse of the paper.
-  const grey = Math.round(120 + p * 135);
-  const stroke = `rgb(${grey}, ${grey}, ${grey})`;
-  const width = (2 + p * 1.2).toFixed(2);
 
   return (
     <svg
       aria-hidden
-      // Above the page so it is visible everywhere, including the full-bleed
-      // home page whose wrapper paints an opaque background. mix-blend-difference
-      // means the thread inverts whatever it crosses instead of covering it, so
-      // words and cards stay readable through a 2px line.
-      className="pointer-events-none fixed inset-0 z-30 h-full w-full mix-blend-difference"
+      className="pointer-events-none fixed inset-0 z-30 h-full w-full text-ink"
       preserveAspectRatio="none"
       viewBox={`0 0 ${w} ${h}`}
     >
-      <path d={d} fill="none" opacity={0.16} stroke={stroke} strokeWidth={11} strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-      <path d={d} fill="none" stroke={stroke} strokeWidth={width} strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      <defs>
+        <linearGradient id="seek-curve-fade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="currentColor" stopOpacity="0" />
+          <stop offset="0.16" stopColor="currentColor" stopOpacity="0.55" />
+          <stop offset="0.84" stopColor="currentColor" stopOpacity="0.55" />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path
+        d={d}
+        fill="none"
+        stroke="url(#seek-curve-fade)"
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
     </svg>
   );
 }

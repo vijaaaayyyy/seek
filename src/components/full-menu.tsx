@@ -15,8 +15,20 @@ const LINKS = [
   { n: "8", label: "Account", to: "/profile" as const, match: (p: string) => p.startsWith("/profile") },
 ] as const;
 
-export function FullMenu() {
-  const [open, setOpen] = useState(false);
+export function FullMenu({
+  open: openProp,
+  onOpenChange,
+}: {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+} = {}) {
+  const [internal, setInternal] = useState(false);
+  const controlled = openProp !== undefined;
+  const open = controlled ? (openProp as boolean) : internal;
+  const setOpen = (next: boolean) => {
+    if (!controlled) setInternal(next);
+    onOpenChange?.(next);
+  };
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
@@ -41,9 +53,9 @@ export function FullMenu() {
     <>
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => setOpen(!open)}
         className={cn(
-          "fixed top-4 right-6 z-[70] flex h-12 items-center gap-2 rounded-full bg-white/70 px-4 font-sans text-[13px] font-medium text-ink shadow-sm ring-1 ring-black/5 backdrop-blur-xl transition-all hover:opacity-90 active:scale-[0.98] dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/10",
+          "fixed top-4 right-6 z-[70] hidden h-12 items-center gap-2 rounded-full bg-white/70 px-4 font-sans text-[13px] font-medium text-ink shadow-sm ring-1 ring-black/5 backdrop-blur-xl transition-all hover:opacity-90 active:scale-[0.98] lg:flex dark:bg-black/45 dark:text-[#f5f0e8] dark:ring-white/10",
           open && "bg-ink text-paper ring-ink hover:opacity-100 dark:bg-ink dark:text-paper dark:ring-ink",
         )}
         aria-expanded={open}
