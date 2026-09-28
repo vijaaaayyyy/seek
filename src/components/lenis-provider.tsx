@@ -2,20 +2,22 @@ import { useEffect, type ReactNode } from "react";
 import Lenis from "lenis";
 
 /**
- * SEEK scrolls an inner <main> on small screens (the app shell keeps the
- * document fixed so the bottom nav can stay pinned) and the window on large
- * ones. Lenis has to drive whichever element actually scrolls, otherwise the
- * smooth inertia silently does nothing on mobile.
+ * SEEK keeps the document pinned and lets an inner <main> scroll on small
+ * screens. Smooth-scrolling that element is what went wrong: the library was
+ * created once on mount and captured the page's root div as its content, so
+ * after the first navigation it was measuring a detached node and the glide
+ * stopped, leaving every page except the landing one unscrollable by touch.
+ *
+ * The inner scroller is a plain overflow container, so the platform already
+ * scrolls it well. Leave it alone and reserve Lenis for the desktop window,
+ * which is a stable target that never unmounts.
  */
-function findScroller(): HTMLElement | null {
-  const candidates = document.querySelectorAll<HTMLElement>("main, [data-lenis-scroller]");
-  for (const el of candidates) {
-    const cs = getComputedStyle(el);
-    if (cs.display === "none" || cs.visibility === "hidden") continue;
-    if (!/(auto|scroll)/.test(cs.overflowY)) continue;
-    if (el.scrollHeight > el.clientHeight + 4) return el;
+function innerScrollerPresent(): boolean {
+  for (const el of document.querySelectorAll<HTMLElement>("main")) {
+    if (el.getBoundingClientRect().width === 0) continue;
+    if (/(auto|scroll)/.test(getComputedStyle(el).overflowY)) return true;
   }
-  return null;
+  return false;
 }
 
 export function LenisProvider({ children }: { children: ReactNode }) {
@@ -23,47 +25,22 @@ export function LenisProvider({ children }: { children: ReactNode }) {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) return;
 
-    let lenis: Lenis | null = null;
-    let cancelled = false;
-    const timers: number[] = [];
+    // Small screens scroll an inner <main> natively.
+    if (innerScrollerPresent()) return;
 
-    const start = (scroller: HTMLElement | null) => {
-      if (cancelled || lenis) return;
-      lenis = new Lenis({
-        autoRaf: true,
-        // long, heavy glide — reads as inertia rather than a scrollbar jump
-        duration: 1.45,
-        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        lerp: 0.085,
-        smoothWheel: true,
-        wheelMultiplier: 0.85,
-        syncTouch: true,
-        syncTouchLerp: 0.075,
-        touchMultiplier: 1.1,
-        ...(scroller
-          ? { wrapper: scroller, content: (scroller.firstElementChild as HTMLElement) ?? scroller }
-          : {}),
-      });
-      (window as Window & { __lenis?: Lenis }).__lenis = lenis;
-    };
-
-    // The inner scroller only becomes measurable after the shell lays out, so
-    // probe across the first few frames instead of deciding on mount.
-    start(findScroller());
-    if (!lenis) {
-      for (const delay of [80, 240, 600, 1200]) {
-        timers.push(
-          window.setTimeout(() => {
-            if (!lenis) start(findScroller());
-          }, delay),
-        );
-      }
-    }
+    const lenis = new Lenis({
+      autoRaf: true,
+      // long, heavy glide — reads as inertia rather than a scrollbar jump
+      duration: 1.45,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      lerp: 0.085,
+      smoothWheel: true,
+      wheelMultiplier: 0.85,
+    });
+    (window as Window & { __lenis?: Lenis }).__lenis = lenis;
 
     return () => {
-      cancelled = true;
-      for (const t of timers) window.clearTimeout(t);
-      lenis?.destroy();
+      lenis.destroy();
       delete (window as Window & { __lenis?: Lenis }).__lenis;
     };
   }, []);
