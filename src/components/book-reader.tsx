@@ -397,50 +397,59 @@ function PageSheet({
         className,
       )}
     >
-      <div className="relative px-5 pt-4 pb-2 text-center">
-        <p className="font-sans text-[10px] font-medium tracking-[0.28em] text-muted uppercase">
-          Holy Bible
-        </p>
-        <p className="mt-0.5 font-sans text-[15px] leading-none font-medium tracking-tight">
+      <div className="relative px-6 pt-5 pb-3 text-center">
+        <p className="bible-running-head text-[11px] font-medium">Holy Bible</p>
+        <p className="mt-1 font-sans text-[19px] leading-none font-medium tracking-tight">
           {book.name} {chapter}
         </p>
-        <span className="mx-auto mt-2 block h-px w-10 bg-line" />
+        <span className="bible-rule mx-auto mt-2.5 block w-24" />
       </div>
 
-      <div className="hide-scrollbar min-h-0 flex-1 overflow-y-auto px-5 pt-1 pb-2">
-        {verses.map((v, i) => (
-          <p
-            key={v.verse}
-            id={`c${chapter}-v${v.verse}`}
-            className={cn(
-              "group scroll-mt-24 rounded-lg px-1.5 py-0.5 font-sans text-[17px] leading-[1.7]",
-              i > 0 && "mt-1.5",
-              focusVerse === v.verse &&
-                "bg-mark/55 ring-1 ring-forest/25 dark:bg-mark/40",
-            )}
-          >
-            <sup
+      <div className="hide-scrollbar min-h-0 flex-1 overflow-y-auto px-6 pt-1 pb-2">
+        {/* One paragraph, not a list.
+
+            A printed Bible sets a chapter as running text: the verses run on
+            from one another and the only break is the end of a paragraph in the
+            original. So the verses are inline spans inside a single paragraph
+            rather than a stack of blocks. Each still carries its own id, which
+            is what the focus highlight and the share button anchor to. */}
+        <p className="bible-body font-sans text-[17px] leading-[1.78]">
+          {verses.map((v) => (
+            <span
+              key={v.verse}
+              id={`c${chapter}-v${v.verse}`}
               className={cn(
-                "mr-1 font-sans text-[10px] font-medium tabular-nums",
-                focusVerse === v.verse ? "text-forest" : "text-faint",
+                "group scroll-mt-24 rounded-sm",
+                focusVerse === v.verse &&
+                  "bg-mark/55 ring-1 ring-forest/25 dark:bg-mark/40",
               )}
             >
-              {v.verse}
-            </sup>
-            <Highlighted text={v.text} needles={highlight} />
-            <VerseShareButton
-              book={book}
-              chapter={chapter}
-              verse={v.verse}
-              text={v.text}
-              className={cn(
-                "ml-1 inline-flex translate-y-0.5 align-baseline text-faint",
-                VERSE_ACTIONS_CLASS,
-              )}
-              iconClassName="size-3"
-            />
-          </p>
-        ))}
+              {/* The number is set the way a Bible sets a reference: small,
+                  raised, and in the margin colour, so it reads as print rather
+                  than as a control. */}
+              <sup
+                className={cn(
+                  "mr-1 select-none font-sans text-[10px] font-medium tabular-nums",
+                  focusVerse === v.verse ? "text-forest" : "text-gilt/75",
+                )}
+              >
+                {v.verse}
+              </sup>
+              <Highlighted text={v.text} needles={highlight} />
+              <VerseShareButton
+                book={book}
+                chapter={chapter}
+                verse={v.verse}
+                text={v.text}
+                className={cn(
+                  "ml-1 inline-flex translate-y-0.5 align-baseline text-faint",
+                  VERSE_ACTIONS_CLASS,
+                )}
+                iconClassName="size-3"
+              />{" "}
+            </span>
+          ))}
+        </p>
       </div>
 
       <div className="px-5 pt-2 pb-3 text-center">
