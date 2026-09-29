@@ -1,0 +1,124 @@
+From 7f9280b06f78adf580f970be2dcbaaf482ca242a Mon Sep 17 00:00:00 2001
+From: vj <vijay.peddenti434@gmail.com>
+Date: Tue, 29 Sep 2026 09:24:21 +0000
+Subject: [PATCH] Home: add What you get section; center footer content
+
+---
+ src/components/home-page.tsx | 74 +++++++++++++++++++++++++++++++++---
+ 1 file changed, 68 insertions(+), 6 deletions(-)
+
+diff --git a/src/components/home-page.tsx b/src/components/home-page.tsx
+index adabb69..4f236fe 100644
+--- a/src/components/home-page.tsx
++++ b/src/components/home-page.tsx
+@@ -637,6 +637,68 @@ export function Home() {
+         </div>
+       </section>
+ 
++      <section className="relative z-10 px-5 py-28 sm:px-10 lg:px-16">
++        <div className="mx-auto max-w-5xl">
++          <Reveal
++            as="p"
++            className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40"
++          >
++            At a glance
++          </Reveal>
++          <Reveal delay={60}>
++            <h2 className="mt-4 font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em]">
++              What you get
++            </h2>
++          </Reveal>
++          <Reveal delay={100}>
++            <p className="mt-5 max-w-2xl font-sans text-[15px] leading-relaxed text-black/55 dark:text-white/55">
++              Everything you need to search, read, and return to Scripture — built for calm,
++              not clutter.
++            </p>
++          </Reveal>
++          <div className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
++            {[
++              {
++                t: "Full KJV text",
++                b: "All 66 books, 1,189 chapters, and 31,102 verses. The 1906 Cambridge edition, public domain and complete.",
++              },
++              {
++                t: "Search by meaning",
++                b: "Type a half-remembered phrase, a theme, or a longing. SEEK finds the passages that carry it — not just exact matches.",
++              },
++              {
++                t: "Read your way",
++                b: "Page or scroll mode, day or night theme. Large type when you need it. Offline-friendly once installed.",
++              },
++              {
++                t: "Save what holds you",
++                b: "Bookmark verses across devices when signed in. Build a personal collection of the words you return to.",
++              },
++              {
++                t: "No paywall",
++                b: "No ads, no tracking, no subscription. The Word stays free — and so does SEEK.",
++              },
++              {
++                t: "Install anywhere",
++                b: "Add to your phone or desktop as an app. Opens in its own window, ready when you are.",
++              },
++            ].map((item, i) => (
++              <Reveal key={item.t} delay={80 + i * 40}>
++                <p className="font-sans text-[11px] tracking-[0.18em] text-black/35 uppercase dark:text-white/35">
++                  {String(i + 1).padStart(2, "0")}
++                </p>
++                <h3 className="mt-3 font-sans text-[1.15rem] font-medium tracking-[-0.01em]">
++                  {item.t}
++                </h3>
++                <p className="mt-2 font-sans text-[14px] leading-relaxed text-black/50 dark:text-white/50">
++                  {item.b}
++                </p>
++              </Reveal>
++            ))}
++          </div>
++        </div>
++      </section>
++
+       <section className="relative z-10 px-5 py-32 sm:px-10 lg:px-16">
+         <div className="mx-auto max-w-5xl">
+           <Reveal
+@@ -712,10 +774,10 @@ export function Home() {
+       </section>
+ 
+       <footer className="relative z-10 px-5 py-20 sm:px-10 lg:px-16">
+-        <div className="mx-auto max-w-5xl">
+-          <div className="flex flex-col gap-12 sm:flex-row sm:items-start sm:justify-between">
+-            <div className="max-w-xs">
++        <div className="mx-auto max-w-5xl text-center">
++          <div className="flex flex-col items-center gap-12">
++            <div className="mx-auto max-w-md">
+               <p className="font-sans text-[clamp(1.5rem,4vw,2.25rem)] font-medium leading-[1.1] tracking-[-0.02em]">
+                 The Word,
+                 <span className="block text-black/30 dark:text-white/30">kept free.</span>
+@@ -734,7 +796,7 @@ export function Home() {
+               >
+                 vijay.peddenti434@gmail.com
+               </a>
+-              <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4">
++              <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
+                 {[
+                   { t: "Books", v: "66" },
+                   { t: "Chapters", v: "1,189" },
+@@ -753,7 +815,7 @@ export function Home() {
+               </dl>
+             </div>
+ 
+-            <nav aria-label="Footer" className="grid flex-1 grid-cols-2 gap-x-8 gap-y-10 sm:max-w-md sm:grid-cols-4">
++            <nav aria-label="Footer" className="mx-auto grid w-full max-w-2xl grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4">
+               {[
+                 {
+                   h: "Read",
+@@ -793,7 +855,7 @@ export function Home() {
+                   ],
+                 },
+               ].map((col) => (
+-                <div key={col.h}>
++                <div key={col.h} className="text-center">
+                   <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
+                     {col.h}
+                   </p>
+-- 
+2.43.0
