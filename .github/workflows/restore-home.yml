@@ -1,0 +1,19 @@
+name: restore-home
+on:
+  workflow_dispatch:
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore and patch home page
+        run: |
+          curl -sL "https://raw.githubusercontent.com/vijaaaayyyy/seek/68d4d5ee7671ab2b3222f7ee3cce5ef39dae3a65/src/components/home-page.tsx" -o src/components/home-page.tsx
+          git apply home-footer.patch || patch -p1 < home-footer.patch
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add src/components/home-page.tsx
+          git diff --cached --quiet || git commit -m "Home: add What you get section; center footer content"
+          git push
