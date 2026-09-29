@@ -1,0 +1,21 @@
+name: restore-styles
+on:
+  workflow_dispatch:
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore styles.css
+        run: |
+          curl -sL "https://raw.githubusercontent.com/vijaaaayyyy/seek/68d4d5ee7671ab2b3222f7ee3cce5ef39dae3a65/src/styles.css" -o src/styles.css
+          if ! grep -q styles-bg.css src/styles.css; then
+            sed -i 's|@import "lenis/dist/lenis.css";|@import "lenis/dist/lenis.css";\n@import "./styles-bg.css";|' src/styles.css
+          fi
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add src/styles.css
+          git diff --cached --quiet || git commit -m "fix: restore full styles.css + BG import"
+          git push
