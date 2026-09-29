@@ -3,8 +3,8 @@ import { Download, Menu, X } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { FullMenu } from "@/components/full-menu";
-import { BackdropField } from "@/components/backdrop-field";
 import { ScrollCurve } from "@/components/scroll-curve";
+import { BibleFrame } from "@/components/bible-frame";
 import { SwapText } from "@/components/swap-text";
 import { UserMenu } from "@/components/user-menu";
 import { useHideOnScroll } from "@/hooks/use-hide-on-scroll";
@@ -80,8 +80,8 @@ export function AppShell({ children }: { children: ReactNode }) {
       {!isAuthCallback && (
         <FullMenu open={menuOpen} onOpenChange={setMenuOpen} />
       )}
-      <BackdropField intensity="full" className="-z-10" />
       <ScrollCurve />
+      <BibleFrame />
 
       <div className="relative z-10 hidden min-h-dvh flex-col lg:flex">
         {!isAuthCallback && (

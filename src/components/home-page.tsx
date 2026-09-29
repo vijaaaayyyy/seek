@@ -3,7 +3,6 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useSeekStore } from "@/lib/store";
 import { Search } from "lucide-react";
 import { Reveal } from "@/components/reveal";
-import { BackdropField } from "@/components/backdrop-field";
 import { BOOKS } from "@/data/books";
 
 const EXAMPLES = [
@@ -114,8 +113,6 @@ export function Home() {
       ref={rootRef}
       className="relative min-h-[100dvh] bg-[var(--paper)] text-[var(--ink)]"
     >
-      <BackdropField p1={p1} p2={p2} p3={p3} className="z-0" />
-
       {/* seek ←→ bible: slide in from the sides, meet as one phrase, stop */}
       <div
         className="pointer-events-none fixed inset-x-0 bottom-6 z-20 h-[clamp(2.5rem,9vw,5rem)]"

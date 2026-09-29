@@ -1,24 +1,25 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "lenis/dist/lenis.css";
-@import "./styles-bg.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   color-scheme: light;
 
-  --paper: #f4f4f4;
-  --surface: #ffffff;
-  --ink: #000000;
-  --muted: #666666;
-  --faint: #949494;
-  --line: color-mix(in oklab, var(--ink) 10%, transparent);
-  --forest: #000000;
-  --forest-fg: #f4f4f4;
-  --mark: #dcdcdc;
-  --wash: color-mix(in oklab, var(--ink) 6%, transparent);
-  --tint: #000000;
+  /* Parchment and iron-gall ink, the way a printed Bible ages. */
+  --paper: #efe4cf;
+  --surface: #fbf5e7;
+  --ink: #241a12;
+  --muted: #6d5a42;
+  --faint: #a08e75;
+  --line: color-mix(in oklab, var(--ink) 14%, transparent);
+  --forest: #3f2d1c;
+  --forest-fg: #f2e8d4;
+  --gilt: #9a7b3f;
+  --mark: #e2d3b4;
+  --wash: color-mix(in oklab, var(--ink) 7%, transparent);
+  --tint: #3f2d1c;
 
   --glass-fill: color-mix(in oklab, #ffffff 46%, transparent);
   --glass-fill-strong: color-mix(in oklab, #ffffff 68%, transparent);
@@ -53,17 +54,19 @@
 .dark {
   color-scheme: dark;
 
-  --paper: #0c0d12;
-  --surface: #1a1c26;
-  --ink: #f5f0e8;
-    --muted: #b4b4b4;
-    --faint: #8a8a8a;
-  --line: color-mix(in oklab, var(--ink) 18%, transparent);
-  --forest: #f5f0e8;
-  --forest-fg: #0c0d12;
-  --mark: #3a3a3a;
-  --wash: color-mix(in oklab, var(--ink) 12%, transparent);
-  --tint: #f5f0e8;
+  /* Dark calf: the same page read as leather at night. */
+  --paper: #16100b;
+  --surface: #201811;
+  --ink: #ece0c6;
+  --muted: #b0a087;
+  --faint: #87765f;
+  --line: color-mix(in oklab, var(--ink) 20%, transparent);
+  --forest: #c9a961;
+  --forest-fg: #16100b;
+  --gilt: #c9a961;
+  --mark: #33271a;
+  --wash: color-mix(in oklab, var(--ink) 14%, transparent);
+  --tint: #ece0c6;
 
   --glass-fill: color-mix(in oklab, #222636 72%, transparent);
   --glass-fill-strong: color-mix(in oklab, #2a2f40 88%, transparent);
@@ -81,10 +84,13 @@
 }
 
 @theme {
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
-    "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
-    serif;
+  /* The whole book is set in one old-style face, so the default stack and the
+     explicit serif token are the same thing. Every `font-sans` already in the
+     codebase resolves to a Bible face without being touched. */
+  --font-sans: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino,
+    "Book Antiqua", Georgia, serif;
+  --font-serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino,
+    "Book Antiqua", Georgia, serif;
 
   --color-paper: var(--paper);
   --color-surface: var(--surface);
@@ -94,6 +100,7 @@
   --color-line: var(--line);
   --color-forest: var(--forest);
   --color-forest-fg: var(--forest-fg);
+  --color-gilt: var(--gilt);
   --color-mark: var(--mark);
   --color-wash: var(--wash);
   --color-tint: var(--tint);
@@ -512,4 +519,56 @@
       transform: translate(-50%, -50%) scale(1.08);
     }
   }
+}
+
+/* ============================================================================
+   The printed book.
+
+   Three things a Bible page has that a screen usually does not: small caps
+   standing in for a running head, a double rule instead of a plain border, and
+   an illuminated opening letter. They are kept as utilities so a page can opt
+   in without every route having to be rewritten.
+   ========================================================================== */
+
+/* A running head: the small caps line a Bible prints above the text block,
+   carrying the book or chapter. */
+.bible-running-head {
+  font-variant-caps: all-small-caps;
+  font-feature-settings: "smcp" 1, "c2sc" 1;
+  letter-spacing: 0.16em;
+  color: var(--gilt);
+}
+
+/* Double rule. A Bible separates with a heavy line over a fine one, never a
+   single border, and the pair is the reason the page reads as printed. */
+.bible-rule {
+  border-top: 2px solid color-mix(in oklab, var(--gilt) 62%, transparent);
+  box-shadow: 0 3px 0 -2px color-mix(in oklab, var(--ink) 40%, transparent);
+}
+
+/* An illuminated opening letter for the first verse of a chapter. */
+.bible-dropcap::first-letter {
+  float: left;
+  margin: 0.06em 0.1em 0 0;
+  font-size: 3.2em;
+  line-height: 0.8;
+  font-weight: 500;
+  color: var(--gilt);
+}
+
+/* The body of a page: a little more leading than a web page wants, and a
+   measure short enough to read without losing the line. */
+.bible-body {
+  line-height: 1.72;
+  max-width: 68ch;
+}
+
+/* A verse number, set small and raised the way a Bible sets its references. */
+.bible-verse-num {
+  font-size: 0.62em;
+  vertical-align: super;
+  line-height: 0;
+  padding-inline: 0.12em;
+  color: var(--gilt);
+  font-weight: 500;
 }
