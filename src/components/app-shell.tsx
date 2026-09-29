@@ -80,7 +80,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {!isAuthCallback && (
         <FullMenu open={menuOpen} onOpenChange={setMenuOpen} />
       )}
-      {!isHome && <BackdropField base className="-z-10" />}
+      <BackdropField intensity="full" className="-z-10" />
       <ScrollCurve />
 
       <div className="relative z-10 hidden min-h-dvh flex-col lg:flex">
