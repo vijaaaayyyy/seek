@@ -91,6 +91,11 @@
     "Book Antiqua", Georgia, serif;
   --font-serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino,
     "Book Antiqua", Georgia, serif;
+  /* Chrome keeps a workhorse grotesque. Scripture is set in the old-style
+     face, but a 10px button label or a text field in Palatino is muddy and
+     hard to read, which is the one thing the interface must not be. */
+  --font-ui: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    ui-sans-serif, system-ui, sans-serif;
 
   --color-paper: var(--paper);
   --color-surface: var(--surface);
@@ -149,6 +154,24 @@
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+
+  /* Controls are chrome, not scripture, so they take the grotesque. A Bible
+     sets its references in an old-style face but sets its apparatus in a
+     workhorse; a text field in Palatino is muddy and slow to read, and no
+     design asks for one.
+
+     `!important` is load-bearing here rather than lazy: `font-sans` is a
+     utility class (specificity 0,1,0) sitting on nearly every control, and it
+     resolves to the old-style stack because that token is the Bible face. A
+     plain element rule loses to it. This is the one place in the sheet that
+     overrides a utility on purpose, and it is scoped to form controls so it
+     can never reach a word of scripture. */
+  input,
+  textarea,
+  select,
+  button {
+    font-family: var(--font-ui) !important;
   }
 
   body {
