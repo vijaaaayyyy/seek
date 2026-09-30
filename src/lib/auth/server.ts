@@ -91,7 +91,41 @@ export const authConfigured =
 // it derives the origin per-request from the (proxied) host, validated against the
 // preview allowlist, which makes the OAuth `redirect_uri` the concrete preview URL
 // the broker's preview client accepts.
-const explicitBaseURL = env("BETTER_AUTH_URL");
+
+/**
+ * Read `BETTER_AUTH_URL`, but only if it is genuinely an absolute http(s) URL.
+ *
+ * This guard exists because a *set but unusable* value is worse than an unset
+ * one. Better Auth runs `new URL()` on its base URL while constructing, so a
+ * placeholder like `placeholder` throws `ERR_INVALID_URL`. That throw happens
+ * during module init of the SSR graph, escapes as an unhandled promise
+ * rejection, and takes the entire dev server down with it - every route 500s
+ * and the process exits, so the failure looks unrelated to auth.
+ *
+ * Treating "present but junk" as unset restores the graceful path: the dynamic
+ * baseURL below derives the origin per request, and the app boots. An
+ * unparseable value is a misconfiguration worth naming in the log, not worth
+ * crashing over.
+ */
+function readUsableBaseURL(): string | undefined {
+  const raw = env("BETTER_AUTH_URL");
+  if (!raw) return undefined;
+  try {
+    const parsed = new URL(raw);
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") return raw;
+    console.warn(
+      `[auth] BETTER_AUTH_URL has unsupported protocol "${parsed.protocol}"; using the dynamic preview base URL instead.`,
+    );
+    return undefined;
+  } catch {
+    console.warn(
+      `[auth] BETTER_AUTH_URL is not an absolute URL; using the dynamic preview base URL instead. Sign-in federation stays off.`,
+    );
+    return undefined;
+  }
+}
+
+const explicitBaseURL = readUsableBaseURL();
 // Explicit `string[]` (not a readonly tuple) — Better Auth's DynamicBaseURLConfig
 // requires a mutable `allowedHosts: string[]`.
 const previewAllowedHosts: string[] = [...PREVIEW_ALLOWED_HOSTS];
