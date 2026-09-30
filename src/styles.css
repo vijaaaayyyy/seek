@@ -238,6 +238,87 @@
     background: #2a1d14;
   }
 
+  /* ---------------------------------------------------------------------
+     The waving parchment.
+
+     A hanging sheet of vellum does not sit flat, so the home cover is drawn
+     as a column of narrow vertical panels, each one nudged on its own phase,
+     which reads as the sheet breathing in a draught. It is done with plain
+     transforms on a handful of divs rather than a canvas or a video, so it
+     costs nothing to decode, it never fights the page content for the main
+     thread, and it can be switched off wholesale by the reduced-motion query
+     below.
+
+     `--wave-i` is written per panel by the component; `--wave-amp` scales the
+     whole effect so the mobile amplitude can be dialled down in one place.
+     --------------------------------------------------------------------- */
+  @keyframes parchment-breathe {
+    0%,
+    100% {
+      translate: 0 calc(var(--wave-amp) * -1);
+      scale: 1 1.004;
+    }
+    50% {
+      translate: 0 var(--wave-amp);
+      scale: 1 0.996;
+    }
+  }
+
+  @keyframes parchment-drift {
+    0%,
+    100% {
+      rotate: -0.12deg;
+    }
+    50% {
+      rotate: 0.12deg;
+    }
+  }
+
+  /* One panel of the sheet. The gradient is the moving part: a bright crest
+     that travels down the panel and a dark trough behind it, so the light looks
+     like it is passing over a curved surface rather than a flat one fading in
+     and out. */
+  .parchment-panel {
+    position: absolute;
+    inset-block: 0;
+    /* `translate`/`rotate`/`scale` are used as independent properties rather
+       than as `transform`, because two animations writing `transform` to the
+       same element do not blend: the later one replaces the earlier wholesale.
+       Written that way the sheet never moved vertically at all. */
+    animation:
+      parchment-breathe var(--wave-dur, 7.2s) ease-in-out infinite,
+      parchment-drift calc(var(--wave-dur, 7.2s) * 1.7) ease-in-out infinite;
+    animation-delay:
+      calc(var(--wave-i, 0) * var(--wave-lag, -0.42s)),
+      calc(var(--wave-i, 0) * var(--wave-lag, -0.42s));
+    will-change: translate, rotate;
+    backface-visibility: hidden;
+  }
+
+  .parchment-panel > span {
+    position: absolute;
+    inset: 0;
+    display: block;
+    background-image:
+      linear-gradient(
+        100deg,
+        rgba(255, 240, 205, 0.055) 0%,
+        rgba(0, 0, 0, 0.16) 34%,
+        rgba(0, 0, 0, 0.26) 50%,
+        rgba(255, 240, 205, 0.05) 68%,
+        rgba(0, 0, 0, 0.14) 100%
+      );
+  }
+
+  /* Air movement is decoration. Anyone who has asked the system to reduce
+     motion gets a still sheet, which still reads as vellum because the texture
+     and the deckle are static paint, not movement. */
+  @media (prefers-reduced-motion: reduce) {
+    .parchment-panel {
+      animation: none;
+    }
+  }
+
   ::selection {
     background: var(--mark);
     color: var(--ink);

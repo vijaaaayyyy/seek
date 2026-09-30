@@ -397,7 +397,17 @@ function PageSheet({
         // the running head, the rules, the verse numbers and the share buttons
         // all print on cream without each one restating a colour. The site
         // around it stays calf.
-        "bible-page book-page flex flex-col overflow-hidden rounded-[22px] border border-line text-ink shadow-[0_1px_2px_var(--glass-drop),0_14px_40px_var(--glass-drop)]",
+        // `book-page` was a leftover from an earlier sheet treatment: nothing in
+        // the stylesheet ever matched it, so it was carrying a promise of paper
+        // that no rule delivered. Dropped in favour of the real page styles
+        // below.
+        //
+        // The one border is `currentColor` at low alpha rather than a gilt or
+        // `line` rule. On cream paper a gilt border is a gold line round a white
+        // box, which is the thing being fixed; this reads as the shadowed edge
+        // of a sheet lying on a table, and it is the same brown in both themes
+        // because the ink token flips with the page.
+        "bible-page flex flex-col overflow-hidden rounded-[18px] border border-ink/12 text-ink shadow-[0_1px_2px_var(--glass-drop),0_14px_40px_var(--glass-drop)]",
         className,
       )}
     >
