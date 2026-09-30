@@ -393,7 +393,11 @@ function PageSheet({
   return (
     <div
       className={cn(
-        "book-page flex flex-col overflow-hidden rounded-[22px] border border-line bg-[var(--paper)] text-ink shadow-[0_1px_2px_var(--glass-drop),0_14px_40px_var(--glass-drop)]",
+        // `bible-page` re-scopes the palette to paper for everything inside, so
+        // the running head, the rules, the verse numbers and the share buttons
+        // all print on cream without each one restating a colour. The site
+        // around it stays calf.
+        "bible-page book-page flex flex-col overflow-hidden rounded-[22px] border border-line text-ink shadow-[0_1px_2px_var(--glass-drop),0_14px_40px_var(--glass-drop)]",
         className,
       )}
     >

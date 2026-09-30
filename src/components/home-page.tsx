@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useSeekStore } from "@/lib/store";
 import { Search } from "lucide-react";
 import { Reveal } from "@/components/reveal";
+import { HomeBackdrop } from "@/components/home-backdrop";
 import { BOOKS } from "@/data/books";
 
 const EXAMPLES = [
@@ -108,11 +109,20 @@ export function Home() {
   );
   const fromCenter = side.wordPx ? (roomPx / side.vwPx) * 100 * (1 - merge) : 0;
 
-  return (
-    <div
-      ref={rootRef}
-      className="relative min-h-[100dvh] bg-[var(--paper)] text-[var(--ink)]"
-    >
+    return (
+      <div
+        ref={rootRef}
+        // Transparent on purpose: `HomeBackdrop` is fixed behind this and
+        // supplies the cover. If the image or video is missing, the wash layer
+        // composites over the body's own leather, so a failed asset degrades to
+        // plain calf rather than to a hole.
+        className="relative min-h-[100dvh] bg-transparent text-[var(--ink)]"
+      >
+        {/* One fixed picture, so it reads as a single sheet from the hero down
+            to the footer. Sits behind the page's own background, which is why
+            the wrapper above keeps `bg-[var(--paper)]` as the fallback. */}
+        <HomeBackdrop />
+
       {/* seek ←→ bible: slide in from the sides, meet as one phrase, stop */}
       <div
         className="pointer-events-none fixed inset-x-0 bottom-6 z-20 h-[clamp(2.5rem,9vw,5rem)]"

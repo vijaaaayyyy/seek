@@ -5,31 +5,36 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
-  /* Parchment and iron-gall ink, the way a printed Bible ages. */
-  --paper: #efe4cf;
-  --surface: #fbf5e7;
-  --ink: #241a12;
-  --muted: #6d5a42;
-  --faint: #a08e75;
-  --line: color-mix(in oklab, var(--ink) 14%, transparent);
-  --forest: #3f2d1c;
-  --forest-fg: #f2e8d4;
-  --gilt: #9a7b3f;
-  --mark: #e2d3b4;
-  --wash: color-mix(in oklab, var(--ink) 7%, transparent);
-  --tint: #3f2d1c;
+  /* Deep calf. The site itself is the cover: a dark grained leather with cream
+     ink. The cream page is not a theme here, it is a *page* - it appears only
+     inside the reading frame (see `[data-bible-frame]` below), the way paper
+     only appears inside a bound book. */
+  --paper: #2a1d14;
+  --surface: #362619;
+  --ink: #f0e6d2;
+  --muted: #c3ae90;
+  --faint: #9a866c;
+  --line: color-mix(in oklab, var(--ink) 16%, transparent);
+  --forest: #c9a961;
+  --forest-fg: #2a1d14;
+  --gilt: #c9a961;
+  --mark: #4a3524;
+  --wash: color-mix(in oklab, var(--ink) 8%, transparent);
+  --tint: #f0e6d2;
 
-  --glass-fill: color-mix(in oklab, #ffffff 46%, transparent);
-  --glass-fill-strong: color-mix(in oklab, #ffffff 68%, transparent);
-  --glass-stroke: color-mix(in oklab, #ffffff 70%, transparent);
-  --glass-sheen: color-mix(in oklab, #ffffff 86%, transparent);
-  --glass-inset: color-mix(in oklab, var(--ink) 7%, transparent);
-  --glass-drop: color-mix(in oklab, var(--ink) 12%, transparent);
+  --glass-fill: color-mix(in oklab, #000000 30%, transparent);
+  --glass-fill-strong: color-mix(in oklab, #000000 44%, transparent);
+  --glass-stroke: color-mix(in oklab, #f0e6d2 20%, transparent);
+  --glass-sheen: color-mix(in oklab, #f0e6d2 12%, transparent);
+  --glass-inset: color-mix(in oklab, #000000 34%, transparent);
+  --glass-drop: color-mix(in oklab, #000000 52%, transparent);
   --glass-blur: 32px;
 
-  --orb-a: #d0d0d0;
+  --orb-a: #3d2b1c;
+  --orb-b: #3d2b1c;
+  --orb-c: #3d2b1c;
 
   /* One type scale, shared by every page. Home's hero may use --type-display;
      every page title uses --type-title so no two pages disagree. */
@@ -42,10 +47,8 @@
   --type-body: 15px;
   --type-label: 11px;
   --type-meta: 12px;
-  --orb-b: #d0d0d0;
-  --orb-c: #d0d0d0;
 
-  --banner: #fafaf5;
+  --banner: #2a1d14;
 
   --header-h: 3.5rem;
   --tabbar-h: 5.25rem;
@@ -54,33 +57,72 @@
 .dark {
   color-scheme: dark;
 
-  /* Dark calf: the same page read as leather at night. */
-  --paper: #16100b;
-  --surface: #201811;
+  /* Night calf: the same cover with the lamp down. */
+  --paper: #1a120c;
+  --surface: #241a12;
   --ink: #ece0c6;
   --muted: #b0a087;
   --faint: #87765f;
-  --line: color-mix(in oklab, var(--ink) 20%, transparent);
+  --line: color-mix(in oklab, var(--ink) 18%, transparent);
   --forest: #c9a961;
-  --forest-fg: #16100b;
+  --forest-fg: #1a120c;
   --gilt: #c9a961;
   --mark: #33271a;
-  --wash: color-mix(in oklab, var(--ink) 14%, transparent);
+  --wash: color-mix(in oklab, var(--ink) 12%, transparent);
   --tint: #ece0c6;
 
-  --glass-fill: color-mix(in oklab, #222636 72%, transparent);
-  --glass-fill-strong: color-mix(in oklab, #2a2f40 88%, transparent);
-  --glass-stroke: color-mix(in oklab, #ffffff 22%, transparent);
-  --glass-sheen: color-mix(in oklab, #ffffff 28%, transparent);
-  --glass-inset: color-mix(in oklab, #000000 35%, transparent);
-  --glass-drop: color-mix(in oklab, #000000 50%, transparent);
+  --glass-fill: color-mix(in oklab, #000000 40%, transparent);
+  --glass-fill-strong: color-mix(in oklab, #000000 56%, transparent);
+  --glass-stroke: color-mix(in oklab, #f0e6d2 16%, transparent);
+  --glass-sheen: color-mix(in oklab, #f0e6d2 10%, transparent);
+  --glass-inset: color-mix(in oklab, #000000 45%, transparent);
+  --glass-drop: color-mix(in oklab, #000000 60%, transparent);
   --glass-blur: 36px;
 
-  --orb-a: #3a3a44;
-  --orb-b: #3a3a44;
-  --orb-c: #3a3a44;
+  --orb-a: #2a1d14;
+  --orb-b: #2a1d14;
+  --orb-c: #2a1d14;
+}
 
-  --banner: #1a2030;
+/* The page itself.
+
+   Scoped as a class rather than put on `[data-bible-frame]`, because that
+   element is a fixed, full-viewport border overlay - re-scoping tokens there
+   would repaint the whole site cream and cancel the leather entirely. Paper
+   belongs to the surface you actually read on.
+
+   Re-declaring the same custom properties re-scopes the entire palette for
+   everything inside, because every colour utility in the app resolves through
+   these variables. That is why the page needed no component changes:
+   `text-ink`, `bg-surface`, `border-line` and the rest all follow this element
+   down into paper. */
+.bible-page {
+  color-scheme: light;
+
+  --paper: #f4ecdc;
+  --surface: #faf4e6;
+  --ink: #241a12;
+  --muted: #6d5a42;
+  --faint: #9c8a70;
+  --line: color-mix(in oklab, var(--ink) 16%, transparent);
+  --forest: #3f2d1c;
+  --forest-fg: #f2e8d4;
+  --gilt: #9a7b3f;
+  --mark: #e2d3b4;
+  --wash: color-mix(in oklab, var(--ink) 7%, transparent);
+  --tint: #3f2d1c;
+
+  /* Grain: two very shallow gradients so the page is not a dead flat fill.
+     Both stay far below the threshold where they could affect the contrast of
+     a word of scripture. */
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(120% 80% at 50% -10%, color-mix(in oklab, #ffffff 55%, transparent), transparent 60%),
+    radial-gradient(100% 60% at 50% 110%, color-mix(in oklab, #b99b6b 13%, transparent), transparent 65%);
+  color: var(--ink);
+  box-shadow:
+    0 1px 0 color-mix(in oklab, #ffffff 40%, transparent) inset,
+    0 18px 44px -22px color-mix(in oklab, #000000 62%, transparent);
 }
 
 @theme {
@@ -189,10 +231,11 @@
       color 280ms var(--ease-out-apple);
   }
 
-  /* Dark under system status / quick-settings bar on home forest hero */
+  /* The cover runs to the very top of the viewport on home, including behind
+     the status bar, so the leather has no pale seam at the top of a phone. */
   html.home-canopy,
   html.home-canopy body {
-    background: #0c0d12;
+    background: #2a1d14;
   }
 
   ::selection {
@@ -541,6 +584,37 @@
       opacity: 0;
       transform: translate(-50%, -50%) scale(1.08);
     }
+  }
+}
+
+/* ============================================================================
+   Page-to-page transition.
+
+   Short, small and one-directional: a page arriving from below and settling.
+   The distance is deliberately tiny (10px). A large travel reads as a
+   slideshow and makes the site feel slower than it is, which is the opposite of
+   what a page transition is for.
+   ========================================================================== */
+
+@keyframes seek-page-settle {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+[data-page-phase="enter"] {
+  animation: seek-page-settle 380ms var(--ease-out-apple) both;
+  will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-page-phase="enter"] {
+    animation: none;
   }
 }
 
