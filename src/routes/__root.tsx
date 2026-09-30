@@ -13,6 +13,7 @@ import { SavePrompt } from "@/components/save-prompt";
 import { InstallProvider } from "@/components/install-provider";
 import { LenisProvider } from "@/components/lenis-provider";
 import { PageTransition } from "@/components/page-transition";
+import { HomeBackdrop } from "@/components/home-backdrop";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "SEEK";
@@ -111,6 +112,9 @@ function RootComponent() {
 
       <body className="antialiased">
         <PreviewHostBridge />
+        {/* Above AppShell, so it is not duplicated by the shell's desktop and
+            mobile layout branches. */}
+        <HomeBackdrop />
 
         <AuthProvider>
           <ThemeProvider>

@@ -11,17 +11,20 @@
  *  2. The live layer, if you switch it on. Set `VITE_HOME_BG_VIDEO` to the path
  *     of a looping clip and it plays over the still, which becomes its poster.
  *
+ * Why this is mounted once, in the root, rather than inside the home page:
+ * `AppShell` renders its children twice - a `hidden lg:flex` branch and a mobile
+ * branch - so a backdrop placed in the page existed twice, and because both
+ * copies were `play()`ing, the hidden one sat there decoding a second copy of
+ * the video for nothing. On a phone that is real battery for no picture. It is
+ * mounted here, above both branches, and kept mounted so the clip stays warm.
+ *
  * The video is opt-in by env var rather than probed for with a `fetch`. An
  * earlier version HEAD-requested the file to see whether it was there, which
  * meant every visit logged a 404 to the console for a file that legitimately may
- * not exist yet - a permanent, meaningless error in the log. An env var is
- * explicit, costs no request, and cannot produce a false negative.
- *
- * The picture is pushed well down in luminance and sits under a leather wash, so
- * text keeps its contrast. A background photo that competes with body text is
- * the reason the earlier version read grey; this one is furniture.
+ * not exist yet - a permanent, meaningless error in the log.
  */
 import { useEffect, useRef } from "react";
+import { useRouterState } from "@tanstack/react-router";
 
 const STILL = "/art/home-bg.png";
 
@@ -30,22 +33,38 @@ const LIVE = (import.meta.env.VITE_HOME_BG_VIDEO as string | undefined)?.trim() 
 
 export function HomeBackdrop() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const isHome = useRouterState({
+    select: (s) => s.location.pathname === "/" || s.location.pathname === "",
+  });
   const hasVideo = Boolean(LIVE);
 
   useEffect(() => {
-    // Autoplay is refused whenever the visitor has asked for reduced motion, and
-    // is often refused on low-power modes regardless. Treat refusal as normal.
     const el = videoRef.current;
     if (!el || !hasVideo) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
+
+    // Off home: stop decoding. The element stays mounted so returning to home is
+    // instant rather than a fresh fetch.
+    if (!isHome) {
+      el.pause();
+      return;
+    }
+
+    // Autoplay is refused whenever the visitor has asked for reduced motion, and
+    // is often refused on low-power modes regardless. Treat refusal as normal.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     void el.play().catch(() => {
       /* browser declined; the poster frame is still correct */
     });
-  }, [hasVideo]);
+  }, [hasVideo, isHome]);
 
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div
+      aria-hidden
+      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+      // Kept in the tree but taken out of play off home, so the page beneath
+      // shows its own leather rather than a frozen frame of the cover.
+      data-home-backdrop={isHome ? "on" : "off"}
+    >
       {hasVideo ? (
         <video
           ref={videoRef}
@@ -60,10 +79,9 @@ export function HomeBackdrop() {
         />
       ) : (
         // `blur-[2px]` is not a filter flourish, it is honest damage control.
-        // The source is 256x256 and covers a 1440px viewport, so it is upscaled
+        // The still is 256x256 covering a 1440px viewport, so it is upscaled
         // roughly 5.6x; a hair of blur makes the interpolation read as
-        // depth-of-field rather than as a low-resolution asset. Swap in a
-        // full-size original and this can come straight out.
+        // depth-of-field rather than as a low-resolution asset.
         <img
           className="absolute inset-0 size-full scale-105 object-cover blur-[2px]"
           src={STILL}

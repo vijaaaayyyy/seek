@@ -590,26 +590,31 @@
 /* ============================================================================
    Page-to-page transition.
 
-   Short, small and one-directional: a page arriving from below and settling.
-   The distance is deliberately tiny (10px). A large travel reads as a
-   slideshow and makes the site feel slower than it is, which is the opposite of
-   what a page transition is for.
+   Opacity only, and that restraint is load-bearing rather than minimalist.
+
+   An earlier version also translated the page up from 10px. Both a transform
+   and `will-change: transform` make an element a containing block for
+   `position: fixed` descendants, so the home page's fixed background - which
+   is meant to span hero to footer - silently re-anchored to the page wrapper
+   instead of the viewport. It happened to look correct on desktop and was
+   visibly short on a phone. Animating opacity creates a stacking context but
+   not a containing block, so nothing fixed inside moves.
+
+   380ms: long enough to read as a page arriving, short enough that navigating
+   never feels like waiting.
    ========================================================================== */
 
 @keyframes seek-page-settle {
   from {
     opacity: 0;
-    transform: translate3d(0, 10px, 0);
   }
   to {
     opacity: 1;
-    transform: none;
   }
 }
 
 [data-page-phase="enter"] {
   animation: seek-page-settle 380ms var(--ease-out-apple) both;
-  will-change: opacity, transform;
 }
 
 @media (prefers-reduced-motion: reduce) {

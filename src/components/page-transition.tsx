@@ -13,7 +13,10 @@
  *    animation is purely presentational, so nothing is ever waiting on it;
  *  - it will not remount on search-param or hash changes, only when the visitor
  *    has actually gone somewhere else. A filter that rewrites the query string
- *    should not replay a page transition.
+ *    should not replay a page transition;
+ *  - it fades only, and never transforms. See the note in styles.css: a
+ *    transform here would make this element a containing block for the home
+ *    page's fixed background and break the hero-to-footer cover.
  */
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouterState } from "@tanstack/react-router";
