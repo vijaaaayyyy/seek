@@ -28,16 +28,23 @@ export function InfoPage({
       <div className="mb-10 flex items-center justify-between gap-4">
         <Link
           to="/"
-          className="font-sans text-[12px] tracking-[0.14em] text-ink/50 uppercase transition-colors hover:text-ink"
+          className="font-sans text-[12px] tracking-[0.14em] text-muted uppercase transition-colors hover:text-ink"
         >
           ← Home
         </Link>
         {lastUpdated && (
-          <span className="font-sans text-[12px] text-ink/40">Updated {lastUpdated}</span>
+          <span className="font-sans text-[12px] text-faint">Updated {lastUpdated}</span>
         )}
       </div>
 
-      <Reveal as="p" className="font-sans text-[11px] font-medium tracking-[0.2em] text-ink/45 uppercase">
+      {/*
+        These were `text-ink/50`, `/40`, `/45`, `/60`, `/65` - alpha tuned while
+        `--ink` was always cream on a dark page. Now that `--ink` flips with the
+        mode, a fixed alpha over near-black ink lands near 3:1 on light paper, so
+        the de-emphasis is carried by the palette's own `faint`/`muted` steps
+        instead. Same visual hierarchy, and both clear 4.5:1 in either mode.
+      */}
+      <Reveal as="p" className="font-sans text-[11px] font-medium tracking-[0.2em] text-faint uppercase">
         SEEK
       </Reveal>
       <Reveal delay={40} className="mt-3 max-w-3xl">
@@ -45,7 +52,7 @@ export function InfoPage({
           {title}
         </h1>
       </Reveal>
-      <Reveal delay={80} as="p" className="mt-5 max-w-xl font-sans text-[15px] leading-relaxed text-ink/60 sm:text-[16px]">
+      <Reveal delay={80} as="p" className="mt-5 max-w-xl font-sans text-[15px] leading-relaxed text-muted sm:text-[16px]">
         {lede}
       </Reveal>
 
@@ -59,7 +66,7 @@ export function InfoPage({
             )}
             <div
               className={cn(
-                "max-w-2xl font-sans text-[14.5px] leading-relaxed text-ink/65 sm:text-[15px]",
+                "max-w-2xl font-sans text-[14.5px] leading-relaxed text-muted sm:text-[15px]",
                 s.title && "mt-3",
               )}
             >

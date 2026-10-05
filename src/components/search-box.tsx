@@ -18,6 +18,7 @@ export function SearchBox({
   onSubmitQuery,
   onValueChange,
   onClear,
+  onCover = false,
 }: {
   initial?: string;
   size?: "lg" | "md";
@@ -26,6 +27,12 @@ export function SearchBox({
   onValueChange?: (q: string) => void;
   /** Called when the user taps the clear (X) control. */
   onClear?: () => void;
+  /**
+   * The field is sitting on the home photograph rather than on the app's paper.
+   * The two cases need different surfaces: frosted white glass over an image,
+   * versus the palette's own glass over its own background.
+   */
+  onCover?: boolean;
 }) {
   const navigate = useNavigate();
   const id = useId();
@@ -62,7 +69,12 @@ export function SearchBox({
       </label>
       <div
         className={cn(
-          "glass relative flex items-center",
+          // `onCover` is the home case, where the field sits on the photograph:
+          // it has to carry an opaque-ish background of its own, and its ink is
+          // dark rather than the palette's, because the field is light glass in
+          // every palette.
+          onCover ? "search-pill-on-cover" : "glass",
+          "relative flex items-center",
           size === "lg" ? "h-14 rounded-[22px]" : "h-12 rounded-[18px]",
         )}
       >

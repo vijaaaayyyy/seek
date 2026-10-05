@@ -95,8 +95,8 @@ export function AppShell({ children }: { children: ReactNode }) {
               className={cn(
                 "flex h-12 w-fit max-w-[min(100%,40rem)] items-center gap-1 rounded-full px-2.5 shadow-sm ring-1 backdrop-blur-xl",
                 isHome
-                  ? "bg-white/85 ring-black/8 dark:bg-black/50 dark:ring-white/12"
-                  : "bg-white/55 ring-black/5 dark:bg-black/45 dark:ring-white/10",
+                  ? "bg-white/85 text-on-glass ring-black/8 dark:bg-black/50 dark:ring-white/12"
+                  : "bg-white/70 text-on-glass ring-black/5 dark:bg-black/45 dark:ring-white/10",
               )}
             >
               <Link
@@ -104,7 +104,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 className="flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5"
               >
                 <LeafMark className="size-4 text-forest" />
-                <span className="font-sans text-[1.05rem] tracking-[0.04em] text-ink">
+                <span className="font-sans text-[1.05rem] tracking-[0.04em] text-on-glass">
                   SEEK
                 </span>
               </Link>
@@ -115,9 +115,12 @@ export function AppShell({ children }: { children: ReactNode }) {
                     to={link.to}
                     className={cn(
                       "group flex items-center rounded-full px-3 py-1.5 font-sans text-[12.5px] font-medium transition-colors",
+                      // These sit inside the header pill, so they follow the
+                      // pill's own ink rather than the page's: the pill fill
+                      // flips per mode and the label has to with it.
                       pathname.startsWith(link.to)
-                        ? "bg-ink/8 text-ink"
-                        : "text-muted hover:text-ink",
+                        ? "bg-ink/8 text-on-glass"
+                        : "text-on-glass/80 hover:text-on-glass",
                     )}
                   >
                     <SwapText>{link.label}</SwapText>
@@ -137,8 +140,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                 className={cn(
                   "absolute top-4 right-24 flex h-12 items-center gap-2 rounded-full px-4 font-sans text-[13px] font-medium shadow-sm ring-1 backdrop-blur-xl transition-all hover:opacity-90 active:scale-[0.98]",
                   isHome
-                    ? "bg-white/85 text-ink ring-black/8 dark:bg-black/50 dark:text-[var(--ink)] dark:ring-white/12"
-                    : "bg-white/55 text-ink ring-black/5 dark:bg-black/45 dark:text-[var(--ink)] dark:ring-white/10",
+                    ? "bg-white/85 text-on-glass ring-black/8 dark:bg-black/50 dark:text-[var(--on-glass)] dark:ring-white/12"
+                    : "bg-white/70 text-on-glass ring-black/5 dark:bg-black/45 dark:text-[var(--on-glass)] dark:ring-white/10",
                 )}
               >
                 <Download className="size-[18px]" strokeWidth={1.9} />
@@ -185,8 +188,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                     className={cn(
                       "flex size-12 shrink-0 items-center justify-center rounded-full shadow-sm ring-1 backdrop-blur-xl transition-all active:scale-95",
                       isHome
-                        ? "bg-white/85 text-ink ring-black/8 dark:bg-black/45 dark:ring-white/12"
-                        : "bg-white/70 text-ink ring-black/8 dark:bg-black/45 dark:ring-white/12",
+                        ? "bg-white/85 text-on-glass ring-black/8 dark:bg-black/45 dark:ring-white/12"
+                        : "bg-white/80 text-on-glass ring-black/8 dark:bg-black/45 dark:ring-white/12",
                     )}
                   >
                     {menuOpen ? (
@@ -200,13 +203,13 @@ export function AppShell({ children }: { children: ReactNode }) {
                   className={cn(
                     "flex h-12 min-w-0 flex-1 items-center justify-between rounded-full pl-4 pr-1.5",
                     isHome
-                      ? "bg-white/85 shadow-sm ring-1 ring-black/8 backdrop-blur-xl dark:bg-black/45 dark:ring-white/12"
+                      ? "bg-white/85 text-on-glass shadow-sm ring-1 ring-black/8 backdrop-blur-xl dark:bg-black/45 dark:ring-white/12"
                       : "glass",
                   )}
                 >
                   <Link to="/" className="flex min-h-10 items-center gap-1.5">
                     <LeafMark className="size-4 text-forest" />
-                    <span className="font-sans text-[1.2rem] leading-none tracking-[0.04em] text-ink">
+                    <span className="font-sans text-[1.2rem] leading-none tracking-[0.04em] text-on-glass">
                       SEEK
                     </span>
                   </Link>
@@ -223,8 +226,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                     className={cn(
                       "flex size-12 shrink-0 items-center justify-center rounded-full shadow-sm ring-1 backdrop-blur-xl transition-all active:scale-95",
                       isHome
-                        ? "bg-white/85 text-ink ring-black/8 dark:bg-black/45 dark:text-[var(--ink)] dark:ring-white/12"
-                        : "bg-white/70 text-ink ring-black/8 dark:bg-black/45 dark:text-[var(--ink)] dark:ring-white/12",
+                        ? "bg-white/85 text-on-glass ring-black/8 dark:bg-black/45 dark:text-[var(--on-glass)] dark:ring-white/12"
+                        : "bg-white/80 text-on-glass ring-black/8 dark:bg-black/45 dark:text-[var(--on-glass)] dark:ring-white/12",
                     )}
                   >
                     <Download className="size-[18px]" strokeWidth={1.9} />
