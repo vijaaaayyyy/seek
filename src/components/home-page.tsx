@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useSeekStore } from "@/lib/store";
-import { Search } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { BOOKS } from "@/data/books";
 
@@ -12,6 +12,22 @@ const EXAMPLES = [
   "be not afraid",
   "love one another",
 ];
+
+const EYEBROW =
+  "font-ui text-[12px] font-semibold tracking-[0.18em] uppercase text-[#d4af37]";
+const TITLE =
+  "mt-4 font-serif text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.1] tracking-[-0.01em] text-[#f5f0e8]";
+const BODY = "font-ui text-[16px] leading-[1.7] text-[#d9d0c1]";
+const CARD =
+  "rounded-2xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_18px_44px_-24px_rgba(0,0,0,0.7)] transition hover:border-[#d4af37]/45 hover:bg-white/[0.07]";
+const TEXT_LINK =
+  "font-ui text-[14px] font-semibold tracking-[0.04em] text-[#d4af37] underline decoration-[#d4af37]/50 underline-offset-4 transition hover:decoration-[#d4af37]";
+const PRIMARY_BUTTON =
+  "inline-flex min-h-12 items-center justify-center rounded-xl bg-[#d4af37] px-7 font-ui text-[15px] font-semibold text-[#1c1612] transition hover:bg-[#e2c04f] active:scale-[0.98]";
+const GHOST_BUTTON =
+  "inline-flex min-h-12 items-center justify-center rounded-xl border border-[#f5f0e8]/30 px-7 font-ui text-[15px] font-medium text-[#f5f0e8] transition hover:border-[#d4af37] hover:text-[#d4af37] active:scale-[0.98]";
+const STAT_VALUE = "font-serif text-[clamp(2rem,4vw,2.75rem)] leading-none text-[#f5f0e8]";
+const STAT_LABEL = "mt-2 font-ui text-[12px] tracking-[0.12em] uppercase text-[#b8ad9b]";
 
 /**
  * Compositional home inspired by bleibtgleich.dev:
@@ -69,10 +85,6 @@ export function Home() {
     void navigate({ to: "/search", search: { q } });
   }
 
-  const p1 = scrollY * 0.12;
-  const p2 = scrollY * 0.08;
-  const p3 = scrollY * 0.15;
-
   // Scroll-driven "seek bible" merge: the two side words travel toward the
   // viewport centre over the back half of the page and stop as one phrase.
   const merge = useMemo(() => {
@@ -82,7 +94,7 @@ export function Home() {
   }, [scrollY, docH, vh]);
 
   const halfGap = 0.8; // rem of breathing room between the words
-  const sideOpacity = 0.14 + merge * 0.5;
+  const sideOpacity = 0.35 + merge * 0.65;
   const sideScale = 1 + merge * 0.12;
 
   // Travel is measured, not guessed: each word starts fully on-screen and only
@@ -108,17 +120,13 @@ export function Home() {
   );
   const fromCenter = side.wordPx ? (roomPx / side.vwPx) * 100 * (1 - merge) : 0;
 
-    return (
-      <div
-        ref={rootRef}
-        // Transparent on purpose: `HomeBackdrop` is mounted once in the root,
-        // above both of the shell's layout branches, and supplies the cover from
-        // behind. If the image or video is missing, the wash layer composites
-        // over the body's own leather, so a failed asset degrades to plain calf
-        // rather than to a hole.
-        className="relative min-h-[100dvh] bg-transparent text-[var(--ink)]"
-      >
-
+  return (
+    <div
+      ref={rootRef}
+      // Explicit colours, not theme tokens: the home cover is always dark, so
+      // its text must not follow the light/dark theme setting.
+      className="relative min-h-[100dvh] bg-transparent text-[#f5f0e8]"
+    >
       {/* seek ←→ bible: slide in from the sides, meet as one phrase, stop */}
       <div
         className="pointer-events-none fixed inset-x-0 bottom-6 z-20 h-[clamp(2.5rem,9vw,5rem)]"
@@ -126,7 +134,7 @@ export function Home() {
       >
         <span
           ref={seekRef}
-          className="absolute bottom-0 select-none font-sans text-[clamp(2.5rem,9vw,5rem)] font-medium tracking-tight text-black dark:text-white will-change-transform"
+          className="absolute bottom-0 font-serif text-[clamp(2.5rem,9vw,5rem)] tracking-tight text-[#f5f0e8] select-none will-change-transform"
           style={{
             left: "50%",
             opacity: sideOpacity,
@@ -138,7 +146,7 @@ export function Home() {
         </span>
         <span
           ref={bibleRef}
-          className="absolute bottom-0 select-none font-sans text-[clamp(2.5rem,9vw,5rem)] font-medium tracking-tight text-black dark:text-white will-change-transform"
+          className="absolute bottom-0 font-serif text-[clamp(2.5rem,9vw,5rem)] tracking-tight text-[#f5f0e8] select-none will-change-transform"
           style={{
             left: "50%",
             opacity: sideOpacity,
@@ -150,124 +158,92 @@ export function Home() {
         </span>
       </div>
 
-      <section className="relative z-10 flex min-h-[100dvh] flex-col px-5 pt-20 pb-10 sm:px-10 lg:px-16">
-        <div className="flex items-start justify-between gap-6">
-          <div className="flex gap-6">
-            <div className="hidden h-16 w-12 bg-black dark:bg-white sm:block" aria-hidden />
-            <div className="border-l border-black/20 pl-4 dark:border-white/20">
-              <p className="font-sans text-[12px] leading-snug text-black/70 dark:text-white/70">
-                Free · KJV
-                <br />
-                66 books
-              </p>
-            </div>
+      <section className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-center px-5 pt-28 pb-16 text-center sm:px-10 lg:px-16">
+        <p className={EYEBROW}>Free · King James Version · 66 books</p>
+        <h1 className="mt-6 font-serif text-[clamp(5rem,20vw,11rem)] leading-[0.9] tracking-[-0.02em] text-[#f5f0e8]">
+          SEEK
+        </h1>
+        <p className="mt-3 font-serif text-[clamp(1.5rem,4vw,2.25rem)] italic text-[#d4af37]">
+          Scripture
+        </p>
+        <p className="mt-6 max-w-xl font-ui text-[17px] leading-[1.7] text-[#d9d0c1]">
+          Search a half-remembered word and read the King James Bible, free, with no ads
+          and no paywall.
+        </p>
+
+        <form onSubmit={submit} className="mt-10 w-full max-w-2xl">
+          <label htmlFor="home-search" className="sr-only">
+            Search the Bible
+          </label>
+          <div className="flex items-center gap-2 rounded-2xl border border-[#f5f0e8]/30 bg-[#2a211c] p-2 pl-5 shadow-[0_16px_48px_-16px_rgba(0,0,0,0.7)] transition focus-within:border-[#d4af37] focus-within:ring-4 focus-within:ring-[#d4af37]/25">
+            <Search className="size-5 shrink-0 text-[#d4af37]" strokeWidth={1.8} aria-hidden />
+            <input
+              id="home-search"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              autoComplete="off"
+              spellCheck={false}
+              enterKeyHint="search"
+              placeholder="A verse, a word, a longing…"
+              className="min-w-0 flex-1 bg-transparent py-3 font-ui text-[17px] text-[#f5f0e8] outline-none placeholder:text-[#b8ad9b]"
+            />
+            <button
+              type="submit"
+              className="inline-flex h-12 shrink-0 items-center rounded-xl bg-[#d4af37] px-6 font-ui text-[15px] font-semibold text-[#1c1612] transition hover:bg-[#e2c04f] active:scale-[0.98]"
+            >
+              Search
+            </button>
           </div>
-          <p className="max-w-[10rem] text-right font-sans text-[12px] leading-snug text-black/60 dark:text-white/60">
-            Search a half-
-            <br />
-            remembered word
-          </p>
+        </form>
+
+        <div className="mt-5 flex flex-wrap justify-center gap-2">
+          {EXAMPLES.map((q) => (
+            <button
+              key={q}
+              type="button"
+              onClick={() => run(q)}
+              className="min-h-10 rounded-full border border-[#f5f0e8]/20 bg-[#f5f0e8]/[0.04] px-4 font-ui text-[14px] text-[#e6ddcc] transition hover:border-[#d4af37] hover:text-[#d4af37] active:scale-[0.98]"
+            >
+              {q}
+            </button>
+          ))}
         </div>
 
-        <div className="relative flex flex-1 flex-col items-center justify-center">
-          <h1 className="pointer-events-none absolute left-1/2 top-[38%] z-0 -translate-x-1/2 -translate-y-1/2 select-none text-center font-sans text-[clamp(4.5rem,18vw,13rem)] font-medium leading-[0.85] tracking-[-0.04em] text-black dark:text-white">
-            SEEK
-          </h1>
-          <p className="pointer-events-none absolute left-1/2 top-[48%] z-0 -translate-x-1/2 select-none font-sans text-[clamp(2.5rem,10vw,7rem)] font-medium leading-none tracking-[-0.03em] text-black/15 dark:text-white/15">
-            Scripture
-          </p>
-
-          <div className="relative z-10 mt-[34vh] w-full max-w-md">
-            <form onSubmit={submit}>
-              <label htmlFor="home-search" className="sr-only">
-                Search the Bible
-              </label>
-              <div className="flex items-center gap-3 border-b border-black/15 pb-3 dark:border-white/20">
-                <Search className="size-4 shrink-0 opacity-40" strokeWidth={1.6} />
-                <input
-                  id="home-search"
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  autoComplete="off"
-                  spellCheck={false}
-                  enterKeyHint="search"
-                  placeholder="A verse, a word, a longing…"
-                  className="w-full bg-transparent font-sans text-[1.05rem] outline-none placeholder:text-black/35 dark:placeholder:text-white/35"
-                />
-              </div>
-            </form>
-            <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1">
-              {EXAMPLES.map((q) => (
-                <button
-                  key={q}
-                  type="button"
-                  onClick={() => run(q)}
-                  className="font-sans text-[11px] tracking-wide text-black/45 transition hover:text-black dark:text-white/45 dark:hover:text-white"
-                >
-                  {q}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-auto flex items-end justify-between pt-10">
-          <p className="font-sans text-[12px] text-black/50 dark:text-white/50">
-            Designer
-            <br />& the Word
-          </p>
-          <a
-            href="#work"
-            className="font-sans text-[12px] tracking-[0.16em] text-black/50 uppercase dark:text-white/50"
-          >
-            Scroll
-          </a>
-        </div>
+        <a
+          href="#work"
+          className="mt-14 inline-flex items-center gap-2 font-ui text-[13px] tracking-[0.16em] text-[#b8ad9b] uppercase transition hover:text-[#d4af37]"
+        >
+          Explore
+          <ArrowRight className="size-4 rotate-90" strokeWidth={1.8} aria-hidden />
+        </a>
       </section>
 
-      <section
-        id="work"
-        className="relative z-10 min-h-[80dvh]px-5 py-28 dark:border-white/10 sm:px-10 lg:px-16"
-      >
-        <div className="mx-auto flex max-w-6xl flex-col gap-20 lg:flex-row lg:items-end lg:justify-between">
+      <section id="work" className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+        <div className="mx-auto flex max-w-5xl flex-col gap-12 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
-              Corpus
-            </p>
-            <h2 className="mt-4 font-sans text-[clamp(3.5rem,12vw,9rem)] font-medium leading-[0.9] tracking-[-0.04em]">
-              66
-              <span className="block text-black/25 dark:text-white/25">books</span>
-            </h2>
+            <p className={EYEBROW}>Corpus</p>
+            <h2 className={TITLE}>66 books</h2>
           </div>
-          <div className="grid grid-cols-3 gap-10 sm:gap-16">
+          <dl className="grid grid-cols-3 gap-4 sm:gap-6">
             {[
               { v: "1,189", l: "Chapters" },
               { v: "31k", l: "Verses" },
               { v: "KJV", l: "Only" },
             ].map((s) => (
-              <div key={s.l}>
-                <p className="font-sans text-[clamp(1.75rem,4vw,2.75rem)] font-medium tracking-tight">
-                  {s.v}
-                </p>
-                <p className="mt-1 font-sans text-[11px] tracking-[0.16em] text-black/40 uppercase dark:text-white/40">
-                  {s.l}
-                </p>
+              <div key={s.l} className={`${CARD} p-5 text-center`}>
+                <dt className={STAT_LABEL}>{s.l}</dt>
+                <dd className={`${STAT_VALUE} mt-0`}>{s.v}</dd>
               </div>
             ))}
-          </div>
+          </dl>
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-28 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
-          <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
-            Start somewhere
-          </p>
-          <h2 className="mt-4 font-sans text-[clamp(2.5rem,8vw,5.5rem)] font-medium leading-[0.95] tracking-[-0.03em]">
-            Begin a
-            <span className="block text-black/25 dark:text-white/25">chapter</span>
-          </h2>
-          <div className="mt-14 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+          <p className={EYEBROW}>Start somewhere</p>
+          <h2 className={TITLE}>Begin a chapter</h2>
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
               { slug: "genesis", label: "Genesis", note: "Beginnings" },
               { slug: "psalms", label: "Psalms", note: "Songs & laments" },
@@ -280,60 +256,58 @@ export function Home() {
                 key={b.slug}
                 to="/read/$book/$chapter"
                 params={{ book: b.slug, chapter: "1" }}
-                className="group flex items-baseline justify-between gap-4"
+                className={`${CARD} group flex items-center justify-between gap-4`}
               >
-                <span className="font-sans text-[clamp(1.35rem,3vw,1.9rem)] font-medium tracking-tight transition group-hover:opacity-60">
-                  {b.label}
-                </span>
-                <span className="shrink-0 font-sans text-[12px] text-black/35 dark:text-white/35">
-                  {b.note}
-                </span>
+                <div>
+                  <span className="block font-serif text-[1.6rem] leading-tight text-[#f5f0e8]">
+                    {b.label}
+                  </span>
+                  <span className="mt-1 block font-ui text-[14px] text-[#b8ad9b]">{b.note}</span>
+                </div>
+                <ArrowRight
+                  className="size-5 shrink-0 text-[#d4af37] transition group-hover:translate-x-1"
+                  strokeWidth={1.8}
+                  aria-hidden
+                />
               </Link>
             ))}
           </div>
-          <Link
-            to="/books"
-            className="mt-14 inline-block font-sans text-[12px] tracking-[0.16em] uppercase underline underline-offset-4"
-          >
+          <Link to="/books" className={`${TEXT_LINK} mt-10 inline-block`}>
             All 66 books
           </Link>
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-28 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
-          <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
             <div>
-              <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
-                Two ways in
-              </p>
-              <h2 className="mt-4 font-sans text-[clamp(2rem,6vw,3.5rem)] font-medium leading-[1] tracking-[-0.03em]">
-                Search by meaning, or read by reference.
-              </h2>
+              <p className={EYEBROW}>Two ways in</p>
+              <h2 className={TITLE}>Search by meaning, or read by reference.</h2>
             </div>
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-10">
               <div>
-                <p className="font-sans text-[15px] leading-relaxed text-black/60 dark:text-white/60">
-                  Describe what you remember in your own words — a half-heard phrase,
-                  a feeling, a theme — and SEEK returns the passages that carry it.
+                <p className={BODY}>
+                  Describe what you remember in your own words — a half-heard phrase, a
+                  feeling, a theme — and SEEK returns the passages that carry it.
                 </p>
                 <button
                   type="button"
                   onClick={() => run("comfort in sorrow")}
-                  className="mt-4 font-sans text-[13px] tracking-[0.12em] uppercase underline underline-offset-4"
+                  className={`${TEXT_LINK} mt-4`}
                 >
                   Try “comfort in sorrow”
                 </button>
               </div>
               <div>
-                <p className="font-sans text-[15px] leading-relaxed text-black/60 dark:text-white/60">
-                  Already know where it is? Open any of the 1,189 chapters in the King
-                  James text and read it clean, without ads or interruption.
+                <p className={BODY}>
+                  Already know where it is? Open any of the 1,189 chapters in the King James
+                  text and read it clean, without ads or interruption.
                 </p>
                 <Link
                   to="/read/$book/$chapter"
                   params={{ book: "john", chapter: "1" }}
-                  className="mt-4 inline-block font-sans text-[13px] tracking-[0.12em] uppercase underline underline-offset-4"
+                  className={`${TEXT_LINK} mt-4 inline-block`}
                 >
                   Read John 1
                 </Link>
@@ -343,110 +317,82 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-32 dark:border-white/10 sm:px-10 lg:px-16">
-        <div className="mx-auto flex max-w-5xl flex-col gap-20 lg:flex-row lg:items-end lg:justify-between">
+      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+        <div className="mx-auto flex max-w-5xl flex-col gap-12 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
-              Still deciding
-            </p>
-            <h2 className="mt-4 font-sans text-[clamp(2.5rem,8vw,5rem)] font-medium leading-[0.95] tracking-[-0.03em]">
-              Take it
-              <span className="block text-black/25 dark:text-white/25">with you</span>
-            </h2>
+            <p className={EYEBROW}>Still deciding</p>
+            <h2 className={TITLE}>Take it with you</h2>
           </div>
-          <div className="grid grid-cols-2 gap-10 sm:gap-16">
+          <dl className="grid grid-cols-2 gap-4 sm:gap-6">
             {[
               { v: "Apps", l: "Download" },
               { v: "KJV", l: "Public domain" },
               { v: "0", l: "Trackers" },
               { v: "∞", l: "Free reads" },
             ].map((s) => (
-              <div key={s.l}>
-                <p className="font-sans text-[clamp(1.75rem,4vw,2.75rem)] font-medium tracking-tight">
-                  {s.v}
-                </p>
-                <p className="mt-1 font-sans text-[11px] tracking-[0.16em] text-black/40 uppercase dark:text-white/40">
-                  {s.l}
-                </p>
+              <div key={s.l} className={`${CARD} p-5`}>
+                <dt className={STAT_LABEL}>{s.l}</dt>
+                <dd className={`${STAT_VALUE} mt-0`}>{s.v}</dd>
               </div>
             ))}
-          </div>
+          </dl>
         </div>
-        <div className="mx-auto mt-14 flex max-w-5xl flex-wrap gap-x-8 gap-y-3">
-          <Link to="/download" className="font-sans text-[12px] tracking-[0.16em] uppercase underline underline-offset-4">
+        <div className="mx-auto mt-10 flex max-w-5xl flex-wrap gap-x-8 gap-y-3">
+          <Link to="/download" className={TEXT_LINK}>
             Download
           </Link>
-          <Link to="/groups" className="font-sans text-[12px] tracking-[0.16em] uppercase text-black/45 dark:text-white/45">
+          <Link to="/groups" className="font-ui text-[14px] text-[#d9d0c1] transition hover:text-[#f5f0e8]">
             Reading groups
           </Link>
-          <Link to="/faq" className="font-sans text-[12px] tracking-[0.16em] uppercase text-black/45 dark:text-white/45">
+          <Link to="/faq" className="font-ui text-[14px] text-[#d9d0c1] transition hover:text-[#f5f0e8]">
             FAQ
           </Link>
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-32 dark:border-white/10 sm:px-10 lg:px-16">
-        <div className="mx-auto max-w-4xl">
-          <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
-            Proverbs 3:5
-          </p>
-          <p className="mt-8 font-sans text-[clamp(1.35rem,3.5vw,2.25rem)] font-medium leading-[1.25] tracking-[-0.02em]">
+      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+        <blockquote className="mx-auto max-w-3xl border-l-2 border-[#d4af37] pl-6 sm:pl-10">
+          <p className={EYEBROW}>Proverbs 3:5</p>
+          <p className="mt-6 font-serif text-[clamp(1.6rem,3.6vw,2.4rem)] leading-[1.45] text-[#f5f0e8]">
             Trust in the LORD with all thine heart; and lean not unto thine own
             understanding.
           </p>
           <Link
             to="/read/$book/$chapter"
             params={{ book: "proverbs", chapter: "3" }}
-            className="mt-10 inline-block font-sans text-[12px] tracking-[0.16em] uppercase underline underline-offset-4"
+            className={`${TEXT_LINK} mt-8 inline-block`}
           >
             Read the chapter
           </Link>
-        </div>
+        </blockquote>
       </section>
 
-      <section className="relative z-10 px-5 py-32 dark:border-white/10 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
-          <div className="flex gap-8">
-            <div className="hidden w-px self-stretch bg-black/15 dark:bg-white/15 sm:block" />
-            <div>
-              <p className="font-sans text-[clamp(2rem,6vw,4.5rem)] font-medium leading-[1.05] tracking-[-0.03em]">
-                the
-                <br />
-                best
-                <br />
-                ideas deserve
-                <br />
-                <span className="text-black/30 dark:text-white/30">the Word.</span>
-              </p>
-              <p className="mt-10 max-w-sm font-sans text-[14px] leading-relaxed text-black/55 dark:text-white/55">
-                Search by a half-remembered phrase or the meaning you meant.
-                Read the King James Bible — free, no ads, no paywall.
-              </p>
-              <div className="mt-10 flex flex-wrap gap-6">
-                <Link
-                  to="/books"
-                  className="font-sans text-[13px] tracking-[0.12em] uppercase underline underline-offset-4"
-                >
-                  Open the Bible
-                </Link>
-                <Link
-                  to="/about"
-                  className="font-sans text-[13px] tracking-[0.12em] text-black/45 uppercase dark:text-white/45"
-                >
-                  About
-                </Link>
-              </div>
-            </div>
+          <p className="font-serif text-[clamp(2.25rem,6vw,4.5rem)] leading-[1.1] tracking-[-0.01em] text-[#f5f0e8]">
+            The best ideas
+            <br />
+            <span className="text-[#d4af37] italic">deserve the Word.</span>
+          </p>
+          <p className="mt-8 max-w-xl font-ui text-[16px] leading-[1.7] text-[#d9d0c1]">
+            Search by a half-remembered phrase or the meaning you meant. Read the King James
+            Bible — free, no ads, no paywall.
+          </p>
+          <div className="mt-10 flex flex-wrap gap-4">
+            <Link to="/books" className={PRIMARY_BUTTON}>
+              Open the Bible
+            </Link>
+            <Link to="/about" className={GHOST_BUTTON}>
+              About
+            </Link>
           </div>
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-28 dark:border-white/10 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
-          <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
-            Seek by meaning
-          </p>
-          <ul className="mt-12 divide-y divide-black/10 dark:divide-white/10">
+          <p className={EYEBROW}>Seek by meaning</p>
+          <ul className="mt-10 divide-y divide-white/10 border-y border-white/10">
             {[
               { q: "love of God", label: "Love", ref: "1 Jn 4:19" },
               { q: "mercy", label: "Mercy", ref: "Ps 136:1" },
@@ -459,12 +405,12 @@ export function Home() {
                 <button
                   type="button"
                   onClick={() => run(t.q)}
-                  className="group flex w-full items-baseline justify-between gap-4 py-6 text-left"
+                  className="group flex min-h-16 w-full items-center justify-between gap-4 py-5 text-left transition hover:pl-2"
                 >
-                  <span className="font-sans text-[clamp(1.5rem,4vw,2.5rem)] font-medium tracking-tight transition group-hover:opacity-60">
+                  <span className="font-serif text-[clamp(1.6rem,4vw,2.5rem)] leading-tight text-[#f5f0e8] transition group-hover:text-[#d4af37]">
                     {t.label}
                   </span>
-                  <span className="shrink-0 font-sans text-[12px] tracking-wide text-black/35 dark:text-white/35">
+                  <span className="shrink-0 font-ui text-[13px] tracking-wide text-[#b8ad9b]">
                     {t.ref}
                   </span>
                 </button>
@@ -474,41 +420,33 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-32 dark:border-white/10 sm:px-10 lg:px-16">
-        <div className="mx-auto max-w-4xl">
-          <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
-            John 3:16
-          </p>
-          <p className="mt-8 font-sans text-[clamp(1.35rem,3.5vw,2.25rem)] font-medium leading-[1.25] tracking-[-0.02em]">
+      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+        <blockquote className="mx-auto max-w-3xl border-l-2 border-[#d4af37] pl-6 sm:pl-10">
+          <p className={EYEBROW}>John 3:16</p>
+          <p className="mt-6 font-serif text-[clamp(1.6rem,3.6vw,2.4rem)] leading-[1.45] text-[#f5f0e8]">
             For God so loved the world, that he gave his only begotten Son, that
-            whosoever believeth in him should not perish, but have everlasting
-            life.
+            whosoever believeth in him should not perish, but have everlasting life.
           </p>
           <Link
             to="/read/$book/$chapter"
             params={{ book: "john", chapter: "3" }}
-            className="mt-10 inline-block font-sans text-[12px] tracking-[0.16em] uppercase underline underline-offset-4"
+            className={`${TEXT_LINK} mt-8 inline-block`}
           >
             Read the chapter
           </Link>
-        </div>
+        </blockquote>
       </section>
 
-      <section className="relative z-10 px-5 py-28 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
-          <Reveal
-            as="p"
-            className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40"
-          >
+          <Reveal as="p" className={EYEBROW}>
             What&rsquo;s inside
           </Reveal>
           <Reveal delay={60}>
-            <h2 className="mt-4 max-w-3xl font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em]">
-              Everything you need to read it properly.
-            </h2>
+            <h2 className={`${TITLE} max-w-3xl`}>Everything you need to read it properly.</h2>
           </Reveal>
 
-          <ul className="mt-16 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
                 n: "01",
@@ -541,87 +479,71 @@ export function Home() {
                 d: "Send any verse or chapter straight to someone else, formatted and ready to read.",
               },
             ].map((f, i) => (
-              <Reveal as="li" key={f.n} delay={i * 60}>
-                <p className="font-sans text-[12px] tracking-[0.18em] text-black/35 dark:text-white/35">
+              <Reveal as="li" key={f.n} delay={i * 60} className={CARD}>
+                <p className="font-ui text-[13px] font-semibold tracking-[0.18em] text-[#d4af37]">
                   {f.n}
                 </p>
-                <h3 className="mt-3 font-sans text-[1.15rem] font-medium tracking-[-0.02em]">
+                <h3 className="mt-3 font-serif text-[1.5rem] leading-tight text-[#f5f0e8]">
                   {f.t}
                 </h3>
-                <p className="mt-3 font-sans text-[14px] leading-relaxed text-black/55 dark:text-white/55">
-                  {f.d}
-                </p>
+                <p className="mt-3 font-ui text-[15px] leading-[1.7] text-[#d9d0c1]">{f.d}</p>
               </Reveal>
             ))}
           </ul>
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-28 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
-          <Reveal
-            as="p"
-            className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40"
-          >
+          <Reveal as="p" className={EYEBROW}>
             How it works
           </Reveal>
-          <ol className="mt-14 divide-y divide-black/10 dark:divide-white/10">
+          <ol className="mt-14 grid gap-5 md:grid-cols-3">
             {[
               {
-                n: "01",
+                n: "1",
                 t: "Ask for what you mean",
                 d: "Search a feeling, a theme, or a line you almost remember.",
               },
               {
-                n: "02",
+                n: "2",
                 t: "Open the chapter",
                 d: "Read it in full, in the KJV, laid out for study rather than skimming.",
               },
               {
-                n: "03",
+                n: "3",
                 t: "Keep or pass it on",
                 d: "Save it to your list, or share it with whoever you had in mind.",
               },
             ].map((s, i) => (
-              <Reveal as="li" key={s.n} delay={i * 70}>
-                <div className="flex flex-col gap-3 py-8 sm:flex-row sm:gap-10">
-                  <p className="font-sans text-[clamp(1.5rem,4vw,2.5rem)] font-medium tracking-tight sm:w-16">
-                    {s.n}
-                  </p>
-                  <h3 className="font-sans text-[clamp(1.15rem,2.5vw,1.5rem)] font-medium tracking-[-0.02em] sm:w-64">
-                    {s.t}
-                  </h3>
-                  <p className="max-w-md font-sans text-[14px] leading-relaxed text-black/55 sm:ml-auto dark:text-white/55">
-                    {s.d}
-                  </p>
-                </div>
+              <Reveal as="li" key={s.n} delay={i * 70} className={`${CARD} flex flex-col gap-4`}>
+                <span className="grid size-11 place-items-center rounded-full border border-[#d4af37]/60 font-serif text-[1.25rem] text-[#d4af37]">
+                  {s.n}
+                </span>
+                <h3 className="font-serif text-[1.5rem] leading-tight text-[#f5f0e8]">{s.t}</h3>
+                <p className="font-ui text-[15px] leading-[1.7] text-[#d9d0c1]">{s.d}</p>
               </Reveal>
             ))}
           </ol>
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-28 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
-          <Reveal
-            as="p"
-            className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40"
-          >
+          <Reveal as="p" className={EYEBROW}>
             Read by reference
           </Reveal>
           <Reveal delay={60}>
-            <h2 className="mt-4 font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em]">
-              Genesis to Revelation.
-            </h2>
+            <h2 className={TITLE}>Genesis to Revelation.</h2>
           </Reveal>
           <Reveal delay={120}>
-            <ul className="mt-14 flex flex-wrap gap-x-3 gap-y-2">
+            <ul className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
               {BOOKS.map((b) => (
                 <li key={b.slug}>
                   <Link
                     to="/read/$book/$chapter"
                     params={{ book: b.slug, chapter: "1" }}
-                    className="inline-block border border-black/12 px-4 py-2 font-sans text-[13px] transition hover:border-black/40 hover:opacity-70 dark:border-white/15 dark:hover:border-white/45"
+                    className="flex min-h-12 items-center rounded-xl border border-white/12 bg-white/[0.03] px-4 py-3 font-ui text-[15px] text-[#f5f0e8] transition hover:border-[#d4af37]/60 hover:bg-white/[0.07] hover:text-[#d4af37]"
                   >
                     {b.name}
                   </Link>
@@ -630,43 +552,31 @@ export function Home() {
             </ul>
           </Reveal>
           <Reveal delay={180}>
-            <Link
-              to="/books"
-              className="mt-12 inline-block font-sans text-[12px] tracking-[0.16em] uppercase underline underline-offset-4"
-            >
+            <Link to="/books" className={`${TEXT_LINK} mt-10 inline-block`}>
               Browse all 66 books
             </Link>
           </Reveal>
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-32 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
-          <Reveal
-            as="p"
-            className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40"
-          >
+          <Reveal as="p" className={EYEBROW}>
             Start anywhere
           </Reveal>
           <Reveal delay={60}>
-            <p className="mt-4 max-w-4xl font-sans text-[clamp(2.5rem,8vw,6rem)] font-medium leading-[0.95] tracking-[-0.03em]">
+            <p className="mt-4 max-w-4xl font-serif text-[clamp(2.5rem,7vw,5.5rem)] leading-[1.05] tracking-[-0.01em] text-[#f5f0e8]">
               The Word is free.
               <br />
-              <span className="text-black/30 dark:text-white/30">So is this.</span>
+              <span className="text-[#d4af37] italic">So is this.</span>
             </p>
           </Reveal>
           <Reveal delay={120}>
-            <div className="mt-14 flex flex-wrap gap-4">
-              <Link
-                to="/books"
-                className="border border-black bg-black px-7 py-3.5 font-sans text-[12px] tracking-[0.16em] text-white uppercase transition hover:opacity-75 dark:border-white dark:bg-white dark:text-black"
-              >
+            <div className="mt-12 flex flex-wrap gap-4">
+              <Link to="/books" className={PRIMARY_BUTTON}>
                 Read now
               </Link>
-              <Link
-                to="/download"
-                className="border border-black/20 px-7 py-3.5 font-sans text-[12px] tracking-[0.16em] uppercase transition hover:border-black/60 dark:border-white/25 dark:hover:border-white/60"
-              >
+              <Link to="/download" className={GHOST_BUTTON}>
                 Install the app
               </Link>
             </div>
@@ -674,61 +584,56 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-32 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
-          <Reveal
-            as="p"
-            className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40"
-          >
+          <Reveal as="p" className={EYEBROW}>
             Write directly
           </Reveal>
           <Reveal delay={60}>
-            <h2 className="mt-4 font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em]">
-              Contact
-            </h2>
+            <h2 className={TITLE}>Contact</h2>
           </Reveal>
           <Reveal delay={120}>
             <a
               href="mailto:vijay.peddenti434@gmail.com"
-              className="mt-8 block font-sans text-[clamp(1rem,2.5vw,1.35rem)] underline underline-offset-4"
+              className="mt-6 block font-ui text-[clamp(1.05rem,2.5vw,1.35rem)] text-[#f5f0e8] underline decoration-[#d4af37]/60 underline-offset-4 transition hover:decoration-[#d4af37]"
             >
               vijay.peddenti434@gmail.com
             </a>
           </Reveal>
           <Reveal delay={180}>
-            <div className="mt-16 flex flex-wrap gap-x-8 gap-y-3 font-sans text-[13px] text-black/45 dark:text-white/45">
-              <Link to="/about" className="hover:text-black dark:hover:text-white">
+            <nav className="mt-12 flex flex-wrap gap-x-8 gap-y-3 font-ui text-[14px] text-[#d9d0c1]">
+              <Link to="/about" className="transition hover:text-[#d4af37]">
                 About
               </Link>
-              <Link to="/books" className="hover:text-black dark:hover:text-white">
+              <Link to="/books" className="transition hover:text-[#d4af37]">
                 Bible
               </Link>
-              <Link to="/faq" className="hover:text-black dark:hover:text-white">
+              <Link to="/faq" className="transition hover:text-[#d4af37]">
                 FAQ
               </Link>
-              <Link to="/contact" className="hover:text-black dark:hover:text-white">
+              <Link to="/contact" className="transition hover:text-[#d4af37]">
                 Contact
               </Link>
-            </div>
+            </nav>
           </Reveal>
         </div>
       </section>
 
-      <footer className="relative z-10 px-5 py-20 sm:px-10 lg:px-16">
+      <footer className="relative z-10 border-t border-white/10 px-5 py-16 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <div className="flex flex-col gap-12 sm:flex-row sm:items-start sm:justify-between">
             <div className="max-w-xs">
-              <p className="font-sans text-[clamp(1.5rem,4vw,2.25rem)] font-medium leading-[1.1] tracking-[-0.02em]">
+              <p className="font-serif text-[clamp(1.6rem,4vw,2.25rem)] leading-[1.15] text-[#f5f0e8]">
                 The Word,
-                <span className="block text-black/30 dark:text-white/30">kept free.</span>
+                <span className="block text-[#d4af37] italic">kept free.</span>
               </p>
-              <p className="mt-5 font-sans text-[13px] leading-relaxed text-black/50 dark:text-white/50">
-                The King James Bible, complete and public domain. Search by meaning or
-                read by reference — no ads, no paywall, no account required.
+              <p className="mt-5 font-ui text-[14px] leading-[1.7] text-[#d9d0c1]">
+                The King James Bible, complete and public domain. Search by meaning or read by
+                reference — no ads, no paywall, no account required.
               </p>
               <a
                 href="mailto:vijay.peddenti434@gmail.com"
-                className="mt-5 inline-block font-sans text-[13px] underline underline-offset-4"
+                className="mt-5 inline-block font-ui text-[14px] text-[#f5f0e8] underline decoration-[#d4af37]/60 underline-offset-4 transition hover:decoration-[#d4af37]"
               >
                 vijay.peddenti434@gmail.com
               </a>
@@ -740,18 +645,19 @@ export function Home() {
                   { t: "Cost", v: "Free" },
                 ].map((s) => (
                   <div key={s.t}>
-                    <dt className="font-sans text-[11px] tracking-[0.18em] text-black/35 uppercase dark:text-white/35">
+                    <dt className="font-ui text-[12px] tracking-[0.14em] text-[#b8ad9b] uppercase">
                       {s.t}
                     </dt>
-                    <dd className="mt-1 font-sans text-[15px] font-medium tracking-[-0.01em]">
-                      {s.v}
-                    </dd>
+                    <dd className="mt-1 font-serif text-[1.15rem] text-[#f5f0e8]">{s.v}</dd>
                   </div>
                 ))}
               </dl>
             </div>
 
-            <nav aria-label="Footer" className="grid flex-1 grid-cols-2 gap-x-8 gap-y-10 sm:max-w-md sm:grid-cols-4">
+            <nav
+              aria-label="Footer"
+              className="grid flex-1 grid-cols-2 gap-x-8 gap-y-10 sm:max-w-md sm:grid-cols-4"
+            >
               {[
                 {
                   h: "Read",
@@ -791,15 +697,15 @@ export function Home() {
                 },
               ].map((col) => (
                 <div key={col.h}>
-                  <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
+                  <p className="font-ui text-[12px] font-semibold tracking-[0.16em] text-[#d4af37] uppercase">
                     {col.h}
                   </p>
-                  <ul className="mt-4 space-y-2">
+                  <ul className="mt-4 space-y-3">
                     {col.items.map((it) => (
                       <li key={it.to + it.l}>
                         <Link
                           to={it.to}
-                          className="font-sans text-[13px] text-black/60 transition hover:text-black dark:text-white/60 dark:hover:text-white"
+                          className="font-ui text-[14px] text-[#d9d0c1] transition hover:text-[#f5f0e8]"
                         >
                           {it.l}
                         </Link>
@@ -811,11 +717,11 @@ export function Home() {
             </nav>
           </div>
 
-          <div className="mt-16 flex flex-col items-center gap-2 border-t border-black/10 pt-8 text-center dark:border-white/10">
-            <p className="font-sans text-[12px] text-black/40 dark:text-white/40">
+          <div className="mt-14 flex flex-col items-center gap-2 border-t border-white/10 pt-8 text-center">
+            <p className="font-ui text-[13px] text-[#b8ad9b]">
               © {new Date().getFullYear()} SEEK · KJV public domain
             </p>
-            <p className="font-sans text-[12px] text-black/40 dark:text-white/40">
+            <p className="font-ui text-[13px] text-[#b8ad9b]">
               Free · No ads · No paywall · No tracking
             </p>
           </div>
