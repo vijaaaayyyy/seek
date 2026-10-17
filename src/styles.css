@@ -233,9 +233,12 @@
 
   /* The cover runs to the very top of the viewport on home, including behind
      the status bar, so the leather has no pale seam at the top of a phone. */
-  html.home-canopy,
-  html.home-canopy body {
+  html.home-canopy {
     background: #1c1612;
+  }
+
+  html.home-canopy body {
+    background: transparent;
   }
 
   ::selection {
