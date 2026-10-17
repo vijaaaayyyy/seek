@@ -18,6 +18,7 @@ export function HomeBackdrop() {
       className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#1c1612]"
       data-home-backdrop="on"
     >
+      <div className="absolute inset-0 bg-[url('/images/home-bg.jpg')] bg-cover bg-center opacity-[0.2] mix-blend-screen [filter:invert(1)_sepia(1)_saturate(3)_hue-rotate(-12deg)]" />
       <div className="absolute inset-0 bg-[radial-gradient(60%_42%_at_50%_18%,rgba(212,175,55,0.14),transparent_70%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_50%,transparent_55%,rgba(8,5,3,0.55)_100%)]" />
     </div>
