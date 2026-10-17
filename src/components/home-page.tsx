@@ -208,7 +208,6 @@ export function Home() {
             </button>
           ))}
         </div>
-      </div>
 
         <a
           href="#work"
