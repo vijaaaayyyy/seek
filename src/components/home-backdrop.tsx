@@ -42,10 +42,12 @@ const VELLUM = "/art/vellum.png";
 const PANELS = 14;
 
 const BLOOMS = [
-  { color: "rgba(92, 168, 130, 0.42)", x: "16%", y: "20%", size: "48vmax", delay: "0s" },
-  { color: "rgba(230, 128, 104, 0.34)", x: "84%", y: "30%", size: "42vmax", delay: "-5s" },
-  { color: "rgba(240, 186, 90, 0.34)", x: "52%", y: "80%", size: "54vmax", delay: "-9s" },
-  { color: "rgba(104, 140, 214, 0.26)", x: "76%", y: "92%", size: "38vmax", delay: "-13s" },
+  { color: "rgba(40, 200, 150, 0.62)", x: "14%", y: "18%", size: "52vmax", delay: "0s" },
+  { color: "rgba(255, 112, 92, 0.55)", x: "86%", y: "28%", size: "46vmax", delay: "-5s" },
+  { color: "rgba(255, 196, 64, 0.52)", x: "50%", y: "78%", size: "58vmax", delay: "-9s" },
+  { color: "rgba(120, 110, 255, 0.5)", x: "80%", y: "92%", size: "42vmax", delay: "-13s" },
+  { color: "rgba(40, 180, 230, 0.44)", x: "8%", y: "86%", size: "40vmax", delay: "-7s" },
+  { color: "rgba(236, 72, 153, 0.4)", x: "50%", y: "16%", size: "44vmax", delay: "-3s" },
 ] as const;
 
 export function HomeBackdrop() {
@@ -102,7 +104,7 @@ export function HomeBackdrop() {
       <div className="absolute inset-x-0 bottom-0 h-[9vh] bg-[linear-gradient(0deg,rgba(12,7,4,0.88),transparent)]" />
       {/* A breath of calf over the whole sheet, so cream type has something to
           sit on without the artwork having to be bleached out. */}
-      <div className="absolute inset-0 bg-[#2a1d14]/52" />
+      <div className="absolute inset-0 bg-[#2a1d14]/40" />
       {/* Colour washed through the calf: soft blooms that drift slowly, so the
           cover reads as lit by warm and cool light rather than one brown tone. */}
       {BLOOMS.map((b, i) => (
