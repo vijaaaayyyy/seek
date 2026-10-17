@@ -314,9 +314,33 @@
      motion gets a still sheet, which still reads as vellum because the texture
      and the deckle are static paint, not movement. */
   @media (prefers-reduced-motion: reduce) {
-    .parchment-panel {
+    .parchment-panel,
+    .home-bloom {
       animation: none;
     }
+  }
+
+  @keyframes home-bloom-drift {
+    0% {
+      translate: -6% -4%;
+      scale: 1;
+    }
+    50% {
+      translate: 5% 6%;
+      scale: 1.12;
+    }
+    100% {
+      translate: -3% 5%;
+      scale: 0.94;
+    }
+  }
+
+  .home-bloom {
+    position: absolute;
+    border-radius: 9999px;
+    mix-blend-mode: screen;
+    animation: home-bloom-drift 18s ease-in-out infinite alternate;
+    will-change: translate, scale;
   }
 
   ::selection {
