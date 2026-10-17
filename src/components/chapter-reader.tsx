@@ -47,21 +47,15 @@ export function ChapterReader({
 
   const [minChapter, setMinChapter] = useState(chapter);
   const [maxUnlocked, setMaxUnlocked] = useState(chapter);
-  const [prompt, setPrompt] = useState<{
-    finished: number;
-    nextChapter: number | null;
-  } | null>(null);
 
   useEffect(() => {
     setMinChapter(chapter);
     setMaxUnlocked(chapter);
-    setPrompt(null);
   }, [book.slug]);
 
   useEffect(() => {
     setMinChapter((prev) => Math.min(prev, chapter));
     setMaxUnlocked((prev) => Math.max(prev, chapter));
-    setPrompt(null);
   }, [chapter]);
 
   const blocks: ChapterBlock[] = useMemo(() => {
@@ -130,52 +124,27 @@ export function ChapterReader({
     return () => io.disconnect();
   }, [blocks.length, book.slug, maxUnlocked, minChapter]);
 
+  /**
+   * Reaching the end of a chapter unlocks the next one, with nothing to dismiss.
+   *
+   * There is deliberately no dialog here. The reader is one continuous scroll, so
+   * interrupting the end of a chapter to ask whether to continue or stay put was
+   * friction over a decision the reader had already made by reading on - and a
+   * modal in the middle of scripture is the last thing that belongs there.
+   * Advancing silently keeps the scroll continuous.
+   *
+   * The guard is `finishedChapter !== maxUnlocked`, so only the chapter at the
+   * live edge can advance, and the IntersectionObserver that calls this only
+   * observes that edge chapter. Between them a chapter cannot be unlocked twice.
+   */
   const onChapterEnd = useCallback(
     (finishedChapter: number) => {
-      if (prompt) return;
       if (finishedChapter !== maxUnlocked) return;
-
-      const nextCh =
-        finishedChapter < book.chapters.length ? finishedChapter + 1 : null;
-      setPrompt({ finished: finishedChapter, nextChapter: nextCh });
+      if (finishedChapter >= book.chapters.length) return;
+      setMaxUnlocked(finishedChapter + 1);
     },
-    [book.chapters.length, prompt, maxUnlocked],
+    [book.chapters.length, maxUnlocked],
   );
-
-  function stayHere() {
-    setPrompt(null);
-  }
-
-  function goNext() {
-    if (!prompt) return;
-    const nextCh = prompt.nextChapter;
-    setPrompt(null);
-
-    if (nextCh != null) {
-      setMaxUnlocked(nextCh);
-      void navigate({
-        to: "/read/$book/$chapter",
-        params: { book: book.slug, chapter: String(nextCh) },
-        search: { q: undefined },
-        replace: true,
-      });
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const sec = sectionRefs.current.get(nextCh);
-          if (sec) sec.scrollIntoView({ block: "start", behavior: "smooth" });
-        });
-      });
-    } else {
-      const neighbor = BOOKS[book.index + 1];
-      if (neighbor) {
-        void navigate({
-          to: "/read/$book/$chapter",
-          params: { book: neighbor.slug, chapter: "1" },
-          search: { q: undefined },
-        });
-      }
-    }
-  }
 
   const activeVerses =
     blocks.find((b) => b.chapter === activeChapter)?.verses.length ?? 0;
@@ -188,7 +157,7 @@ export function ChapterReader({
         heading, styled like every other page so the reader matches the rest.
       */}
       <Reveal>
-        <p className="font-sans text-[11px] tracking-[0.2em] text-black/40 uppercase dark:text-white/40">
+        <p className="font-sans text-[11px] tracking-[0.2em] text-muted uppercase">
           King James Version
         </p>
         <h1 className="mt-3 font-sans text-[length:var(--type-title)] font-medium leading-[0.95] tracking-[-0.03em] text-ink">
@@ -227,7 +196,7 @@ export function ChapterReader({
             to="/read/$book/$chapter"
             params={{ book: prev.book.slug, chapter: String(prev.chapter) }}
             search={{ q: undefined }}
-            className="flex min-w-0 flex-1 items-center gap-2 rounded-2xl border border-line bg-surface px-3 py-2.5 transition-colors hover:border-ink/20 hover:bg-white dark:hover:bg-white/5"
+            className="flex min-w-0 flex-1 items-center gap-2 rounded-2xl border border-line bg-surface px-3 py-2.5 transition-colors hover:border-ink/20 hover:bg-white"
           >
             <ChevronLeft className="size-4 shrink-0 text-muted" />
             <span className="min-w-0 truncate font-sans text-[12.5px] font-medium text-ink">
@@ -242,23 +211,20 @@ export function ChapterReader({
             type="button"
             aria-label="Next chapter"
             onClick={() => {
-              if (next.chapter <= maxUnlocked) {
-                void navigate({
-                  to: "/read/$book/$chapter",
-                  params: {
-                    book: next.book.slug,
-                    chapter: String(next.chapter),
-                  },
-                  search: { q: undefined },
-                });
-              } else {
-                setPrompt({
-                  finished: maxUnlocked,
-                  nextChapter: next.chapter,
-                });
-              }
+              // A chapter reached by scrolling is already unlocked. Jumping
+              // ahead to one that is not is still allowed: this is an explicit
+              // choice by the reader, and the continuous-scroll lock exists to
+              // stop chapters arriving unread, not to forbid navigation.
+              void navigate({
+                to: "/read/$book/$chapter",
+                params: {
+                  book: next.book.slug,
+                  chapter: String(next.chapter),
+                },
+                search: { q: undefined },
+              });
             }}
-            className="flex min-w-0 flex-1 items-center justify-end gap-2 rounded-2xl border border-line bg-surface px-3 py-2.5 transition-colors hover:border-ink/20 hover:bg-white dark:hover:bg-white/5"
+            className="flex min-w-0 flex-1 items-center justify-end gap-2 rounded-2xl border border-line bg-surface px-3 py-2.5 transition-colors hover:border-ink/20 hover:bg-white"
           >
             <span className="min-w-0 truncate font-sans text-[12.5px] font-medium text-ink">
               {next.chapter <= maxUnlocked ? `${next.book.name} ${next.chapter}` : `Chapter ${next.chapter} →`}
@@ -296,7 +262,7 @@ export function ChapterReader({
                     className={cn(
                       "group relative -mx-2 mb-3 scroll-mt-32 rounded-xl px-2 py-1.5 transition-colors",
                       focused &&
-                        "bg-mark/55 ring-1 ring-forest/25 dark:bg-mark/40 dark:ring-forest/35",
+                        "bg-mark/55 ring-1 ring-forest/25",
                     )}
                   >
                     <p className="font-sans text-[1.05rem] leading-[1.65] text-ink">
@@ -356,47 +322,6 @@ export function ChapterReader({
           </section>
         ))}
       </div>
-
-      {prompt && (
-        <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 backdrop-blur-[2px] sm:items-center"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="next-chapter-title"
-        >
-          <div className="w-full max-w-sm rounded-[24px] bg-paper p-5 shadow-2xl ring-1 ring-black/10 dark:ring-white/10">
-            <p
-              id="next-chapter-title"
-              className="font-sans text-[1.25rem] font-medium text-ink"
-            >
-              Chapter {prompt.finished} finished
-            </p>
-            <p className="mt-1.5 font-sans text-[14px] text-muted">
-              {prompt.nextChapter
-                ? `Continue to ${book.name} ${prompt.nextChapter}, or stay on chapter ${prompt.finished}?`
-                : "Stay on this chapter?"}
-            </p>
-            <div className="mt-5 flex flex-col gap-2">
-              <button
-                type="button"
-                onClick={goNext}
-                className="h-11 rounded-full bg-ink font-sans text-[14px] font-medium text-paper"
-              >
-                {prompt.nextChapter
-                  ? `Next chapter (${prompt.nextChapter})`
-                  : "Done"}
-              </button>
-              <button
-                type="button"
-                onClick={stayHere}
-                className="h-11 rounded-full bg-ink/8 font-sans text-[14px] font-medium text-ink dark:bg-white/10"
-              >
-                Stay on chapter {prompt.finished}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

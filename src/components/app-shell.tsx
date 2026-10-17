@@ -104,7 +104,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 className="flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5"
               >
                 <LeafMark className="size-4 text-forest" />
-                <span className="font-sans text-[1.05rem] tracking-[0.04em] text-ink">
+                <span className="font-sans text-[1.05rem] tracking-[0.04em] text-on-glass">
                   SEEK
                 </span>
               </Link>
@@ -115,9 +115,12 @@ export function AppShell({ children }: { children: ReactNode }) {
                     to={link.to}
                     className={cn(
                       "group flex items-center rounded-full px-3 py-1.5 font-sans text-[12.5px] font-medium transition-colors",
+                      // These sit inside the header pill, so they follow the
+                      // pill's own ink rather than the page's: the pill fill
+                      // flips per mode and the label has to with it.
                       pathname.startsWith(link.to)
-                        ? "bg-ink/8 text-ink"
-                        : "text-muted hover:text-ink",
+                        ? "bg-ink/8 text-on-glass"
+                        : "text-on-glass/80 hover:text-on-glass",
                     )}
                   >
                     <SwapText>{link.label}</SwapText>
@@ -206,7 +209,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 >
                   <Link to="/" className="flex min-h-10 items-center gap-1.5">
                     <LeafMark className="size-4 text-forest" />
-                    <span className="font-sans text-[1.2rem] leading-none tracking-[0.04em] text-ink">
+                    <span className="font-sans text-[1.2rem] leading-none tracking-[0.04em] text-on-glass">
                       SEEK
                     </span>
                   </Link>

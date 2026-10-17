@@ -5,36 +5,55 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* Deep calf. The site itself is the cover: a dark grained leather with cream
-     ink. The cream page is not a theme here, it is a *page* - it appears only
-     inside the reading frame (see `[data-bible-frame]` below), the way paper
-     only appears inside a bound book. */
-  --paper: #2a1d14;
-  --surface: #362619;
-  --ink: #f0e6d2;
-  --muted: #c3ae90;
-  --faint: #9a866c;
-  --line: color-mix(in oklab, var(--ink) 16%, transparent);
-  --forest: #c9a961;
-  --forest-fg: #2a1d14;
-  --gilt: #c9a961;
-  --mark: #4a3524;
-  --wash: color-mix(in oklab, var(--ink) 8%, transparent);
-  --tint: #f0e6d2;
+  /* Day calf: the same leather, with the lamp up. The cover is the *page* in
+     dark mode, so light mode is not a recolour of that - it is the paper the
+     book is open to, which is why the two read as the same object from either
+     side. Every colour utility in the app resolves through these variables,
+     which is what lets the toggle work with no component changes. */
+  --paper: #f3ece0;
+  --surface: #fbf6ec;
+  --ink: #241a12;
+  --muted: #413420;
+  --faint: #4f4029;
+  --line: color-mix(in oklab, var(--ink) 14%, transparent);
+  --forest: #573f1e;
+  --forest-fg: #fbf6ec;
+  --gilt: #6b4f1c;
+  --mark: #e6d5b0;
+  --wash: color-mix(in oklab, var(--ink) 6%, transparent);
+  --tint: #241a12;
 
-  --glass-fill: color-mix(in oklab, #000000 30%, transparent);
-  --glass-fill-strong: color-mix(in oklab, #000000 44%, transparent);
-  --glass-stroke: color-mix(in oklab, #f0e6d2 20%, transparent);
-  --glass-sheen: color-mix(in oklab, #f0e6d2 12%, transparent);
-  --glass-inset: color-mix(in oklab, #000000 34%, transparent);
-  --glass-drop: color-mix(in oklab, #000000 52%, transparent);
-  --glass-blur: 32px;
+  --glass-fill: color-mix(in oklab, #ffffff 64%, transparent);
+  --glass-fill-strong: color-mix(in oklab, #ffffff 80%, transparent);
+  --glass-stroke: color-mix(in oklab, #241a12 12%, transparent);
+  --glass-sheen: color-mix(in oklab, #ffffff 36%, transparent);
+  --glass-inset: color-mix(in oklab, #241a12 6%, transparent);
+  --glass-drop: color-mix(in oklab, #241a12 15%, transparent);
+  --glass-blur: 30px;
 
-  --orb-a: #3d2b1c;
-  --orb-b: #3d2b1c;
-  --orb-c: #3d2b1c;
+  --orb-a: #e5d5b6;
+  --orb-b: #ddc8a4;
+  --orb-c: #f0e5d0;
+
+  /* Home sits on a photograph, not on the app's paper, so its type cannot use
+     the palette tokens: in light mode `--ink` is near-black, and near-black on
+     an image is unreadable. These two are deliberately outside the theme axis -
+     the cover is the same in light and dark, so what sits on it is too. The
+     scrim in `home-backdrop.tsx` is tuned so `--cover-ink` clears 4.5:1. */
+  --cover-ink: #fdf6e8;
+  --cover-ink-soft: #e6dac6;
+
+  /* Ink for text sitting *inside* a header pill.
+
+     The pills are painted `bg-white/85` here and `bg-black/50` in `.dark`, so
+     their fill flips with the mode while `--ink` does not. Without this token
+     the default (light) mode put cream `--ink` on a white pill: the mobile nav
+     labels measured 1.1:1 against their own background, which is the
+     "can't see the text" header. One token, defined per mode alongside the
+     fill it belongs to, is the fix. */
+  --on-glass: #1c1611;
 
   /* One type scale, shared by every page. Home's hero may use --type-display;
      every page title uses --type-title so no two pages disagree. */
@@ -62,7 +81,7 @@
   --surface: #241a12;
   --ink: #ece0c6;
   --muted: #b0a087;
-  --faint: #87765f;
+  --faint: #a08d72;
   --line: color-mix(in oklab, var(--ink) 18%, transparent);
   --forest: #c9a961;
   --forest-fg: #1a120c;
@@ -82,6 +101,9 @@
   --orb-a: #2a1d14;
   --orb-b: #2a1d14;
   --orb-c: #2a1d14;
+
+  /* In dark mode the pills are dark, so their ink is cream again. */
+  --on-glass: #f0e6d2;
 }
 
 /* The page itself.
@@ -151,6 +173,11 @@
   --color-mark: var(--mark);
   --color-wash: var(--wash);
   --color-tint: var(--tint);
+  /* Home-only ink, for type sitting on the photograph. Mapped here so
+     `text-cover-ink` and `text-cover-ink-soft` are real utilities like the rest. */
+  --color-cover-ink: var(--cover-ink);
+  --color-cover-ink-soft: var(--cover-ink-soft);
+  --color-on-glass: var(--on-glass);
   --color-banner: var(--banner);
 
   --color-background: var(--paper);
@@ -285,6 +312,22 @@
       inset 0 1px 0 0 var(--glass-sheen),
       0 8px 24px var(--glass-drop);
     border: 1px solid var(--glass-stroke);
+  }
+
+  /* The home search field: frosted white glass over the photograph.
+
+     A field drawn with the palette's own `glass` does not work on the cover in
+     light mode - `--glass-fill` is white at 62% over near-black paper, and the
+     light-mode label inside is `--ink`, which is near-black. Dark label on a
+     near-transparent light pill over a photograph: that was the "can't see the
+     text" home hero. This is opaque enough to carry its own dark ink in both
+     modes, and it is not a theme token because the cover is not themed. */
+  .search-pill-on-cover {
+    background: color-mix(in oklab, #fffdf7 90%, transparent);
+    color: #1c1611;
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.75),
+      0 10px 30px rgba(0, 0, 0, 0.4);
   }
 
   .glass-strong {
