@@ -81,7 +81,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <FullMenu open={menuOpen} onOpenChange={setMenuOpen} />
       )}
       <ScrollCurve />
-      <BibleFrame />
+      {!isHome && <BibleFrame />}
 
       <div className="relative z-10 hidden min-h-dvh flex-col lg:flex">
         {!isAuthCallback && (
@@ -95,8 +95,8 @@ export function AppShell({ children }: { children: ReactNode }) {
               className={cn(
                 "flex h-12 w-fit max-w-[min(100%,40rem)] items-center gap-1 rounded-full px-2.5 shadow-sm ring-1 backdrop-blur-xl",
                 isHome
-                  ? "bg-white/85 text-on-glass ring-black/8 dark:bg-black/50 dark:ring-white/12"
-                  : "bg-white/70 text-on-glass ring-black/5 dark:bg-black/45 dark:ring-white/10",
+                  ? "bg-[#1c1612]/92 text-[#f5f0e8] ring-white/12"
+                  : "bg-white/55 ring-black/5 dark:bg-black/45 dark:ring-white/10",
               )}
             >
               <Link
@@ -140,8 +140,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                 className={cn(
                   "absolute top-4 right-24 flex h-12 items-center gap-2 rounded-full px-4 font-sans text-[13px] font-medium shadow-sm ring-1 backdrop-blur-xl transition-all hover:opacity-90 active:scale-[0.98]",
                   isHome
-                    ? "bg-white/85 text-on-glass ring-black/8 dark:bg-black/50 dark:text-[var(--on-glass)] dark:ring-white/12"
-                    : "bg-white/70 text-on-glass ring-black/5 dark:bg-black/45 dark:text-[var(--on-glass)] dark:ring-white/10",
+                    ? "bg-[#d4af37] text-[#1c1612] ring-[#d4af37] hover:bg-[#e2c04f]"
+                    : "bg-white/55 text-ink ring-black/5 dark:bg-black/45 dark:text-[var(--ink)] dark:ring-white/10",
                 )}
               >
                 <Download className="size-[18px]" strokeWidth={1.9} />
@@ -188,8 +188,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                     className={cn(
                       "flex size-12 shrink-0 items-center justify-center rounded-full shadow-sm ring-1 backdrop-blur-xl transition-all active:scale-95",
                       isHome
-                        ? "bg-white/85 text-on-glass ring-black/8 dark:bg-black/45 dark:ring-white/12"
-                        : "bg-white/80 text-on-glass ring-black/8 dark:bg-black/45 dark:ring-white/12",
+                        ? "bg-[#1c1612]/92 text-[#f5f0e8] ring-white/12"
+                        : "bg-white/70 text-ink ring-black/8 dark:bg-black/45 dark:ring-white/12",
                     )}
                   >
                     {menuOpen ? (
@@ -203,7 +203,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   className={cn(
                     "flex h-12 min-w-0 flex-1 items-center justify-between rounded-full pl-4 pr-1.5",
                     isHome
-                      ? "bg-white/85 text-on-glass shadow-sm ring-1 ring-black/8 backdrop-blur-xl dark:bg-black/45 dark:ring-white/12"
+                      ? "bg-[#1c1612]/92 shadow-sm ring-1 ring-white/12 backdrop-blur-xl"
                       : "glass",
                   )}
                 >
@@ -226,8 +226,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                     className={cn(
                       "flex size-12 shrink-0 items-center justify-center rounded-full shadow-sm ring-1 backdrop-blur-xl transition-all active:scale-95",
                       isHome
-                        ? "bg-white/85 text-on-glass ring-black/8 dark:bg-black/45 dark:text-[var(--on-glass)] dark:ring-white/12"
-                        : "bg-white/80 text-on-glass ring-black/8 dark:bg-black/45 dark:text-[var(--on-glass)] dark:ring-white/12",
+                        ? "bg-[#d4af37] text-[#1c1612] ring-[#d4af37] hover:bg-[#e2c04f]"
+                        : "bg-white/70 text-ink ring-black/8 dark:bg-black/45 dark:text-[var(--ink)] dark:ring-white/12",
                     )}
                   >
                     <Download className="size-[18px]" strokeWidth={1.9} />

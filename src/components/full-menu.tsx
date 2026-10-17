@@ -144,11 +144,11 @@ export function FullMenu({
             </p>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
-              className="mt-2 block font-sans text-[clamp(1.15rem,3.2vw,1.65rem)] leading-snug text-ink underline-offset-4 hover:underline"
+              className="mt-2 block py-[19px] font-sans text-[31.4px] leading-snug text-ink underline-offset-4 hover:underline"
             >
               {CONTACT_EMAIL}
             </a>
-            <p className="mt-4 max-w-xs font-sans text-[13px] leading-relaxed text-ink/55">
+            <p className="-mt-[9px] mb-8 max-w-xs font-sans text-[13px] leading-relaxed text-ink/55">
               Available for selected projects & feedback on SEEK.
             </p>
           </div>

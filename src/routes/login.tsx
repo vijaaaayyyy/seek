@@ -185,7 +185,7 @@ function LoginPage() {
                 type="button"
                 onClick={() => switchMode("signin")}
                 className={cn(
-                  "flex-1 rounded-full py-2 font-sans text-[13px] font-medium transition-colors",
+                  "flex-1 rounded-full border border-black py-2 font-sans text-[13px] font-medium transition-colors",
                   // Gilt on dark leather. It was `bg-surface`, which on calf is
                   // one shade off the panel behind it and did not read as
                   // selected at all.
@@ -198,7 +198,7 @@ function LoginPage() {
                 type="button"
                 onClick={() => switchMode("create")}
                 className={cn(
-                  "flex-1 rounded-full py-2 font-sans text-[13px] font-medium transition-colors",
+                  "flex-1 rounded-full border border-black py-2 font-sans text-[13px] font-medium transition-colors",
                   mode === "create" ? "bg-forest text-forest-fg" : "text-muted",
                 )}
               >
@@ -276,7 +276,10 @@ function LoginPage() {
                   variant="outline"
                   disabled={busy}
                   onClick={() => void handleOAuth(provider)}
-                  className="h-11 w-full justify-center gap-2 rounded-full"
+                  className={cn(
+                    "h-11 w-full justify-center gap-2 rounded-full",
+                    provider === "google" ? "-my-px py-9" : "py-[34px]",
+                  )}
                 >
                   <Icon className="size-4" />
                   Continue with {label}

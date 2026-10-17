@@ -21,12 +21,12 @@ function Contact() {
 
       <Link
         to="/"
-        className="font-sans text-[12px] tracking-[0.14em] text-muted uppercase transition-colors hover:text-ink"
+        className="font-sans text-[28px] tracking-[0.14em] text-ink/50 uppercase transition-colors hover:text-ink"
       >
         ← Home
       </Link>
 
-      <Reveal as="p" className="mt-12 font-sans text-[11px] font-medium tracking-[0.2em] text-faint uppercase">
+      <Reveal as="p" className="mt-12 font-sans text-[29px] font-medium tracking-[0.2em] text-ink/45 uppercase">
         Contact
       </Reveal>
       <Reveal delay={40} className="mt-3">
@@ -36,28 +36,28 @@ function Contact() {
           directly.
         </h1>
       </Reveal>
-      <Reveal delay={80} as="p" className="mt-6 max-w-md font-sans text-[15px] leading-relaxed text-muted">
+      <Reveal delay={80} as="p" className="mt-6 max-w-md font-sans text-[29px] leading-relaxed text-ink/60">
         Feedback, corrections, collaborations, or a quiet question about SEEK —
         write to the address below. Selected messages get a reply.
       </Reveal>
 
       <Reveal delay={120} className="mt-14 border-t border-ink/10 pt-10">
-        <p className="font-sans text-[11px] tracking-[0.18em] text-faint uppercase">
+        <p className="font-sans text-[22px] tracking-[0.18em] text-ink/45 uppercase">
           Email
         </p>
         <a
           href={`mailto:${EMAIL}`}
-          className="mt-3 block font-sans text-[clamp(1.25rem,3.5vw,1.85rem)] leading-snug text-ink underline-offset-4 hover:underline"
+          className="mt-3 block font-sans text-[26px] leading-snug text-ink underline-offset-4 hover:underline"
         >
           {EMAIL}
         </a>
       </Reveal>
 
       <Reveal delay={160} className="mt-12 border-t border-ink/10 pt-10">
-        <p className="font-sans text-[11px] tracking-[0.18em] text-faint uppercase">
+        <p className="font-sans text-[18px] tracking-[0.18em] text-ink/45 uppercase">
           Also
         </p>
-        <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 font-sans text-[14px] text-muted">
+        <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 font-sans text-[20px] text-ink/60">
           <Link to="/report-bug" className="hover:text-ink">
             Report a bug
           </Link>
