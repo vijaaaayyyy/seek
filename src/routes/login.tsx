@@ -278,7 +278,7 @@ function LoginPage() {
                   onClick={() => void handleOAuth(provider)}
                   className={cn(
                     "h-11 w-full justify-center gap-2 rounded-full",
-                    provider === "google" ? "-my-px py-[44px]" : "py-[40px]",
+                    provider === "google" ? "-my-px py-9" : "py-[34px]",
                   )}
                 >
                   <Icon className="size-4" />
