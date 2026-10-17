@@ -621,8 +621,8 @@ export function Home() {
 
       <footer className="relative z-10 border-t border-white/10 px-5 py-16 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
-          <div className="flex flex-col gap-12 sm:flex-row sm:items-start sm:justify-between">
-            <div className="max-w-xs">
+          <div className="flex flex-col items-center gap-12 text-center">
+            <div className="mx-auto max-w-xs">
               <p className="font-serif text-[clamp(1.6rem,4vw,2.25rem)] leading-[1.15] text-[#f5f0e8]">
                 The Word,
                 <span className="block text-[#d4af37] italic">kept free.</span>
@@ -637,7 +637,7 @@ export function Home() {
               >
                 vijay.peddenti434@gmail.com
               </a>
-              <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4">
+              <dl className="mx-auto mt-8 grid max-w-xs grid-cols-2 gap-x-6 gap-y-4">
                 {[
                   { t: "Books", v: "66" },
                   { t: "Chapters", v: "1,189" },
@@ -656,7 +656,7 @@ export function Home() {
 
             <nav
               aria-label="Footer"
-              className="grid flex-1 grid-cols-2 gap-x-8 gap-y-10 sm:max-w-md sm:grid-cols-4"
+              className="grid w-full grid-cols-2 justify-items-center gap-x-8 gap-y-10 text-center sm:max-w-2xl sm:grid-cols-4"
             >
               {[
                 {
