@@ -89,7 +89,7 @@ export function FullMenu({
           />
           <div
             className={cn(
-              "absolute bottom-[18%] left-[8%] h-[22vmin] w-[32vmin] rounded-sm bg-[#e0e0e0]/blur-[2px] transition-all duration-700 delay-100 ease-out dark:bg-[#181a22]",
+              "absolute bottom-[18%] left-[8%] h-[22vmin] w-[32vmin] rounded-sm bg-[#e0e0e0] blur-[2px] transition-all duration-700 delay-100 ease-out dark:bg-[#181a22]",
               open ? "translate-y-0 opacity-70" : "translate-y-8 opacity-0",
             )}
           />

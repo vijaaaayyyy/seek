@@ -33,7 +33,7 @@ function usePlatform() {
   return platform;
 }
 
-export function DownloadPage() {
+function DownloadPage() {
   const platform = usePlatform();
   const { status, install, openGuide } = useInstall();
   const installed = status === "installed";

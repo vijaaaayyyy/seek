@@ -158,12 +158,16 @@ export function Home() {
         </span>
       </div>
 
-      <section className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-center px-5 pt-28 pb-16 text-center sm:px-10 lg:px-16">
+      <section className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden px-5 pt-28 pb-16 text-center sm:px-10 lg:px-16">
+        <div
+          aria-hidden
+          className="home-glow pointer-events-none absolute top-[12%] left-1/2 -z-10 h-[38rem] w-[38rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(212,175,55,0.22),transparent_65%)] blur-2xl"
+        />
         <p className={EYEBROW}>Free · King James Version · 66 books</p>
         <h1 className="mt-6 font-serif text-[clamp(5rem,20vw,11rem)] leading-[0.9] tracking-[-0.02em] text-[#f5f0e8]">
           SEEK
         </h1>
-        <p className="mt-3 font-serif text-[clamp(1.5rem,4vw,2.25rem)] italic text-[#d4af37]">
+        <p className="home-sheen mt-3 font-serif text-[clamp(1.5rem,4vw,2.25rem)] italic">
           Scripture
         </p>
         <p className="mt-6 max-w-xl font-ui text-[17px] leading-[1.7] text-[#d9d0c1]">
