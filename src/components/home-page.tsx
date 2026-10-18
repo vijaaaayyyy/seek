@@ -171,7 +171,7 @@ export function Home() {
         <p className="home-sheen mt-3 font-serif text-[clamp(1.5rem,4vw,2.25rem)] italic">
           Scripture
         </p>
-        <p className="mt-6 max-w-xl font-ui text-[17px] leading-[1.7] text-[#d9d0c1]">
+        <p className="mt-7 max-w-xl font-ui text-[17px] leading-[1.7] text-[#d9d0c1]">
           Search a half-remembered word and read the King James Bible, free, with no ads
           and no paywall.
         </p>
