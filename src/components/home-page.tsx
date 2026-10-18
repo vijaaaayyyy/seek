@@ -223,7 +223,7 @@ export function Home() {
         </a>
       </section>
 
-      <section id="work" className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+      <section id="work" className="relative z-10 mt-[-99px] mb-[-99px] px-5 py-24 sm:px-10 lg:px-16">
         <div className="mx-auto flex max-w-5xl flex-col gap-12 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className={EYEBROW}>Corpus</p>
@@ -283,7 +283,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
+      <section className="relative z-10 mt-[-69px] mb-[-69px] px-5 py-14 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
             <div>
@@ -426,7 +426,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
+      <section className="relative z-10 mt-[-94px] mb-[-94px] px-5 py-14 sm:px-10 lg:px-16">
         <blockquote className="mx-auto max-w-3xl border-l-2 border-[#d4af37] pl-6 sm:pl-10">
           <p className={EYEBROW}>John 3:16</p>
           <p className="mt-6 font-serif text-[clamp(1.6rem,3.6vw,2.4rem)] leading-[1.45] text-[#f5f0e8]">
@@ -499,7 +499,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-0 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <Reveal as="p" className={EYEBROW}>
             How it works
@@ -566,7 +566,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
+      <section className="relative z-10 mt-[-84px] mb-[-84px] px-5 py-14 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <Reveal as="p" className={EYEBROW}>
             Start anywhere
@@ -591,7 +591,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
+      <section className="relative z-10 mt-[-73px] mb-[-73px] px-5 py-14 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <Reveal as="p" className={EYEBROW}>
             Write directly
@@ -664,7 +664,7 @@ export function Home() {
 
             <nav
               aria-label="Footer"
-              className="grid w-full grid-cols-2 justify-items-center gap-x-8 gap-y-10 text-center sm:max-w-2xl sm:grid-cols-4"
+              className="mt-[-27px] mb-[-27px] grid w-full grid-cols-2 justify-start items-center justify-items-center gap-x-8 gap-y-10 pt-px pb-px text-center sm:max-w-2xl sm:grid-cols-4"
             >
               {[
                 {
