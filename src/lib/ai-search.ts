@@ -22,7 +22,7 @@ const BOOK_NAMES = BOOKS.map((b) => b.name).join(", ");
 const cache = new Map<string, MeaningResponse>();
 
 export const searchByMeaning = createServerFn({ method: "POST" })
-  .inputValidator((data: { query: string }) => data)
+  .validator((data: { query: string }) => data)
   .handler(async ({ data }): Promise<MeaningResponse | { ok: false; error: string }> => {
     const raw = data.query?.trim();
     if (!raw || raw.length < 2) {
