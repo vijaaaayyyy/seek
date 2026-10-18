@@ -243,7 +243,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <p className={EYEBROW}>Start somewhere</p>
           <h2 className={TITLE}>Begin a chapter</h2>
@@ -282,7 +282,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
             <div>
@@ -321,7 +321,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
         <div className="mx-auto flex max-w-5xl flex-col gap-12 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className={EYEBROW}>Still deciding</p>
@@ -354,7 +354,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
         <blockquote className="mx-auto max-w-3xl border-l-2 border-[#d4af37] pl-6 sm:pl-10">
           <p className={EYEBROW}>Proverbs 3:5</p>
           <p className="mt-6 font-serif text-[clamp(1.6rem,3.6vw,2.4rem)] leading-[1.45] text-[#f5f0e8]">
@@ -371,7 +371,7 @@ export function Home() {
         </blockquote>
       </section>
 
-      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <p className="font-serif text-[clamp(2.25rem,6vw,4.5rem)] leading-[1.1] tracking-[-0.01em] text-[#f5f0e8]">
             The best ideas
@@ -393,7 +393,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <p className={EYEBROW}>Seek by meaning</p>
           <ul className="mt-10 divide-y divide-white/10 border-y border-white/10">
@@ -424,7 +424,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
         <blockquote className="mx-auto max-w-3xl border-l-2 border-[#d4af37] pl-6 sm:pl-10">
           <p className={EYEBROW}>John 3:16</p>
           <p className="mt-6 font-serif text-[clamp(1.6rem,3.6vw,2.4rem)] leading-[1.45] text-[#f5f0e8]">
@@ -441,7 +441,7 @@ export function Home() {
         </blockquote>
       </section>
 
-      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <Reveal as="p" className={EYEBROW}>
             What&rsquo;s inside
@@ -497,7 +497,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <Reveal as="p" className={EYEBROW}>
             How it works
@@ -532,7 +532,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <Reveal as="p" className={EYEBROW}>
             Read by reference
@@ -563,7 +563,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <Reveal as="p" className={EYEBROW}>
             Start anywhere
@@ -588,7 +588,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-24 sm:px-10 lg:px-16">
+      <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <Reveal as="p" className={EYEBROW}>
             Write directly
@@ -623,8 +623,9 @@ export function Home() {
         </div>
       </section>
 
-      <footer className="relative z-10 border-t border-white/10 px-5 py-16 sm:px-10 lg:px-16">
+      <footer className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-5xl">
+          <div aria-hidden className="home-rule mx-auto mb-12 h-px w-full max-w-md" />
           <div className="flex flex-col items-center gap-12 text-center">
             <div className="mx-auto max-w-xs">
               <p className="font-serif text-[clamp(1.6rem,4vw,2.25rem)] leading-[1.15] text-[#f5f0e8]">
