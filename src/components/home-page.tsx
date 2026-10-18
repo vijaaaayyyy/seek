@@ -28,6 +28,7 @@ const GHOST_BUTTON =
   "inline-flex min-h-12 items-center justify-center rounded-xl border border-[#f5f0e8]/30 px-7 font-ui text-[15px] font-medium text-[#f5f0e8] transition hover:border-[#d4af37] hover:text-[#d4af37] active:scale-[0.98]";
 const STAT_VALUE = "font-serif text-[clamp(2rem,4vw,2.75rem)] leading-none text-[#f5f0e8]";
 const STAT_LABEL = "mt-2 font-ui text-[12px] tracking-[0.12em] uppercase text-[#b8ad9b]";
+const ACCENTS = ["#d4af37", "#7fc8b8", "#e39a8a", "#8fb3e8", "#c79ae0"];
 
 /**
  * Compositional home inspired by bleibtgleich.dev:
@@ -333,10 +334,10 @@ export function Home() {
               { v: "KJV", l: "Public domain" },
               { v: "0", l: "Trackers" },
               { v: "∞", l: "Free reads" },
-            ].map((s) => (
+            ].map((s, i) => (
               <div key={s.l} className={`${CARD} p-5`}>
                 <dt className={STAT_LABEL}>{s.l}</dt>
-                <dd className={`${STAT_VALUE} mt-0`}>{s.v}</dd>
+                <dd className={`${STAT_VALUE} mt-0`} style={{ color: ACCENTS[i] }}>{s.v}</dd>
               </div>
             ))}
           </dl>
@@ -394,6 +395,7 @@ export function Home() {
       </section>
 
       <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
+        <div aria-hidden className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[24rem] w-[24rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(227,154,138,0.16),transparent_65%)] blur-2xl" />
         <div className="mx-auto max-w-5xl">
           <p className={EYEBROW}>Seek by meaning</p>
           <ul className="mt-10 divide-y divide-white/10 border-y border-white/10">
@@ -404,14 +406,14 @@ export function Home() {
               { q: "hope", label: "Hope", ref: "Heb 6:19" },
               { q: "peace", label: "Peace", ref: "Phil 4:7" },
               { q: "faith", label: "Faith", ref: "Heb 11:1" },
-            ].map((t) => (
+            ].map((t, i) => (
               <li key={t.q}>
                 <button
                   type="button"
                   onClick={() => run(t.q)}
                   className="group flex min-h-16 w-full items-center justify-between gap-4 py-5 text-left transition hover:pl-2"
                 >
-                  <span className="font-serif text-[clamp(1.6rem,4vw,2.5rem)] leading-tight text-[#f5f0e8] transition group-hover:text-[#d4af37]">
+                  <span className="font-serif text-[clamp(1.6rem,4vw,2.5rem)] leading-tight transition" style={{ color: ACCENTS[i] }}>
                     {t.label}
                   </span>
                   <span className="shrink-0 font-ui text-[13px] tracking-wide text-[#b8ad9b]">
@@ -484,7 +486,7 @@ export function Home() {
               },
             ].map((f, i) => (
               <Reveal as="li" key={f.n} delay={i * 60} className={CARD}>
-                <p className="font-ui text-[13px] font-semibold tracking-[0.18em] text-[#d4af37]">
+                <p className="font-ui text-[13px] font-semibold tracking-[0.18em]" style={{ color: ACCENTS[i] }}>
                   {f.n}
                 </p>
                 <h3 className="mt-3 font-serif text-[1.5rem] leading-tight text-[#f5f0e8]">
@@ -521,7 +523,7 @@ export function Home() {
               },
             ].map((s, i) => (
               <Reveal as="li" key={s.n} delay={i * 70} className={`${CARD} flex flex-col gap-4`}>
-                <span className="grid size-11 place-items-center rounded-full border border-[#d4af37]/60 font-serif text-[1.25rem] text-[#d4af37]">
+                <span className="grid size-11 place-items-center rounded-full border font-serif text-[1.25rem]" style={{ borderColor: ACCENTS[i], color: ACCENTS[i] }}>
                   {s.n}
                 </span>
                 <h3 className="font-serif text-[1.5rem] leading-tight text-[#f5f0e8]">{s.t}</h3>
@@ -533,6 +535,7 @@ export function Home() {
       </section>
 
       <section className="relative z-10 px-5 py-14 sm:px-10 lg:px-16">
+        <div aria-hidden className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[24rem] w-[24rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(127,200,184,0.16),transparent_65%)] blur-2xl" />
         <div className="mx-auto max-w-5xl">
           <Reveal as="p" className={EYEBROW}>
             Read by reference
