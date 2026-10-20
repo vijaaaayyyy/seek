@@ -150,6 +150,14 @@ export default defineConfig(({ command, isPreview }) => ({
     host: "0.0.0.0",
     port: 8080,
     strictPort: true,
+    watch: {
+      // `npm run build` writes .vercel/output/**. Left watched, Vite's
+      // FSWatcher hits the fresh build artifacts and dies with
+      // `EBUSY: resource busy or locked, watch ...\.vercel\output\static\...`,
+      // taking the dev server down mid-session (Windows). The build output is
+      // never source, so it stays out of the watcher entirely.
+      ignored: ["**/.vercel/**", "**/.tanstack/**", "**/node_modules/**"],
+    },
   },
   preview: {
     host: "127.0.0.1",

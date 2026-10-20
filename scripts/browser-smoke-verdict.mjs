@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { join } from "node:path";
 export function normalizeBodyText(text) {
   return String(text ?? "")
     .replace(/\s+/g, " ")
@@ -35,7 +36,9 @@ export function parseSmokeArgs(argv, env = {}) {
   }
   return {
     url: positional[0] || "http://127.0.0.1:8080/",
-    outPng: positional[1] || "/workspace/screenshots/app-builder-preview.png",
+    // Relative to cwd (= the project root), so the sandbox's /workspace and a
+    // clone anywhere else both land in <project>/screenshots.
+    outPng: positional[1] || join("screenshots", "app-builder-preview.png"),
     baseline,
   };
 }
